@@ -115,7 +115,7 @@ label variable media_access "women's media access"
 recode decbighh (10/30=1 yes) (40/60=0 no) (98 99 =.), gen(decbighh_d)
 label variable decbighh_d "woman have a say in making large household purchases"
 
-* decdailypur - final say on household purchases for dayily needs
+* decdailypur - final say on household purchases for daily needs
 * the total n is 635,102 with 104,292 niu. Should not be included in the index
 
 * decfamvisit - final say on visits to family or relatives
@@ -178,7 +178,8 @@ label values refusex refusexl
 * 0=no; 1=yes; 7=don't know; 8/9 are missing and not in universe
 * very few 7s, so let's skip them
 
-* Liz, the dvapreshusb and dvapresomale have a large missing (nearly 650,000) - should we count the answers of women only when no male was present or was not listening?
+* Liz, the dvapreshusb and dvapresomale have a large missing (nearly 650,000) - should we count the answers of of women only when no male was present or was not listening?
+* Nir, the missing cases would probably cause us to lose all of some Wave 1 women.
 generate dvujustargue=.
 replace dvujustargue=1 if dvaargue==0 // note that we are reversing the coding
 replace dvujustargue=0 if dvaargue==1 // note that we are reversing the coding
@@ -223,7 +224,7 @@ label values dvunjustindex dvunjustindexl
 recode dvunjustindex (0/2=0 no) (3/5=1 yes), gen(dvunjust_d)
 label variable dvunjust_d "agree that wife beating is unjustified"
 
-* build a new 4 cat var - coupling - if wife beating is ungesitifed and woman have  0, =1 if dosn't have a final say, ... 0-4
+* build a new 4 cat var - coupling - if wife beating is unjustifed and woman have  0, =1 if dosn't have a final say, ... 0-4
 
 * Our dependent variable - decoupling
 generate decoupling=.

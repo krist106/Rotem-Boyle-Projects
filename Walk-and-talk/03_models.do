@@ -8,9 +8,30 @@
 * 		Liz Boyle and Nir Rotem
 * 06.20.2020
 
-cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 
-clear
+recode religion (0=0 "other")(1000=1 "muslim")(2000/2901=2 "christian")(3000/9000=0)(9998=.), gen(religion3)
+
+*employment recode is losing a lot of cases. Has something to do with wkemploywhen, I think.
+
+*Consider using media_access, adding Internet to it.
+
+*Is there a variable for final say on spending man's earnings?
+
+recode wealthq (8=.)
+
+recode dvunjustindex (0=0 no) (1/5=1 yes), gen(dvneverjust_d)
+label variable dvneverjust "wife beating never justified"
+
+generate decoupling_new=.
+replace decoupling_new=3 if decindex_d==0 & dvneverjust_d==0
+replace decoupling_new=2 if decindex_d==0 & dvneverjust_d==1
+replace decoupling_new=1 if decindex_d==1 & dvneverjust_d==0
+replace decoupling_new=0 if decindex_d==1 & dvneverjust_d==1
+label variable decoupling "decoupling between wife beating never justified and having a final say"
+label values decoupling_new decouplingl
+
+
+use "/Users/boyle014/Google Drive/RESEARCH/DHS/EWS Research/Decoupling project/Data and output/02_women.dta", clear
 
 ** Here we limit the file in memory to married or were married women. So in fact, we can remove all the if never_married==0 from the models below
 use 02_women.dta if never_married==0
@@ -30,14 +51,40 @@ correlate wealthq global_human_footprint urban
 
 *** Multinomial Logistic Regression ***
 
-* From Liz
-***mlogit independent-v i.migrant_unicef ib2.wealthquint urban age i.welevel i.marital ib23.HH7 [pw=perweight], rrr base(2)
+* Liz tries some models
 
-*** In some countries it seems that only married women were survived - Afghanistan, Bangladesh, Jordan, Pakistan, Egypt. Pierotti noted that because of that she didn't run a comparison across countries but only within countries. I confirmed it by using tab ever_married country
+quietly mlogit decoupling urban ib3.wealthq pipedwtr radio tv i.employment age i.agefrstmar_c i.educlvl waves2 i.country [pw=perweight], rrr base(0)
+estimates store model1A
+outreg2 model1A using 1A_decoupling_old.xls, replace eform
+
+quietly mlogit decoupling urban ib3.wealthq pipedwtr radio tv i.employment age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap muslim waves2 i.country [pw=perweight], rrr base(0)
+estimates store model1B
+outreg2 model1B using 1B_decoupling_old.xls, replace eform
+
+*About 660K cases with decoupling and waves2 variables.
+*Lose 20K cases with pipedwtr, radio, TV, women's education (most are probably pipedwtr)
+*Lose another 30k with employment. See note above; can probably recode this differently to regain some of these cases.
+*Lose 44k with husedlvl (may lose a country or two, check on this)
+*Lose 65K to religion--all of Pakistan (which is more than 96% Muslim), a lot of Rwanda, Egypt, Tanzania, and Niger. Can we get back some of the missing cases from the latter countries?
+
+quietly mlogit decoupling_new urban ib3.wealthq pipedwtr media_access currwork age i.agefrstmar_c i.educlvl waves2 i.country [pw=perweight], rrr base(0)
+estimates store model2A
+outreg2 model2A using 2A_decoupling_new.xls, replace eform
+
+quietly mlogit decoupling_new urban ib3.wealthq pipedwtr media_access currwork age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap ib0.religion3 waves2 i.country [pw=perweight], rrr base(0)
+estimates store model2B
+outreg2 model2B using 2B_decoupling_new.xls, replace eform
+
+*** In some countries it seems that only married women were surveyed - Afghanistan, Bangladesh, Jordan, Pakistan, Egypt. Pierotti noted that because of that she didn't run a comparison across countries but only within countries. I confirmed it by using tab ever_married country
+
+*Makes no difference. We only have ever_married women in the sample because of the decision-making variable in decoupling. Those questions are only asked of ever-married women. 
 
 * when using both ever_married and agefrstmar_c, the former is omitted because of collinearity
+
 * adding i. before var shows the categories within the model
+
 * rrr = relative-risk ratios
+
 mlogit decoupling urban i.travel_times_c radio newspaper tv i.educlvl i.husedlvl muslim age i.agefrstmar_c i.wealthq pipedwtr global_human_footprint polviolence_p1 [pw=perweight] if never_married==0, rrr base(3)
 estimates store model_full
 
