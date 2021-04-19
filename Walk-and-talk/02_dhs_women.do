@@ -8,15 +8,38 @@
 * 		Liz Boyle and Nir Rotem
 * 06.15.2020
 
-cd "C:\Users\Nir\Documents\Projects\2020\RIGS GRPP - Grounded decoupling\IPUMS DHS data"
-
-use idhs_00015.dta, replace
-
+cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
+clear
+use idhs_00027.dta, replace
+* use 02_women.dta, replace
 **********************
 *** Organizing the women's variables ***
 **********************
 
-keep if resident==1
+
+** To construct something like POPWT
+*Calculate the sum of FQWEIGHT for all eligible women (age 15 to 49) within the sample of interest.
+* POPWT of individual i = (FQWEIGHT of individual i / Sum of FQWEIGHT in the sample) * Total population of women 15 to 49 in that country in that year.
+merge m:1 country year using women_annual_population.dta, nogen
+keep in 1/2020319
+destring Populationaged1549, gen(pop1549)
+
+sort sample
+by sample: egen sumperweiht = total(perweight) if age>14 & age<50
+
+gen womwt = (perweight/sumperweiht) * (pop1549 * 1000)
+replace womwt=0 if womwt==.
+label variable womwt "women aged 15-49 population adjustment factor"
+order womwt, a(awfactt)
+drop Populationaged1549 pop1549 sumperweiht
+
+
+keep if resident==1 | country==430
+
+* Droping clusters with less than 10 cases
+bys dhsid: gen dup_dhsid=_N
+drop if dup_dhsid <10
+drop dup_dhsid
 
 
 * marstat - women's current marital or union status
@@ -44,6 +67,11 @@ label define musliml 1 "muslim" 0 "non muslim"
 label values muslim musliml
 label variable muslim "muslim"
 order muslim, a(religion)
+
+recode religion (1000=1) (2000/2999=2) (9998=.) (nonmiss=3), gen(religion_c)
+label define rel_c 1 "Muslim" 2 "Christian" 3 "Other"
+label values religion_c rel_c
+label variable religion_c "Religion by categories"
 
 * currwork - currently working
 * 0=no; 10=yes; 11=yes spontaneous; 12= yes prompted; 98=missing; 99=niu
@@ -87,35 +115,46 @@ label variable edugap "woman have more education than partner"
 order edugap, a(husedyrs)
 
 * drinkwtr - major source of drinking water.
-* We can create a dummy variable to see if respondent's house had indoor piped water and use it as a proxy for material living standard - Charles 2019 had a similar item on indoor plumbing. The toilettype variables have too many categories which are non-consistence across samples, so I think it will be impossible to build a 'plumbing' variable
+* We can create a dummy variable to see if respondent's house had indoor piped water and use it as a proxy for material living standard - Charles 2020 had a similar item on indoor plumbing. The toilettype variables have too many categories which are non-consistence across samples, so I think it will be impossible to build a 'plumbing' variable
 recode drinkwtr (1100 1110 1120 = 1 yes) (1200/6000 = 0 no) (9998=.), gen(pipedwtr)
 label variable pipedwtr "had own piped water"
 
 * radiobrig - listens to radio: bridging variable
 * 0=no; 1=not at all; 2=less than once a week; 10=yes; 11=at least once a week; 12=almost every day; 98=missing
 recode radiobrig (0/2=0 no) (10/12=1 yes) (98=.), gen(radio)
-label variable radio "women listen to radio"
+label variable radio "woman listens to radio"
 
 * newsbrig - reads newspaper: bridging variable
 * 0=no; 1=not at all; 2=less than once a week; 10=yes; 11=at least once a week; 12=almost every day; 98=missing, 99=niu
 recode newsbrig (0/2=0 no) (10/12=1 yes) (98/99=.), gen(newspaper)
-label variable newspaper "women reads newspapers"
+label variable newspaper "woman reads newspapers"
 
 * tvbrig - watches television - bridging variable
 * 0=no; 1=not at all; 2=less than once a week; 10=yes; 11=at least once a week; 12=almost every day; 98=missing
 recode tvbrig (0/2=0 no) (10/12=1 yes) (98=.), gen(tv)
-label variable tv "women watches television"
+label variable tv "woman watches television"
+
+* internetmo - fq of using internet in  last month
+* 0=not al all; 1=less than once a week; 2=at least once a week; 3=almost every day; 8=missing
+recode internetmo (0/1=0 no) (2/3=1 yes) (8=.), gen(internet)
+label variable internet "woman uses the internet"
 
 * media access - indicates if a woman have a weekly access to radio, newspaper or tv. Pierotti 2013 used a similar variable
-gen media_access = max(radio, newspaper, tv)
+gen media_access_old = max(radio, newspaper, tv)
+label variable media_access_old "women's media access"
+label define medial 0 "no access" 1 "have access"
+label values media_access_old medial
+
+gen media_access = max(radio, newspaper, tv, internet)
 label variable media_access "women's media access"
+label values media_access medial
 
 *decbighh - final say on making large household purchases
 * 10=woman; 20=woman and husband; 30=woman and someone else; 40=husband; 50=someone else; 51=other male; 52=other female; 60=other; 98=missing; 99=niu (n=912,611)
 recode decbighh (10/30=1 yes) (40/60=0 no) (98 99 =.), gen(decbighh_d)
 label variable decbighh_d "woman have a say in making large household purchases"
 
-* decdailypur - final say on household purchases for daily needs
+* decdailypur - final say on household purchases for dayily needs
 * the total n is 635,102 with 104,292 niu. Should not be included in the index
 
 * decfamvisit - final say on visits to family or relatives
@@ -178,8 +217,7 @@ label values refusex refusexl
 * 0=no; 1=yes; 7=don't know; 8/9 are missing and not in universe
 * very few 7s, so let's skip them
 
-* Liz, the dvapreshusb and dvapresomale have a large missing (nearly 650,000) - should we count the answers of of women only when no male was present or was not listening?
-* Nir, the missing cases would probably cause us to lose all of some Wave 1 women.
+* Liz, the dvapreshusb and dvapresomale have a large missing (nearly 650,000) - should we count the answers of women only when no male was present or was not listening?
 generate dvujustargue=.
 replace dvujustargue=1 if dvaargue==0 // note that we are reversing the coding
 replace dvujustargue=0 if dvaargue==1 // note that we are reversing the coding
@@ -216,15 +254,16 @@ order dvanymalepres, a(dvapresofem)
 
 * Index variable
 generate dvunjustindex=dvujustargue + dvujustburnfood + dvujustgoout + dvujustifnosex + dvujustnegkid
-* Mean of this will be a true mean, ranging from 0-5, reflecting level of justification of beating within the cluster.
-label variable dvunjustindex "wife beating unjustified index"
+* Mean of this will be a true mean, ranging from 0-5, reflecting level of opposition to beating within the cluster.
+label variable dvunjustindex "opposition to wife beating index"
 label define dvunjustindexl 0 "never" 1 "seldom" 2 "some of the time" 3 "often" 4 "very often" 5 "always"
 label values dvunjustindex dvunjustindexl
 
-recode dvunjustindex (0/2=0 no) (3/5=1 yes), gen(dvunjust_d)
-label variable dvunjust_d "agree that wife beating is unjustified"
+recode dvunjustindex (0/4=0 no) (5=1 yes), gen(dvunjust_d)
+label variable dvunjust_d "always oppose wife beating"
 
-* build a new 4 cat var - coupling - if wife beating is unjustifed and woman have  0, =1 if dosn't have a final say, ... 0-4
+
+* build a new 4 cat var - coupling - if wife beating is ungesitifed and woman have  0, =1 if dosn't have a final say, ... 0-4
 
 * Our dependent variable - decoupling
 generate decoupling=.
@@ -232,20 +271,39 @@ replace decoupling=3 if decindex_d==0 & dvunjust_d==0
 replace decoupling=2 if decindex_d==0 & dvunjust_d==1
 replace decoupling=1 if decindex_d==1 & dvunjust_d==0
 replace decoupling=0 if decindex_d==1 & dvunjust_d==1
-label variable decoupling "decoupling between wife beating is unjustified and having a final say"
-label define decouplingl 3 "wb justified/no part in final say" 2 "wb unjustified/no part in final say" 1 "wb justified/have a part in final say" 0 "wb unjustified/have a part in final say"
+label variable decoupling "Attitude/empowerment correspondence possibilities"
+label define decouplingl 3 "Rejects gender equity/Not empowered in household" 2 "Supports gender equity/Not empowered in household" 1 "Rejects gender equity/Empowered in household" 0 "Supports gender equity/Empowered in household"
 label values decoupling decouplingl
 
-
 recode decoupling (0=0) (3=2) (1/2 = 1), gen(decoupling_3a)
-label variable decoupling_3a "decoupling - pro-decoupled"
-label define dec3a 0 "wb unjustified/have a part in final say" 2 "wb justified/no part in final say" 1 "decoupled"
+label variable decoupling_3a "Decoupling - pro-decoupled"
+label define dec3a 0 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Not empowered in household" 1 "Decoupled"
 label values decoupling_3a dec3a
 
 recode decoupling (0 3 = 1) (1 = 0) (2 = 2), gen(decoupling_3b)
-label variable decoupling_3b "decoupling - pro-coupled"
-label define dec3b 0 "wb justified/have a part in final say" 2 "wb unjustified/no part in final say" 1 "coupled"
+label variable decoupling_3b "Decoupling - pro-coupled"
+label define dec3b 0 "Rejects gender equity/Empowered in household" 2 "Supports gender equity/Not empowered in household" 1 "Coupled"
 label values decoupling_3b dec3b
+
+recode decoupling (0=1) (1/3=0), gen(de1)
+label variable de1 "Supports gender equity/Empowered in household"
+
+recode decoupling (1=1) (0 2 3 =0), gen(de2)
+label variable de2 "Rejects gender equity/Empowered in household"
+
+recode decoupling (2=1) (0 1 3 =0), gen(de3)
+label variable de3 "Supports gender equity/Not empowered in household"
+
+recode decoupling (3=1) (0/2=0), gen(de4)
+label variable de4 "Rejects gender equity/Not empowered in household"
+
+order decoupling, a(dvweight)
+order decoupling_3a, a(decoupling)
+order decoupling_3b, a(decoupling_3a)
+order de1, a(decoupling_3b)
+order de2, a(de1)
+order de3, a(de2)
+order de4, a(de3)
 
 * dv events
 * 0=no; 1=no; 8=missing; 9=not in universe (n is approximately 350,000)
@@ -333,7 +391,7 @@ rename d_civ_violence_p1 civ_violence_p1
 
 *A max variable for political violence
 gen polviolence_p1 = max(battles_p1, riots_p1, civ_violence_p1)
-label variable polviolence_p1 "exposure to political violence last year"
+label variable polviolence_p1 "Exposure to political violence last year"
 
 
 ** Organizing the popdensity variable
@@ -363,7 +421,7 @@ replace popdensity = . if popdensity==-998
 drop popdensity_*
 
 gen popdensity_log=log(popdensity)
-label variable popdensity_log "population density logged"
+label variable popdensity_log "Population density logged"
 order popdensity_log, after(popdensity)
 
 
@@ -376,9 +434,9 @@ foreach var of varlist geo* {
 gen `var'_copy = `var'
 }
 * drop geo_cm2004_2011_copy
-drop geo_gn1999_2012_copy geo_gn2005_2012_copy
+* drop geo_gn1999_2012_copy geo_gn2005_2012_copy
 drop geoalt_mw2010_2016_copy
-drop geoalt_ng2008_2013_copy
+* drop geoalt_ng2008_2013_copy
 replace geo_rw1992_2005_copy = . if year == 2005
 * see that rw is ok
 * drop geo_tz1991_2015_copy
@@ -389,7 +447,7 @@ drop geo_jo1990_2017_copy geo_jo2007_2017_copy
 ***drop geo_eg1988_2014_copy
 drop geoalt_eg1988_2014
 drop geoalt_ls2004_2014_copy
-drop geo_ml1987_2012_copy
+* drop geo_ml1987_2012_copy
 drop geo_nm1992_2013_copy
 * drop geo_sn2012_2014_copy geo_sn2015_2016_copy
 drop geoalt_np1996_2016_copy
@@ -398,9 +456,9 @@ foreach var of varlist geo_bd1994_2014-geo_zw1994_2015 {
 decode `var', gen(`var'str)
 }
 * drop geo_cm2004_2011str
-drop geo_gn1999_2012str geo_gn2005_2012str
+* drop geo_gn1999_2012str geo_gn2005_2012str
 drop geoalt_mw2010_2016str
-drop geoalt_ng2008_2013str
+* drop geoalt_ng2008_2013str
 replace geo_rw1992_2005str = "" if year == 2005
 * drop geo_tz1991_2015str
 * drop geo_ug2006_2011str
@@ -411,7 +469,7 @@ drop geo_jo1990_2017str geo_jo2007_2017str
 *drop geo_gn1999_2012str
 *drop geo_gn2005_2012str
 drop geoalt_ls2004_2014str
-drop geo_ml1987_2012str
+* drop geo_ml1987_2012str
 drop geo_nm1992_2013str
 * drop geo_sn2012_2014str geo_sn2015_2016str
 drop geoalt_np1996_2016str
@@ -448,16 +506,13 @@ rename idregion_gen subnational
 label variable subnational "subnational regions"
 ** End general region creation **
 
-drop idhspsu caseid hhid psu strata domain hhnum clusterno drinkwtr ct region_label_gen newsbrig tvbrig radiobrig decbighh decdailypur decfamvisit decfemearn decfemhcare sxcanrefuse nosexothwf nosextired dvaargue dvaburnfood dvagoout dvaifnosex dvanegkid dveever dvppush dvpslap bhcpermit wkemploywhen
+drop idhspsu caseid hhid psu strata domain hhnum clusterno drinkwtr ct region_label_gen newsbrig tvbrig radiobrig decbighh decdailypur decfamvisit decfemearn decfemhcare sxcanrefuse nosexothwf nosextired dvaargue dvaburnfood dvagoout dvaifnosex dvanegkid dveever dvppush dvpslap bhcpermit 
 
 drop geo*
 
-merge m:m dhsid using "C:\Users\Nir\Documents\Projects\2020\RIGS GRPP - Grounded decoupling\IPUMS DHS data\GIS data\master_DHS_GIS.dta", nogen
-keep in 1/1926470
-
-order decoupling, a(dvweight)
-order decoupling_3a, a(decoupling)
-order decoupling_3b, a(decoupling_3a)
+merge m:m dhsid using "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data\GIS data\master_DHS_GIS.dta", nogen
+keep in 1/1933678
+*keep in 1/1904087
 
 generate travel_times_c=.
 replace travel_times_c=0 if travel_times==0
@@ -470,9 +525,64 @@ label define ttl 0 "0 hours" 1 "0-50 hours" 2 "50-100 hours" 3 "100-250 hours" 4
 label values travel_times_c ttl
 label variable travel_times_c "Travel time to a settlement of 50,000 or more people, categories"
 
-recode sample (5005 5006 10802 12003 18001 20402 20403 23102 23103 28804 28805 32402 35603 40003 40004 40404 40405 40006 42601 42602 45003 45402 45403 45404 46603 46604  50802 51601 51603 52402 52403 52404 56203 56603 56604 58603 64602 64603 64604 68604 68605 68606 68607 68608 68609 71603 71604 71605 80003 80004 80005 81805 81806 83404 83405 85403 89404 = 0 "previous waves") (nonmiss=1 "last wave"), gen(last_wave)
-label variable last_wave "last wave"
-order last_wave, a(samplestr)
+** Organizing the SMOD variable
+
+gen smod =.
+replace smod = smod_population_2000 if year==1996
+replace smod = smod_population_2000 if year==1997
+replace smod = smod_population_2000 if year==1998
+replace smod = smod_population_2000 if year==1999
+replace smod = smod_population_2000 if year==2000
+replace smod = smod_population_2000 if year==2001
+replace smod = smod_population_2000 if year==2002
+replace smod = smod_population_2000 if year==2003
+replace smod = smod_population_2000 if year==2004
+replace smod = smod_population_2000 if year==2005
+replace smod = smod_population_2000 if year==2006
+replace smod = smod_population_2000 if year==2007
+replace smod = smod_population_2015 if year==2008
+replace smod = smod_population_2015 if year==2009
+replace smod = smod_population_2015 if year==2010
+replace smod = smod_population_2015 if year==2011
+replace smod = smod_population_2015 if year==2012
+replace smod = smod_population_2015 if year==2013
+replace smod = smod_population_2015 if year==2014
+replace smod = smod_population_2015 if year==2015
+replace smod = smod_population_2015 if year==2016
+replace smod = smod_population_2015 if year==2017
+replace smod = smod_population_2015 if year==2018
+replace smod = . if smod==-9999
+
+label variable smod "SMOD population"
+label define smodl 0 "unpopulated" 1 "rural areas" 2 "low density urban clusters" 3 "high density urban centers"
+label values smod smodl
+
+drop smod_*
+
+*** I am exluding Liberia as there is no data on attitudes in 2007
+recode sample (5006 10802 12003 18001 20402 23102 28804 32402 35603 40003 40404 42601 45003 45003 45402 46603 50802 51603 52402 56203 56603 58603 64603 68604 71603 80003 81806 83404 85403 89404 = 1 "first wave") (5007 10803 12004 18002 20404 23104 28806 32403 35604 40007 40406 42603 45004 45004 45405 46605 50803 51604 52405 56204 56605 58604 64606 68610 71605 80006 81808 83406 85404 89405 = 2 "second wave") (nonmiss=.), gen(waves2)
+label variable waves2 "maximum variation two waves"
+order waves2, a(samplestr)
+
+*recode sample (10802 12003 18001 20402 23103 28805 32402 40405 42601 45404 46604 51603 52404 56604 64604 68608 71605 81806 85403 89404 = 0 "first wave") (10803 12004 18002 20404 23104 28806 32403 40406 42602 45405 46605 51604 52405 56605 64605 68609 71606 81807 85404 89405 = 1 "second wave") (nonmiss=.), gen(waves2)
+
+
+*recode sample (23102 28804 40404 45403 46603 56603 64603 68606 71604 81805 = 0 "first wave") (23103 28805 40405 45404 46604 56604 64604 68608 71605 81806 = 1 "second wave") (23104 28806 40406 45405 46605 56605 64605 68609 71606 81807 = 2 "third wave") (nonmiss=.), gen(waves3)
+*label variable waves3 "there waves"
+*order waves3, a(waves2)
+
+***  81804 6 7 8
+recode sample (23102 28804 40404 45402 46603 56603 64602 68604 71603 81806 = 0 "first wave") (23103 28805 40405 45404 46604 56604 64603 68606 71604 81807 = 1 "second wave") (23104 28806 40406 45405 46605 56605 64605 68609 71605 81808 = 2 "third wave") (nonmiss=.), gen(waves3)
+label variable waves3 "maximum variation there waves"
+order waves3, a(waves2)
+
+*recode sample (10802 12003 18001 20402 23102 23103 28804 28805 32402 40404 40405 42601 45402 45403 45404 46603 46604 51603 52404 56603 56604 64603 64604 68604 68605 68606 68608 71603 71604 71605 81805 81806 85403 89404 = 0 "previous waves") (10803 12004 18002 20404 23104 28806 32403 40406 42602 45405 46605 51604 52405 56605 64605 68609 71606 81807 85404 89405 = 1 "last wave") (nonmiss=.), gen(last_wave1)
+*label variable last_wave1 "alternative last wave"
+*order last_wave1, a(waves3)
+
+*recode sample (5005 5006 10802 12003 18001 20402 20403 23102 23103 28804 28805 32402 35603 40003 40004 40404 40405 40006 42601 42602 45003 45402 45403 45404 46603 46604  50802 51601 51603 52402 52403 52404 56203 56603 56604 58603 64602 64603 64604 68604 68605 68606 68607 68608 68609 71603 71604 71605 80003 80004 80005 81805 81806 83404 83405 85403 89404 = 0 "previous waves") (nonmiss=1 "last wave"), gen(last_wave)
+*label variable last_wave "last wave"
+*order last_wave, a(last_wave1)
 
 
 * Regions of the African Union
@@ -486,22 +596,22 @@ order last_wave, a(samplestr)
 
 recode country (818 504 788 = 1 "North Africa") (24 426 454 508 516 710 894 716 = 2 "Southern Africa") (231 404 450 646 729 834 800 = 3 "East Africa") (204 854 384 288 324 466 562 566 686 = 4 "West Africa") (108 120 180 = 5 "Central Africa") (4 50 356 524 586 104 = 6 "South Asia") (nonmiss=.), gen(regions)
 label variable regions "Supranational regions"
-order regions, a(last_wave)
+order regions, a(waves3)
 order subnational, a(country)
 * recode year (1986/1996 = 1 "1986 to 1996") (1997/2007 = 2 "1997 to 2007") (2008/2017 = 3 "2008 to 2017"), gen(decades)
 * label variable decades "decades of sample"
 
-merge m:m dhsid using "C:\Users\Nir\Documents\Projects\2020\Early warning systems\DHS data\gis data\spatial join - prio-grid\master_DHS_spatialjoin.dta", nogen
-keep in 1/1926470
+*merge m:m dhsid using "C:\Users\Nir\Documents\Projects\2020\Early warning systems\DHS data\gis data\spatial join - prio-grid\master_DHS_spatialjoin.dta", nogen
+*keep in 1/1904087
 
-label variable capdist "Distance to capital city"
-gen capdist_log = log(capdist)
-label variable capdist_log "Logged distance to capital city"
+*drop mountains_mean droughtyr_spi excluded diamsec_dist diamsec_dist_s petroleum_dist petroleum_dist_s
 
-drop gid mountains_mean agri_ih barren_ih droughtyr_spi excluded forest_ih pasture_ih savanna_ih shrub_ih urban_ih diamsec_dist diamsec_dist_s petroleum_dist petroleum_dist_s
+order smod, a(urban)
+order travel_times, a(smod)
+order travel_times_c, a(travel_times)
+order religion_c, a(religion)
 
-order capdist, a(urban)
-order capdist_log, a(capdist)
 
 ** Save to a new file
 save 02_women, replace
+
