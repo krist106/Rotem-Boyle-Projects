@@ -8,30 +8,9 @@
 * 		Liz Boyle and Nir Rotem
 * 06.20.2020
 
+cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 
-recode religion (0=0 "other")(1000=1 "muslim")(2000/2901=2 "christian")(3000/9000=0)(9998=.), gen(religion3)
-
-*employment recode is losing a lot of cases. Has something to do with wkemploywhen, I think.
-
-*Consider using media_access, adding Internet to it.
-
-*Is there a variable for final say on spending man's earnings?
-
-recode wealthq (8=.)
-
-recode dvunjustindex (0=0 no) (1/5=1 yes), gen(dvneverjust_d)
-label variable dvneverjust "wife beating never justified"
-
-generate decoupling_new=.
-replace decoupling_new=3 if decindex_d==0 & dvneverjust_d==0
-replace decoupling_new=2 if decindex_d==0 & dvneverjust_d==1
-replace decoupling_new=1 if decindex_d==1 & dvneverjust_d==0
-replace decoupling_new=0 if decindex_d==1 & dvneverjust_d==1
-label variable decoupling "decoupling between wife beating never justified and having a final say"
-label values decoupling_new decouplingl
-
-
-use "/Users/boyle014/Google Drive/RESEARCH/DHS/EWS Research/Decoupling project/Data and output/02_women.dta", clear
+clear
 
 ** Here we limit the file in memory to married or were married women. So in fact, we can remove all the if never_married==0 from the models below
 use 02_women.dta if never_married==0
@@ -47,44 +26,23 @@ correlate urban travel_times_c
 
 correlate wealthq global_human_footprint urban
 
+* exporting tables to excel
+*tab2xl sample decoupling if waves2!=. [aw=perweight] using testfile, col(1) row(1)
+*tab sample decoupling if waves2!=. [aw=perweight], r
+*xtable
+
 * There is some correlation between tv and newspaper, but not huge
 
 *** Multinomial Logistic Regression ***
 
-* Liz tries some models
+* From Liz
+***mlogit independent-v i.migrant_unicef ib2.wealthquint urban age i.welevel i.marital ib23.HH7 [pw=perweight], rrr base(2)
 
-quietly mlogit decoupling urban ib3.wealthq pipedwtr radio tv i.employment age i.agefrstmar_c i.educlvl waves2 i.country [pw=perweight], rrr base(0)
-estimates store model1A
-outreg2 model1A using 1A_decoupling_old.xls, replace eform
-
-quietly mlogit decoupling urban ib3.wealthq pipedwtr radio tv i.employment age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap muslim waves2 i.country [pw=perweight], rrr base(0)
-estimates store model1B
-outreg2 model1B using 1B_decoupling_old.xls, replace eform
-
-*About 660K cases with decoupling and waves2 variables.
-*Lose 20K cases with pipedwtr, radio, TV, women's education (most are probably pipedwtr)
-*Lose another 30k with employment. See note above; can probably recode this differently to regain some of these cases.
-*Lose 44k with husedlvl (may lose a country or two, check on this)
-*Lose 65K to religion--all of Pakistan (which is more than 96% Muslim), a lot of Rwanda, Egypt, Tanzania, and Niger. Can we get back some of the missing cases from the latter countries?
-
-quietly mlogit decoupling_new urban ib3.wealthq pipedwtr media_access currwork age i.agefrstmar_c i.educlvl waves2 i.country [pw=perweight], rrr base(0)
-estimates store model2A
-outreg2 model2A using 2A_decoupling_new.xls, replace eform
-
-quietly mlogit decoupling_new urban ib3.wealthq pipedwtr media_access currwork age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap ib0.religion3 waves2 i.country [pw=perweight], rrr base(0)
-estimates store model2B
-outreg2 model2B using 2B_decoupling_new.xls, replace eform
-
-*** In some countries it seems that only married women were surveyed - Afghanistan, Bangladesh, Jordan, Pakistan, Egypt. Pierotti noted that because of that she didn't run a comparison across countries but only within countries. I confirmed it by using tab ever_married country
-
-*Makes no difference. We only have ever_married women in the sample because of the decision-making variable in decoupling. Those questions are only asked of ever-married women. 
+*** In some countries it seems that only married women were survived - Afghanistan, Bangladesh, Jordan, Pakistan, Egypt. Pierotti noted that because of that she didn't run a comparison across countries but only within countries. I confirmed it by using tab ever_married country
 
 * when using both ever_married and agefrstmar_c, the former is omitted because of collinearity
-
 * adding i. before var shows the categories within the model
-
 * rrr = relative-risk ratios
-
 mlogit decoupling urban i.travel_times_c radio newspaper tv i.educlvl i.husedlvl muslim age i.agefrstmar_c i.wealthq pipedwtr global_human_footprint polviolence_p1 [pw=perweight] if never_married==0, rrr base(3)
 estimates store model_full
 
@@ -306,7 +264,7 @@ outreg2 [decoupled coupled decoupling] using decoupling_try.xls, replace eform
 mlogit decoupling urban radio tv i.educlvl i.husedlvl i.edugap muslim age i.agefrstmar_c i.employment i.wealthq pipedwtr battles_p1 riots_p1 civ_violence_p1 i.country last_wave regions subnational [pw=perweight] if never_married==0, rrr base(0) cl(dhsid)
 
 *** This is the one to use
-mlogit decoupling i.educlvl i.husedlvl i.edugap i.employment age i.agefrstmar_c pipedwtr i.wealthq radio tv i.urban muslim country i.waves3_alt [pw=perweight] if never_married==0, rrr base(0) cl(dhsid)
+mlogit decoupling i.educlvl i.husedlvl i.edugap i.employment age i.agefrstmar_c pipedwtr i.wealthq radio tv i.urban i.muslim i.country i.waves2 [pw=perweight] if never_married==0, rrr base(0) cl(dhsid)
 estimates store model1
 outreg2 [model1] using ASA1.xls, replace eform lab side dec(2)
 outreg2 [model1] using ASA1, word replace eform lab side dec(2)
@@ -351,14 +309,26 @@ mlogit decoupling i.educlvl i.husedlvl i.edugap i.employment age i.agefrstmar_c 
 
 estimates store threewavesrural
 
-
-
-
-
-
 mlogit decoupling i.educlvl i.husedlvl i.edugap i.employment age i.agefrstmar_c pipedwtr i.wealthq radio tv ib3.smod muslim country i.waves2 [pw=perweight] if never_married==0, rrr base(0) cl(dhsid)
 
 mlogit decoupling i.educlvl i.husedlvl i.edugap i.employment age i.agefrstmar_c pipedwtr i.wealthq radio tv ib3.smod muslim i.country i.waves2 [pw=perweight] if never_married==0, rrr base(0) cl(dhsid)
+
+
+
+*** From Mar 16, 2021
+mlogit decoupling i.educlvl i.husedlvl i.edugap i.employment age i.agefrstmar_c pipedwtr i.wealthq radio tv i.urban muslim i.country i.waves2 [pw=perweight] if never_married==0, rrr base(0) cl(dhsid)
+estimates store model1
+
+label define dec1_l 0 "a" 1 "b" 2 "c" 3 "d"
+label values decoupling dec1_l
+
+* Maybe needed?
+*recast byte decoupling
+*format %9.0g decoupling
+
+
+coefplot ., keep(b:) bylabel("Rejects gender equity" "Empowered in household") || ., keep(c:) bylabel("Supports gender equity" "Not empowered in household") || ., keep(d:) bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
+
 
 * gen fixedn=e(sample)
 set scheme cleanplots
@@ -377,16 +347,16 @@ tab decoupling waves3 if never_married==0
 
 ** To run margins - for predicted probabilities:
 * See here https://stats.idre.ucla.edu/stata/dae/multinomiallogistic-regression/ and Williams 2012
-margins educlvl, at(age=(20 30 40 50 60)) predict(outcome(0))
+margins educlvl, at(age=(20 30 40 49)) predict(outcome(0))
 marginsplot, name(model5) title("Supports gender equity/Empowered in household")
 
-margins educlvl, at(age=(20 30 40 50 60)) predict(outcome(1))
+margins educlvl, at(age=(20 30 40 49)) predict(outcome(1))
 marginsplot, name(model6) title("Rejects gender equity/Empowered in household")
 
-margins educlvl, at(age=(20 30 40 50 60)) predict(outcome(2))
+margins educlvl, at(age=(20 30 40 49)) predict(outcome(2))
 marginsplot, name(model7) title("Supports gender equity/Not empowered in household")
 
-margins educlvl, at(age=(20 30 40 50 60)) predict(outcome(3))
+margins educlvl, at(age=(20 30 40 49)) predict(outcome(3))
 marginsplot, name(model8) title("Rejects gender equity/Not empowered in household")
 
 graph combine model5 model6 model7 model8, ycommon cols(2) ysize(40) xsize(80)
@@ -1102,3 +1072,86 @@ symplacement(center) ///
 title(Discordance , size(small))) name(zambia)
 
 grc1leg bangladesh burundi cameroon congo benin ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal niger nigeria pakistan rwanda senegal zimbabwe uganda egypt tanzania burkina zambia
+
+
+***For PAA poster
+* education
+margins educlvl, at(age=(20 30 40 49)) predict(outcome(0))
+marginsplot, name(edu1) title("Walking and talking") ///
+plot1opts(lpattern("--")) plot2opts(lpattern("_--_#")) plot3opts(lpattern("_...")) ytitle("")
+
+margins educlvl, at(age=(20 30 40 49)) predict(outcome(1))
+marginsplot, name(edu2) title("Walking but not talking") ///
+plot1opts(lpattern("--")) plot2opts(lpattern("_--_#")) plot3opts(lpattern("_...")) ytitle("")
+
+margins educlvl, at(age=(20 30 40 49)) predict(outcome(2)) 
+marginsplot, name(edu3) title("Not walking but talking") ///
+plot1opts(lpattern("--")) plot2opts(lpattern("_--_#")) plot3opts(lpattern("_...")) ytitle("")
+
+margins educlvl, at(age=(20 30 40 49)) predict(outcome(3)) 
+marginsplot, name(edu4) title("Neither walking nor talking") ///
+plot1opts(lpattern("--")) plot2opts(lpattern("_--_#")) plot3opts(lpattern("_...")) ytitle("") legend(cols(4))
+
+
+grc1leg edu1 edu2 edu3 edu4, ycommon cols(2) ysize(40) xsize(70) legendfrom(edu4)
+*graph combine model5 model6 model7 model8, ycommon cols(2) ysize(40) xsize(80)
+
+* employment
+margins employment, at(age=(20 30 40 49)) predict(outcome(0))
+marginsplot, name(employ1) title("Walking and talking") ///
+plot1opts(lpattern("--")) plot2opts(lpattern("_--_#")) plot3opts(lpattern("_...")) ytitle("")
+
+margins employment, at(age=(20 30 40 49)) predict(outcome(1))
+marginsplot, name(employ2) title("Walking but not talking") ///
+plot1opts(lpattern("--")) plot2opts(lpattern("_--_#")) plot3opts(lpattern("_...")) ytitle("")
+
+margins employment, at(age=(20 30 40 49)) predict(outcome(2))
+marginsplot, name(employ3) title("Not walking but talking") ///
+plot1opts(lpattern("--")) plot2opts(lpattern("_--_#")) plot3opts(lpattern("_...")) ytitle("")
+
+margins employment, at(age=(20 30 40 49)) predict(outcome(3))
+marginsplot, name(employ4) title("Neither walking nor talking") ///
+plot1opts(lpattern("--")) plot2opts(lpattern("_--_#")) plot3opts(lpattern("_...")) ytitle("") legend(cols(4))
+
+grc1leg employ1 employ2 employ3 employ4, ycommon ysize(40) xsize(70) legendfrom(employ4)
+*graph combine model1 model2 model3 model4, ycommon
+
+* Muslim
+margins muslim, at(age=(20 30 40 49)) predict(outcome(0))
+marginsplot, name(muslim1) title("Walking and talking") ///
+plot1opts(lpattern("--")) ytitle("")
+
+margins muslim, at(age=(20 30 40 49)) predict(outcome(1))
+marginsplot, name(muslim2) title("Walking but not talking") ///
+plot1opts(lpattern("--")) ytitle("")
+
+margins muslim, at(age=(20 30 40 49)) predict(outcome(2))
+marginsplot, name(muslim3) title("Not walking but talking") ///
+plot1opts(lpattern("--")) ytitle("")
+
+margins muslim, at(age=(20 30 40 49)) predict(outcome(3))
+marginsplot, name(muslim4) title("Neither walking nor talking") ///
+plot1opts(lpattern("--")) ytitle("")  legend(cols(2))
+
+grc1leg muslim1 muslim2 muslim3 muslim4, ycommon xsize(70) ysize(40) legendfrom(muslim4)
+* graph combine muslim1 muslim2 muslim3 muslim4, ycommon
+
+* urban
+margins urban, at(age=(20 30 40 49)) predict(outcome(0))
+marginsplot, name(urban1) title("Walking and talking") ///
+plot1opts(lpattern("..")) ytitle("")
+
+margins urban, at(age=(20 30 40 49)) predict(outcome(1))
+marginsplot, name(urban2) title("Walking but not talking") ///
+plot1opts(lpattern("..")) ytitle("")
+
+margins urban, at(age=(20 30 40 49)) predict(outcome(2))
+marginsplot, name(urban3) title("Not walking but talking") ///
+plot1opts(lpattern("..")) ytitle("")
+
+margins urban, at(age=(20 30 40 49)) predict(outcome(3))
+marginsplot, name(urban4) title("Neither walking nor talking") ///
+plot1opts(lpattern("..")) ytitle("")  legend(cols(2))
+
+grc1leg urban1 urban2 urban3 urban4, ycommon xsize(70) ysize(40) legendfrom(urban4)
+*graph combine urban1 urban2 urban3 urban4, ycommon cols(2) ysize(40) xsize(80)
