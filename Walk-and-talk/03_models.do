@@ -56,9 +56,6 @@ quietly mlogit decoupling_new urban ib3.wealthq pipedwtr media_access currwork a
 estimates store model2A
 outreg2 model2A using 2A_decoupling_new.xls, replace eform
 
-
-*** In some countries it seems that only married women were survived - Afghanistan, Bangladesh, Jordan, Pakistan, Egypt. Pierotti noted that because of that she didn't run a comparison across countries but only within countries. I confirmed it by using tab ever_married country
-
 quietly mlogit decoupling_new urban ib3.wealthq pipedwtr media_access currwork age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap ib0.religion3 waves2 i.country [pw=perweight], rrr base(0)
 estimates store model2B
 outreg2 model2B using 2B_decoupling_new.xls, replace eform
