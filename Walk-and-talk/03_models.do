@@ -389,6 +389,8 @@ label values waves2 waves2_l
 mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
 
 * The code for the figure itself, after the mlogit
+* ssc install coefplot, replace
+* net install cleanplots, from("https://tdmize.github.io/data/cleanplots")
 coefplot ., bylabel("Rejects gender equity" "Empowered in household") || ., bylabel("Supports gender equity" "Not empowered in household") || ., bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
 
 *coefplot ., keep(b:) bylabel("Rejects gender equity" "Empowered in household") || ., keep(c:) bylabel("Supports gender equity" "Not empowered in household") || ., keep(d:) bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
