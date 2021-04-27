@@ -351,7 +351,48 @@ label values decoupling dec1_l
 *format %9.0g decoupling
 
 
-coefplot ., keep(b:) bylabel("Rejects gender equity" "Empowered in household") || ., keep(c:) bylabel("Supports gender equity" "Not empowered in household") || ., keep(d:) bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
+
+* fix labels
+label variable urban "Urban"
+label define urban_l 0 "Rural" 1 "Urban"
+label values urban urban_l
+
+label define wealthq_l 1 "Household wealth - Poorest" 2 "Household wealth - Poorer" 3 "Household wealth - Middle" ///
+4 "Household wealth - Richer" 5 "Household wealth - Richest"
+label values wealthq wealthq_l
+
+label variable pipedwtr "Had own piped water"
+
+label define media_l 0 "Have no media access" 1 "Have media access"
+label values media_access media_l
+
+label variable currwork_d "Currently working"
+label variable age "Age"
+
+label define c_age_l 1 "Age when married: -15" 2 "Age when married: 16-19" 3 "Age when married: +20"
+label values agefrstmar_c c_age_l
+
+label define educlvl_l 0 "Women's edu: None" 1 "Women's edu: Primary" 2 "Women's edu: Secondary" 3 "Women's edu: Higher"
+label values educlvl educlvl_l
+
+label define husedlvl_l 0 "Partner's edu: None" 1 "Partner's edu: Primary" 2 "Partner's edu: Secondary" 3 "Partner's edu: Higher"
+label values husedlvl husedlvl_l
+
+label define edugap_l 0 "Woman have lower edu than partner" 1 "Woman have equal edu as partner" 2 "Woman have higher edu than partner"
+label values edugap edugap_l
+
+label define waves2_l 1 "First wave" 2 "Second wave"
+label values waves2 waves2_l
+
+* FOR PAA figure
+* Nir: Liz, I changed back do decoupling (over _new) as the origional one was coded correctly. I sometimes flip between adding i. to dummy variables - it effect which label is been used (that of the categories or of the variable). AS you use ib3 for religion, there is really no need to recode the variable. the "other religions" will be the based category.
+mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
+
+* The code for the figure itself, after the mlogit
+coefplot ., bylabel("Rejects gender equity" "Empowered in household") || ., bylabel("Supports gender equity" "Not empowered in household") || ., bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
+
+*coefplot ., keep(b:) bylabel("Rejects gender equity" "Empowered in household") || ., keep(c:) bylabel("Supports gender equity" "Not empowered in household") || ., keep(d:) bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
+
 
 
 * gen fixedn=e(sample)

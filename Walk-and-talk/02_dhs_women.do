@@ -111,13 +111,13 @@ gen edugap = educlvl - husedlvl
 recode edugap (0 = 1) (1/3 = 2) (-3/-1 = 0)
 label define edugapl 0 "less" 1 "equal" 2 "more"
 label values edugap edugapl
-label variable edugap "woman have more education than partner"
+label variable edugap "Woman have higher education than partner"
 order edugap, a(husedyrs)
 
 * drinkwtr - major source of drinking water.
 * We can create a dummy variable to see if respondent's house had indoor piped water and use it as a proxy for material living standard - Charles 2020 had a similar item on indoor plumbing. The toilettype variables have too many categories which are non-consistence across samples, so I think it will be impossible to build a 'plumbing' variable
 recode drinkwtr (1100 1110 1120 = 1 yes) (1200/6000 = 0 no) (9998=.), gen(pipedwtr)
-label variable pipedwtr "had own piped water"
+label variable pipedwtr "Had own piped water"
 
 * radiobrig - listens to radio: bridging variable
 * 0=no; 1=not at all; 2=less than once a week; 10=yes; 11=at least once a week; 12=almost every day; 98=missing
@@ -142,11 +142,11 @@ label variable internet "woman uses the internet"
 * media access - indicates if a woman have a weekly access to radio, newspaper or tv. Pierotti 2013 used a similar variable
 gen media_access_old = max(radio, newspaper, tv)
 label variable media_access_old "women's media access"
-label define medial 0 "no access" 1 "have access"
+label define medial 0 "Have no media access" 1 "Have media access"
 label values media_access_old medial
 
 gen media_access = max(radio, newspaper, tv, internet)
-label variable media_access "women's media access"
+label variable media_access "Women's media access"
 label values media_access medial
 
 *decbighh - final say on making large household purchases
@@ -324,7 +324,7 @@ recode bhcpermit (10/11=0 "not a problem") (12/20=1 "a problem") (98/99=.), gen(
 label variable bhcpermit_d "getting permission is a barrier to woman's health care"
 
 recode urban (2 = 0) (1 = 1)
-label define urbanl 0 "rural" 1 "urban"
+label define urbanl 0 "Rural" 1 "Urban"
 label values urban urbanl
 
 *** Recode battles ***
@@ -560,8 +560,8 @@ label values smod smodl
 drop smod_*
 
 *** I am exluding Liberia as there is no data on attitudes in 2007
-recode sample (5006 10802 12003 18001 20402 23102 28804 32402 35603 40003 40404 42601 45003 45003 45402 46603 50802 51603 52402 56203 56603 58603 64603 68604 71603 80003 81806 83404 85403 89404 = 1 "first wave") (5007 10803 12004 18002 20404 23104 28806 32403 35604 40007 40406 42603 45004 45004 45405 46605 50803 51604 52405 56204 56605 58604 64606 68610 71605 80006 81808 83406 85404 89405 = 2 "second wave") (nonmiss=.), gen(waves2)
-label variable waves2 "maximum variation two waves"
+recode sample (5006 10802 12003 18001 20402 23102 28804 32402 35603 40003 40404 42601 45003 45003 45402 46603 50802 51603 52402 56203 56603 58603 64603 68604 71603 80003 81806 83404 85403 89404 = 1 "First wave") (5007 10803 12004 18002 20404 23104 28806 32403 35604 40007 40406 42603 45004 45004 45405 46605 50803 51604 52405 56204 56605 58604 64606 68610 71605 80006 81808 83406 85404 89405 = 2 "Second wave") (nonmiss=.), gen(waves2)
+label variable waves2 "Maximum variation two waves"
 order waves2, a(samplestr)
 
 *recode sample (10802 12003 18001 20402 23103 28805 32402 40405 42601 45404 46604 51603 52404 56604 64604 68608 71605 81806 85403 89404 = 0 "first wave") (10803 12004 18002 20404 23104 28806 32403 40406 42602 45405 46605 51604 52405 56605 64605 68609 71606 81807 85404 89405 = 1 "second wave") (nonmiss=.), gen(waves2)
@@ -572,8 +572,8 @@ order waves2, a(samplestr)
 *order waves3, a(waves2)
 
 ***  81804 6 7 8
-recode sample (23102 28804 40404 45402 46603 56603 64602 68604 71603 81806 = 0 "first wave") (23103 28805 40405 45404 46604 56604 64603 68606 71604 81807 = 1 "second wave") (23104 28806 40406 45405 46605 56605 64605 68609 71605 81808 = 2 "third wave") (nonmiss=.), gen(waves3)
-label variable waves3 "maximum variation there waves"
+recode sample (23102 28804 40404 45402 46603 56603 64602 68604 71603 81806 = 0 "First wave") (23103 28805 40405 45404 46604 56604 64603 68606 71604 81807 = 1 "Second wave") (23104 28806 40406 45405 46605 56605 64605 68609 71605 81808 = 2 "Third wave") (nonmiss=.), gen(waves3)
+label variable waves3 "Maximum variation there waves"
 order waves3, a(waves2)
 
 *recode sample (10802 12003 18001 20402 23102 23103 28804 28805 32402 40404 40405 42601 45402 45403 45404 46603 46604 51603 52404 56603 56604 64603 64604 68604 68605 68606 68608 71603 71604 71605 81805 81806 85403 89404 = 0 "previous waves") (10803 12004 18002 20404 23104 28806 32403 40406 42602 45405 46605 51604 52405 56605 64605 68609 71606 81807 85404 89405 = 1 "last wave") (nonmiss=.), gen(last_wave1)
