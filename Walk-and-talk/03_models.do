@@ -391,7 +391,7 @@ mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.a
 * The code for the figure itself, after the mlogit
 * ssc install coefplot, replace
 * net install cleanplots, from("https://tdmize.github.io/data/cleanplots")
-coefplot ., bylabel("Rejects gender equity" "Empowered in household") || ., bylabel("Supports gender equity" "Not empowered in household") || ., bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
+coefplot ., bylabel("Walking but not talking") || ., bylabel("Not walking but talking") || ., bylabel("Neither walking nor talking") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
 
 *coefplot ., keep(b:) bylabel("Rejects gender equity" "Empowered in household") || ., keep(c:) bylabel("Supports gender equity" "Not empowered in household") || ., keep(d:) bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
 
