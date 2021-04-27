@@ -93,6 +93,8 @@ order employment, a(currwork_d)
 * educlvl - highest educational level
 * 0=no education; 1=primary; 2=secondary; 3=higher; 8=missing
 replace educlvl=. if educlvl==8
+label define educlvl_l 0 "Women's education: No education" 1 "Women's education: Primary" 2 "Women's education: Secondary" 3 "Women's education: Higher"
+label values educlvl educlvl_l
 
 * edyrtotal - women's total years of education
 * 0/27=years of education 96=inconsistent; 97=don't know; 98=missing
@@ -101,6 +103,8 @@ replace edyrtotal=. if edyrtotal>95
 * husedlvl - partner's educational level
 * 0=no education; 1=primary; 2=secondary; 3=higher; 4=other; 7=don't know; 8/9=missing and not in universe
 replace husedlvl=. if husedlvl>3
+label define husedlvl_l 0 "Partner's education: No education" 1 "Partner's education: Primary" 2 "Partner's education: Secondary" 3 "Partner's education: Higher"
+label values husedlvl husedlvl_l
 
 * husedyrs - partner's education in total years
 * 0/26=years of education; 95=other; 96=inconsistent; 97=don't know; 98/99=missing and not in universe
@@ -109,7 +113,7 @@ replace husedyrs =. if husedyrs>94
 * Education gap
 gen edugap = educlvl - husedlvl
 recode edugap (0 = 1) (1/3 = 2) (-3/-1 = 0)
-label define edugapl 0 "less" 1 "equal" 2 "more"
+label define edugapl 0 "Woman have lower education than partner" 1 "Woman have equal education as partner" 2 "Woman have higher education than partner"
 label values edugap edugapl
 label variable edugap "Woman have higher education than partner"
 order edugap, a(husedyrs)
