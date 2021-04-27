@@ -385,7 +385,7 @@ label define waves2_l 1 "First wave" 2 "Second wave"
 label values waves2 waves2_l
 
 * FOR PAA figure
-* Nir: Liz, I changed back do decoupling (over _new) as the origional one was coded correctly. I sometimes flip between adding i. to dummy variables - it effect which label is been used (that of the categories or of the variable). AS you use ib3 for religion, there is really no need to recode the variable. the "other religions" will be the based category.
+* Nir: Liz, I changed back do decoupling (over _new) as the origional one was coded correctly. I sometimes flip between adding i. to dummy variables - it effect which label is been used (that of the categories or of the variable). AS you use ib3 for religion, there is really no need to recode the variable. the "other religions" will be the based category. Also, you don't want to use cl(dhsid) ?
 mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
 
 * The code for the figure itself, after the mlogit
