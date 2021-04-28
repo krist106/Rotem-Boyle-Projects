@@ -384,6 +384,9 @@ label values edugap edugap_l
 label define waves2_l 1 "First wave" 2 "Second wave"
 label values waves2 waves2_l
 
+label define decep_l 0 "walk_talk" 1 "walk_notalk" 2 "talk_nowalk" 3 "neither"
+label values decoupling decep_l
+
 * FOR PAA figure
 * Nir: Liz, I changed back do decoupling (over _new) as the origional one was coded correctly. I sometimes flip between adding i. to dummy variables - it effect which label is been used (that of the categories or of the variable). AS you use ib3 for religion, there is really no need to recode the variable. the "other religions" will be the based category. Also, you don't want to use cl(dhsid) ?
 mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
@@ -391,11 +394,11 @@ mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.a
 * The code for the figure itself, after the mlogit
 * ssc install coefplot, replace
 * net install cleanplots, from("https://tdmize.github.io/data/cleanplots")
-coefplot ., bylabel("Walking but not talking") || ., bylabel("Not walking but talking") || ., bylabel("Neither walking nor talking") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
+coefplot ., keep(walk_notalk:) bylabel("Walking but not talking") || ., keep(talk_nowalk:) bylabel("Not walking but talking") || ., keep(neither:) bylabel("Neither walking nor talking") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
 
-*coefplot ., keep(b:) bylabel("Rejects gender equity" "Empowered in household") || ., keep(c:) bylabel("Supports gender equity" "Not empowered in household") || ., keep(d:) bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
+coefplot ., keep(2:) bylabel("Rejects gender equity" "Empowered in household") || ., keep(3:) bylabel("Supports gender equity" "Not empowered in household") || ., keep(4:) bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
 
-
+coefplot ., keep(walk_notalk:) bylabel("Rejects gender equity" "Empowered in household") || ., keep(talk_nowalk:) bylabel("Supports gender equity" "Not empowered in household") || ., keep(neither:) bylabel("Rejects gender equity" "Not empowered in household") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
 
 * gen fixedn=e(sample)
 set scheme cleanplots
