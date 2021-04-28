@@ -363,7 +363,7 @@ label values wealthq wealthq_l
 
 label variable pipedwtr "Had own piped water"
 
-label define media_l 0 "Have no media access" 1 "Have media access"
+label define media_l 0 "Has no media access" 1 "Has media access"
 label values media_access media_l
 
 label variable currwork_d "Currently working"
@@ -375,10 +375,10 @@ label values agefrstmar_c c_age_l
 label define educlvl_l 0 "Women's edu: None" 1 "Women's edu: Primary" 2 "Women's edu: Secondary" 3 "Women's edu: Higher"
 label values educlvl educlvl_l
 
-label define husedlvl_l 0 "Partner's edu: None" 1 "Partner's edu: Primary" 2 "Partner's edu: Secondary" 3 "Partner's edu: Higher"
+label define husedlvl_l 0 "Husb-educ none" 1 "Husb-educ primary" 2 "Husb-educ secondary" 3 "Husb-educ higher"
 label values husedlvl husedlvl_l
 
-label define edugap_l 0 "Woman have lower edu than partner" 1 "Woman have equal edu as partner" 2 "Woman have higher edu than partner"
+label define edugap_l 0 "Woman has less educ" 1 "Woman have equal edu as partner" 2 "Woman has more educ"
 label values edugap edugap_l
 
 label define waves2_l 1 "First wave" 2 "Second wave"
@@ -394,8 +394,7 @@ mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.a
 * The code for the figure itself, after the mlogit
 * ssc install coefplot, replace
 * net install cleanplots, from("https://tdmize.github.io/data/cleanplots")
-coefplot ., keep(walk_notalk:) bylabel("Walking but not talking") || ., keep(talk_nowalk:) bylabel("Not walking but talking") || ., keep(neither:) bylabel("Neither walking nor talking") ||, drop(_cons *country) eform scheme(cleanplots) byopts(rows(1)) ysize(40) xsize(60) sub(,size(small))
-
+coefplot ., keep(walk_notalk:) bylabel("Walking but not talking") || ., keep(talk_nowalk:) bylabel("Not walking but talking") || ., keep(neither:) bylabel("Neither walking nor talking") ||, drop(_cons *country *urban *wealthq *pipedwtr *agefrstmar_c *educlvl *edugap) eform scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(60) xline(1) sub(,size(medium)) 
 
 * gen fixedn=e(sample)
 set scheme cleanplots
