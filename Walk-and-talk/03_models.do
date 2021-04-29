@@ -394,7 +394,11 @@ mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.a
 * The code for the figure itself, after the mlogit
 * ssc install coefplot, replace
 * net install cleanplots, from("https://tdmize.github.io/data/cleanplots")
-coefplot ., keep(walk_notalk:) bylabel("Walking but not talking") || ., keep(talk_nowalk:) bylabel("Not walking but talking") || ., keep(neither:) bylabel("Neither walking nor talking") ||, drop(_cons *country *urban *wealthq *pipedwtr *agefrstmar_c *educlvl *edugap) eform scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(60) xline(1) sub(,size(medium)) 
+coefplot ., keep(walk_notalk:) bylabel("Walking but not talking") || ., keep(talk_nowalk:) bylabel("Not walking but talking") || ., keep(neither:) bylabel("Neither walking nor talking") ||, drop(_cons *country *urban *wealthq *pipedwtr *agefrstmar_c *educlvl *edugap) eform scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(70) xline(1) sub(,size(medium)) xtitle(Relative Risk Ratio)
+
+* This option shows confidence intervals, maybe not very helpful
+* coefplot ., keep(walk_notalk:) bylabel("Walking but not talking") || ., keep(talk_nowalk:) bylabel("Not walking but talking") || ., keep(neither:) bylabel("Neither walking nor talking") ||, drop(_cons *country *urban *wealthq *pipedwtr *agefrstmar_c *educlvl *edugap) eform scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(60) xline(1) sub(,size(medium)) xtitle(Relative Risk Ratio) msymbol(s) mfcolor(white) levels(99.9 99 95)
+
 
 * gen fixedn=e(sample)
 set scheme cleanplots
