@@ -81,7 +81,7 @@ replace battles_tot_l1 = . if battles==-998
 * replace t_battles_l2 = battles_`a' + battles_`b' if year==`i'
 * }
 
-* This leg does not sum 
+* This lag does not sum 
 gen battles_tot_l2=.
 forvalues i=1997/2016 {
     local a=`i'+2
@@ -102,19 +102,19 @@ label variable battles_tot_p1 "One year prior total number of battles"
 
 ** Create dichotomous variable for battles
 recode battles_tot_l1 (0=0 "no battles") (1/100=1 battles), gen(battles_l1)
-label variable battles_l1 "One year leg battles, dummy"
+label variable battles_l1 "One year lag battles, dummy"
 
 recode battles_tot_l2 (0=0 "no battles") (1/100=1 battles), gen(battles_l2)
-label variable battles_l2 "Two years leg battles, dummy"
+label variable battles_l2 "Two years lag battles, dummy"
 
 recode battles_tot_p1 (0=0 "no battles") (1/200=1 battles), gen(battles_p1)
 label variable battles_p1 "One year prior battles, dummy"
 
 recode battles_tot_l1 (0/4=0 "no battles") (5/100=1 battles), gen(five_battles_l1)
-label variable five_battles_l1 "One year leg, five battles plus, dummy"
+label variable five_battles_l1 "One year lag, five battles plus, dummy"
 
 recode battles_tot_l2 (0/4=0 "no battles") (5/100=1 battles), gen(five_battles_l2)
-label variable five_battles_l2 "Two years leg, five battles plus, dummy"
+label variable five_battles_l2 "Two years lag, five battles plus, dummy"
 
 recode battles_tot_p1 (0/4=0 "no battles") (5/200=1 battles), gen(five_battles_p1)
 label variable five_battles_p1 "One year prior, five battles plus, dummy"
@@ -159,10 +159,10 @@ label variable riots_tot_p1 "One year prior total number of riots"
 
 ** Create dichotomous variable for riots
 recode riots_tot_l1 (0=0 "no riots") (1/200=1 riots), gen(riots_l1)
-label variable riots_l1 "One year leg riots, dummy"
+label variable riots_l1 "One year lag riots, dummy"
 
 recode riots_tot_l2 (0=0 "no riots") (1/200=1 riots), gen(riots_l2)
-label variable riots_l2 "Two years leg riots, dummy"
+label variable riots_l2 "Two years lag riots, dummy"
 
 recode riots_tot_p1 (0=0 "no riots") (1/750=1 riots), gen(riots_p1)
 label variable riots_p1 "One year prior riots, dummy"
@@ -203,12 +203,12 @@ label variable civ_violence_tot_p1 "One year prior total number of acts of viole
 
 ** Create dichotomous variable for civ_violence
 recode civ_violence_tot_l1 (0=0 "no violence against civilians") (1/100=1 "violence against civilians"), gen(civ_violence_l1)
-label variable civ_violence_l1 "One year leg violence against civilians, dummy"
+label variable civ_violence_l1 "One year lag violence against civilians, dummy"
 
-recode civ_violence_tot_l2 (0=0 "no violence against civilians") (1/100=1 "violence against civilians"), gen(civ_violence_l2)
-label variable civ_violence_l2 "Two years leg violence against civilians, dummy"
+recode civ_violence_tot_l2 (0=0 "No violence against civilians") (1/100=1 "violence against civilians"), gen(civ_violence_l2)
+label variable civ_violence_l2 "Two year lag violence against civilians, dummy"
 
-recode civ_violence_tot_p1 (0=0 "no violence against civilians") (1/350=1 "violence against civilians"), gen(civ_violence_p1)
+recode civ_violence_tot_p1 (0=0 "No violence against civilians") (1/350=1 "violence against civilians"), gen(civ_violence_p1)
 label variable civ_violence_p1 "One year prior violence against civilians, dummy"
 
 
@@ -264,4 +264,4 @@ drop hhnvals1 hhnvals2 hhnvals3 hhnvals4 hhnvals5 hhnvals6 hhnvals7
 sort sample idhshid
 
 ** Save into a new file
-save 01_dhs_household_legs, replace
+save 01_dhs_household_lags, replace
