@@ -403,6 +403,21 @@ estimates store religions
 
 outreg2 [religions muslim christian other] using religion.xls, replace eform
 
+* simplfied variables
+mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==1, rrr base(0)
+estimates store muslim
+
+mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==2, rrr base(0)
+estimates store christian
+
+mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==3, rrr base(0)
+estimates store other
+
+mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
+estimates store religions
+
+outreg2 [religions muslim christian other] using religion1.xls, replace eform
+
 * FOR PAA figure
 * Nir: Liz, I changed back do decoupling (over _new) as the origional one was coded correctly. I sometimes flip between adding i. to dummy variables - it effect which label is been used (that of the categories or of the variable). AS you use ib3 for religion, there is really no need to recode the variable. the "other religions" will be the based category. Also, you don't want to use cl(dhsid) ?
 mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
@@ -422,6 +437,12 @@ coefplot (muslim) (christian) (other), keep(walk_notalk:) bylabel("Walking but n
  (muslim) (christian) (other), keep(talk_nowalk:) bylabel("Not walking but talking") || ///
  (muslim) (christian) (other), keep(neither:) bylabel("Neither walking nor talking") ||, ///
  drop(_cons *country *urban *educlvl) eform scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(60) xline(1) sub(,size(medium)) xtitle(Relative Risk Ratio) plotlabels("Muslim" "Christian" "Other")
+
+ *simplfied models
+coefplot (muslim) (christian) (other), keep(walk_notalk:) bylabel("Walking but not talking") || ///
+ (muslim) (christian) (other), keep(talk_nowalk:) bylabel("Not walking but talking") || ///
+ (muslim) (christian) (other), keep(neither:) bylabel("Neither walking nor talking") ||, ///
+ drop(_cons *country *urban *wealthq *educlvl) eform scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(70) xline(1) sub(,size(medium)) xtitle(Relative Risk Ratio) plotlabels("Muslim" "Christian" "Other")
 
 * This option shows confidence intervals, maybe not very helpful
 * coefplot ., keep(walk_notalk:) bylabel("Walking but not talking") || ., keep(talk_nowalk:) bylabel("Not walking but talking") || ., keep(neither:) bylabel("Neither walking nor talking") ||, drop(_cons *country *urban *wealthq *pipedwtr *agefrstmar_c *educlvl *edugap) eform scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(60) xline(1) sub(,size(medium)) xtitle(Relative Risk Ratio) msymbol(s) mfcolor(white) levels(99.9 99 95)
