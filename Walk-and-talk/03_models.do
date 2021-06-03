@@ -405,18 +405,20 @@ outreg2 [religions muslim christian other] using religion.xls, replace eform
 
 * simplfied variables
 mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==1, rrr base(0)
-estimates store muslim
+estimates store muslim1
 
 mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==2, rrr base(0)
-estimates store christian
+estimates store christian1
 
 mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==3, rrr base(0)
-estimates store other
+estimates store other1
 
 mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
-estimates store religions
+estimates store religions1
 
-outreg2 [religions muslim christian other] using religion1.xls, replace eform
+outreg2 [religions1 muslim1 christian1 other1] using religion1.xls, replace eform
+
+estimates stats muslim muslim1 christian christian1 other other1 religions religions1
 
 * FOR PAA figure
 * Nir: Liz, I changed back do decoupling (over _new) as the origional one was coded correctly. I sometimes flip between adding i. to dummy variables - it effect which label is been used (that of the categories or of the variable). AS you use ib3 for religion, there is really no need to recode the variable. the "other religions" will be the based category. Also, you don't want to use cl(dhsid) ?
