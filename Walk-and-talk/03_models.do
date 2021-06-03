@@ -15,6 +15,12 @@ clear
 ** Here we limit the file in memory to married or were married women. So in fact, we can remove all the if never_married==0 from the models below
 use 02_women.dta if never_married==0
 
+*drop religion_c
+*recode religion (1000=1) (2000/2999=2) (4000=3) (9998=.) (nonmiss=4), gen(religion_c)
+*label define reli_c 1 "Muslim" 2 "Christian" 3 "Hindu" 4 "Other"
+*label values religion_c reli_c
+*label variable religion_c "Religion by categories"
+*order religion_c, after(religion)
 
 correlate urban muslim never_married agefrstmar_c educlvl pipedwtr media_access polviolence_p1 global_human_footprint travel_times
 
