@@ -367,12 +367,17 @@ label define wealthq_l 1 "Household wealth - Poorest" 2 "Household wealth - Poor
 4 "Household wealth - Richer" 5 "Household wealth - Richest"
 label values wealthq wealthq_l
 
+label define pipedwtr_l 0 "Hadn't own piped water" 1 "Had own piped water"
+label values pipedwtr pipedwtr_l
 label variable pipedwtr "Had own piped water"
 
 label define media_l 0 "Has no media access" 1 "Has media access"
 label values media_access media_l
 
 label variable currwork_d "Currently working"
+label define currwork_i 0 "Currently not working" 1 "Currently working"
+label values currwork_d currwork_i
+
 label variable age "Age"
 
 label define c_age_l 1 "Age when married: -15" 2 "Age when married: 16-19" 3 "Age when married: +20"
@@ -395,31 +400,31 @@ label values decoupling decep_l
 
 * June 2 2021: By religion
 
-mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap i.waves2 i.country [pw=perweight] if religion_c==1, rrr base(0)
+mlogit decoupling i.urban ib3.wealthq i.pipedwtr i.media_access i.currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap i.waves2 i.country [pw=perweight] if religion_c==1, rrr base(0)
 estimates store muslim
 
-mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap i.waves2 i.country [pw=perweight] if religion_c==2, rrr base(0)
+mlogit decoupling i.urban ib3.wealthq i.pipedwtr i.media_access i.currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap i.waves2 i.country [pw=perweight] if religion_c==2, rrr base(0)
 estimates store christian
 
-mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap i.waves2 i.country [pw=perweight] if religion_c==3, rrr base(0)
+mlogit decoupling i.urban ib3.wealthq i.pipedwtr i.media_access i.currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap i.waves2 i.country [pw=perweight] if religion_c==3, rrr base(0)
 estimates store other
 
-mlogit decoupling i.urban ib3.wealthq pipedwtr i.media_access currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
+mlogit decoupling i.urban ib3.wealthq i.pipedwtr i.media_access i.currwork_d age i.agefrstmar_c i.educlvl i.husedlvl ib1.edugap ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
 estimates store religions
 
 outreg2 [religions muslim christian other] using religion.xls, replace eform
 
 * simplfied variables
-mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==1, rrr base(0)
+mlogit decoupling i.urban ib3.wealthq i.media_access i.currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==1, rrr base(0)
 estimates store muslim1
 
-mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==2, rrr base(0)
+mlogit decoupling i.urban ib3.wealthq i.media_access i.currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==2, rrr base(0)
 estimates store christian1
 
-mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==3, rrr base(0)
+mlogit decoupling i.urban ib3.wealthq i.media_access i.currwork_d age i.educlvl i.husedlvl i.waves2 i.country [pw=perweight] if religion_c==3, rrr base(0)
 estimates store other1
 
-mlogit decoupling i.urban ib3.wealthq i.media_access currwork_d age i.educlvl i.husedlvl ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
+mlogit decoupling i.urban ib3.wealthq i.media_access i.currwork_d age i.educlvl i.husedlvl ib3.religion_c i.waves2 i.country [pw=perweight], rrr base(0)
 estimates store religions1
 
 outreg2 [religions1 muslim1 christian1 other1] using religion1.xls, replace eform
