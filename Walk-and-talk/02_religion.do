@@ -64,3 +64,5 @@ order hindupc, a(hindu)
 by dhsid, sort: egen otherpc = mean(100 * other)
 label variable otherpc "% Other"
 order otherpc, a(other)
+
+* If we think that a minority-majority is important, we can create a variable that records if an individual belongs to her cluster majority or is forming a minority. For that, we will need a cutoff point for a minority, and maybe also think about a third category - 50/50.
