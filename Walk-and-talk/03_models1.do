@@ -15,68 +15,15 @@ clear
 ** Here we limit the file in memory to married or were married women. So in fact, we can remove all the if never_married==0 from the models below
 use 02_women.dta if never_married==0
 
-drop religion_c
-recode religion (1000=1) (2000/2999=2) (4000=3) (9998=.) (nonmiss=.), gen(religion_c)
-label define reli_c 1 "Muslim" 2 "Christian" 3 "Hindu"
-label values religion_c reli_c
-label variable religion_c "Religion by categories"
-order religion_c, after(religion)
-
-recode religion_c (1=1) (2=0) (nonmiss=.), gen(mus_chr)
-label define mus_chr_l 1 "Muslim" 0 "Christian"
-label values mus_chr mus_chr_l
-label variable mus_chr "Muslim or Christian"
-order mus_chr, after(religion_c)
-
-
-* fix labels
-label variable urban "Urban"
-label define urban_l 0 "Rural" 1 "Urban"
-label values urban urban_l
-
-label define wealthq_l 1 "Household wealth - Poorest" 2 "Household wealth - Poorer" 3 "Household wealth - Middle" ///
-4 "Household wealth - Richer" 5 "Household wealth - Richest"
-label values wealthq wealthq_l
-
-label define pipedwtr_l 0 "Hadn't own piped water" 1 "Had own piped water"
-label values pipedwtr pipedwtr_l
-label variable pipedwtr "Had own piped water"
-
-label define media_l 0 "No media access" 1 "Has media access"
-label values media_access media_l
-
-label variable currwork_d "Currently working"
-label define currwork_i 0 "Currently not working" 1 "Currently working"
-label values currwork_d currwork_i
-
-label variable age "Age"
-
-label define c_age_l 1 "Age when married: -15" 2 "Age when married: 16-19" 3 "Age when married: +20"
-label values agefrstmar_c c_age_l
-
-label define educlvl_l 0 "Women's edu: None" 1 "Women's edu: Primary" 2 "Women's edu: Secondary" 3 "Women's edu: Higher"
-label values educlvl educlvl_l
-
-label define husedlvl_l 0 "Husb-educ none" 1 "Husb-educ primary" 2 "Husb-educ secondary" 3 "Husb-educ higher"
-label values husedlvl husedlvl_l
-
-label define edugap_l 0 "Woman has less educ" 1 "Woman have equal edu as partner" 2 "Woman has more educ"
-label values edugap edugap_l
-
-label define waves2_l 1 "First wave" 2 "Second wave"
-label values waves2 waves2_l
-
-label define decep_l 0 "walk_talk" 1 "walk_notalk" 2 "talk_nowalk" 3 "neither"
-label values decoupling decep_l
 
 *** Multinomial Logistic Regression ***
 
 
 * June 2 2021: By religion
-
+drop if age<25
 
 * June 10 - By religion - simplfied variables
-mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2) i.country, base(0)
+mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country, base(0)
 estimates store reli
 
 
@@ -265,3 +212,9 @@ mlincom (4-2)-(3-1), rowname(ADC age SD: Difference) add
 
 mlincom, twidth(25) title(ADC by religion)
 
+* Trying with % Muslim
+margins, at(muslimpc=(0(5)100) urban=(0 1)) over(religion_c) pr(outcome(2))
+marginsplot, ///
+title("Probabolity of Walking and Talking for Currently Working by Age and Religion", size(*.75)) ///
+ytitle("Pr(Not Walk but Talk)", size(*.75)) ///
+ysize(40) xsize(80) 
