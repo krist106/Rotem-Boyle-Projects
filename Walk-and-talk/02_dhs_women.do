@@ -6,7 +6,7 @@
 ***																			***
 *******************************************************************************
 * 		Liz Boyle and Nir Rotem
-* 06.15.2020
+* 06.18.2021
 
 cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 clear
@@ -56,27 +56,67 @@ order never_married, a(marstat_d)
 * range from 0 to 63, with niu of 479,000. As in marstat there are 450,679 who never married, it seems that the never married were classified as niu.
 * Following Pierotti 2013, creating categorical variable - first married at age 15 years or younger, married between age 16 and age 19, and age 20 or older
 recode agefrstmar (0/15=1) (16/19=2) (20/63=3) (99=.), gen(agefrstmar_c)
-label define c_agel 1 "age 15 years or younger" 2 "between age 16 and age 19" 3 "age 20 or older"
+label define c_agel 1 "Age when married: -15" 2 "Age when married: 16-19" 3 "Age when married: +20"
 label values agefrstmar_c c_agel
-label variable agefrstmar_c "age at first marriage or cohabitation by categories"
+label variable agefrstmar_c "Age at first marriage or cohabitation by categories"
 order agefrstmar_c, a(agefrstmar)
 
-* religion - there are several dozens categories
-recode religion (1000=1) (0 2000/9000=0) (9998=.), gen(muslim)
-label define musliml 1 "muslim" 0 "non muslim"
-label values muslim musliml
-label variable muslim "muslim"
-order muslim, a(religion)
-
-recode religion (1000=1) (2000/2999=2) (9998=.) (nonmiss=3), gen(religion_c)
-label define rel_c 1 "Muslim" 2 "Christian" 3 "Other"
-label values religion_c rel_c
+* Three main religions
+recode religion (1000=1) (2000/2999=2) (4000=3) (9998=.) (nonmiss=.), gen(religion_c)
+label define reli_c 1 "Muslim" 2 "Christian" 3 "Hindu"
+label values religion_c reli_c
 label variable religion_c "Religion by categories"
+order religion_c, after(religion)
+
+* Three main religions + other
+*recode religion (1000=1) (2000/2999=2) (4000=3) (9998=.) (nonmiss=4), gen(religion_c)
+*label define reli_c 1 "Muslim" 2 "Christian" 3 "Hindu" 4 "Other"
+*label values religion_c reli_c
+*label variable religion_c "Religion by categories"
+*order religion_c, after(religion)
+
+
+*** Religious composition of community
+
+* First recode into dummies
+recode religion_c (1=1) (2/3 = 0) , gen(muslim)
+label define musliml 1 "Muslim" 0 "Non Muslim"
+label values muslim musliml
+label variable muslim "Muslim"
+order muslim, a(religion_c)
+
+recode religion_c (2=1) (1 3 = 0) , gen(christian)
+label define christianl 1 "Christian" 0 "Non Christian"
+label values christian christianl
+label variable christian "Christian"
+order christian, a(muslim)
+
+recode religion_c (3=1) (1 2 = 0), gen(hindu)
+label define hindul 1 "Hindu" 0 "Non Hindu"
+label values hindu hindul
+label variable hindu "Hindu"
+order hindu, a(christian)
+
+* Get the % of each religion in every cluster
+by dhsid, sort: egen muslimpc = mean(100 * muslim)
+label variable muslimpc "% Muslim"
+order muslimpc, a(muslim)
+
+by dhsid, sort: egen christianpc = mean(100 * christian)
+label variable christianpc "% Christian"
+order christianpc, a(christian)
+
+by dhsid, sort: egen hindupc = mean(100 * hindu)
+label variable hindupc "% Hindu"
+order hindupc, a(hindu)
+
 
 * currwork - currently working
 * 0=no; 10=yes; 11=yes spontaneous; 12= yes prompted; 98=missing; 99=niu
 recode currwork (0=0 no) (10/12=1 yes) (98 99 = .), gen(currwork_d)
-label variable currwork_d "currently working dummy"
+label define currwork_i 0 "Currently not working" 1 "Currently working"
+label values currwork_d currwork_i
+label variable currwork_d "Currently working"
 order currwork_d, a(currwork)
 
 * wkemploywhen
@@ -93,7 +133,7 @@ order employment, a(currwork_d)
 * educlvl - highest educational level
 * 0=no education; 1=primary; 2=secondary; 3=higher; 8=missing
 replace educlvl=. if educlvl==8
-label define educlvl_l 0 "Women's education: No education" 1 "Women's education: Primary" 2 "Women's education: Secondary" 3 "Women's education: Higher"
+label define educlvl_l 0 "Women's edu: None" 1 "Women's edu: Primary" 2 "Women's edu: Secondary" 3 "Women's edu: Higher"
 label values educlvl educlvl_l
 
 * edyrtotal - women's total years of education
@@ -103,7 +143,7 @@ replace edyrtotal=. if edyrtotal>95
 * husedlvl - partner's educational level
 * 0=no education; 1=primary; 2=secondary; 3=higher; 4=other; 7=don't know; 8/9=missing and not in universe
 replace husedlvl=. if husedlvl>3
-label define husedlvl_l 0 "Partner's education: No education" 1 "Partner's education: Primary" 2 "Partner's education: Secondary" 3 "Partner's education: Higher"
+label define husedlvl_l 0 "Husb-educ none" 1 "Husb-educ primary" 2 "Husb-educ secondary" 3 "Husb-educ higher"
 label values husedlvl husedlvl_l
 
 * husedyrs - partner's education in total years
@@ -113,7 +153,7 @@ replace husedyrs =. if husedyrs>94
 * Education gap
 gen edugap = educlvl - husedlvl
 recode edugap (0 = 1) (1/3 = 2) (-3/-1 = 0)
-label define edugapl 0 "Woman have lower education than partner" 1 "Woman have equal education as partner" 2 "Woman have higher education than partner"
+label define edugapl 0 "Woman has less educ" 1 "Woman have equal edu as partner" 2 "Woman has more educ"
 label values edugap edugapl
 label variable edugap "Woman have higher education than partner"
 order edugap, a(husedyrs)
@@ -121,6 +161,8 @@ order edugap, a(husedyrs)
 * drinkwtr - major source of drinking water.
 * We can create a dummy variable to see if respondent's house had indoor piped water and use it as a proxy for material living standard - Charles 2020 had a similar item on indoor plumbing. The toilettype variables have too many categories which are non-consistence across samples, so I think it will be impossible to build a 'plumbing' variable
 recode drinkwtr (1100 1110 1120 = 1 yes) (1200/6000 = 0 no) (9998=.), gen(pipedwtr)
+label define pipedwtr_l 0 "Hadn't own piped water" 1 "Had own piped water"
+label values pipedwtr pipedwtr_l
 label variable pipedwtr "Had own piped water"
 
 * radiobrig - listens to radio: bridging variable
@@ -146,7 +188,7 @@ label variable internet "woman uses the internet"
 * media access - indicates if a woman have a weekly access to radio, newspaper or tv. Pierotti 2013 used a similar variable
 gen media_access_old = max(radio, newspaper, tv)
 label variable media_access_old "women's media access"
-label define medial 0 "Have no media access" 1 "Have media access"
+label define medial 0 "No media access" 1 "Has media access"
 label values media_access_old medial
 
 gen media_access = max(radio, newspaper, tv, internet)
@@ -276,7 +318,7 @@ replace decoupling=2 if decindex_d==0 & dvunjust_d==1
 replace decoupling=1 if decindex_d==1 & dvunjust_d==0
 replace decoupling=0 if decindex_d==1 & dvunjust_d==1
 label variable decoupling "Attitude/empowerment correspondence possibilities"
-label define decouplingl 3 "Rejects gender equity/Not empowered in household" 2 "Supports gender equity/Not empowered in household" 1 "Rejects gender equity/Empowered in household" 0 "Supports gender equity/Empowered in household"
+label define decouplingl 0 "walk_talk" 1 "walk_notalk" 2 "talk_nowalk" 3 "neither"
 label values decoupling decouplingl
 
 recode decoupling (0=0) (3=2) (1/2 = 1), gen(decoupling_3a)
@@ -290,16 +332,16 @@ label define dec3b 0 "Rejects gender equity/Empowered in household" 2 "Supports 
 label values decoupling_3b dec3b
 
 recode decoupling (0=1) (1/3=0), gen(de1)
-label variable de1 "Supports gender equity/Empowered in household"
+label variable de1 "Walking and Talking"
 
 recode decoupling (1=1) (0 2 3 =0), gen(de2)
-label variable de2 "Rejects gender equity/Empowered in household"
+label variable de2 "Walking but not Talking"
 
 recode decoupling (2=1) (0 1 3 =0), gen(de3)
-label variable de3 "Supports gender equity/Not empowered in household"
+label variable de3 "Not Walking but Talking"
 
 recode decoupling (3=1) (0/2=0), gen(de4)
-label variable de4 "Rejects gender equity/Not empowered in household"
+label variable de4 "Neither Walking nor Talking"
 
 order decoupling, a(dvweight)
 order decoupling_3a, a(decoupling)
@@ -330,6 +372,7 @@ label variable bhcpermit_d "getting permission is a barrier to woman's health ca
 recode urban (2 = 0) (1 = 1)
 label define urbanl 0 "Rural" 1 "Urban"
 label values urban urbanl
+label variable urban "Urban"
 
 *** Recode battles ***
 * Remove missing data with a loop
@@ -615,6 +658,13 @@ order travel_times, a(smod)
 order travel_times_c, a(travel_times)
 order religion_c, a(religion)
 
+* Fix some labels
+
+label define wealthq_l 1 "Household wealth - Poorest" 2 "Household wealth - Poorer" 3 "Household wealth - Middle" ///
+4 "Household wealth - Richer" 5 "Household wealth - Richest"
+label values wealthq wealthq_l
+
+label variable age "Age"
 
 ** Save to a new file
 save 02_women, replace
