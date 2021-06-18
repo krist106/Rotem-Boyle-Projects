@@ -1,6 +1,7 @@
 
 
 *** Religious composition of community
+*** Was integrated into 02_dhs_women
 
 
 cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
