@@ -23,7 +23,7 @@ use 02_women.dta if never_married==0
 drop if age<25
 
 * June 10 - By religion - simplfied variables
-mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country, base(0)
+mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc c.christianpc) i.country, base(0)
 estimates store reli
 
 
@@ -151,26 +151,30 @@ grc1leg urban_work5 urban_work6 urban_work7 urban_work8, ycommon cols(2)
 * Urban by % Muslim
 margins, at(muslimpc=(0(10)100) urban=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
-title("Probabolity of Walking and Talking for Urban by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of Walking and Talking" "for Urban by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(urban_muspc1) 
 
 margins, at(muslimpc=(0(10)100) urban=(0 1)) over(religion_c) pr(outcome(1))
 marginsplot, ///
-title("Probabolity of Walking but not Talking for Urban by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of Walking but not Talking" "for Urban by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(urban_muspc2)
 
 margins, at(muslimpc=(0(10)100) urban=(0 1)) over(religion_c) pr(outcome(2))
 marginsplot, ///
-title("Probabolity of not Walking but Talking for Urban by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of not Walking but Talking" "for Urban by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(urban_muspc3)
 
 margins, at(muslimpc=(0(10)100) urban=(0 1)) over(religion_c) pr(outcome(3))
 marginsplot, ///
-title("Probabolity of Neither Walking nor Talking for Urban by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of Neither Walking nor Talking" "for Urban by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(urban_muspc4)
 
 grc1leg urban_muspc1 urban_muspc2 urban_muspc3 urban_muspc4, ycommon cols(2)
@@ -179,26 +183,30 @@ grc1leg urban_muspc1 urban_muspc2 urban_muspc3 urban_muspc4, ycommon cols(2)
 * Currently working by % Muslim
 margins, at(muslimpc=(0(10)100) currwork_d=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
-title("Probabolity of Walking and Talking for Currently Working by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of Walking and Talking" "for Currently Working by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(work_muspc1) 
 
 margins, at(muslimpc=(0(10)100) currwork_d=(0 1)) over(religion_c) pr(outcome(1))
 marginsplot, ///
-title("Probabolity of Walking but not Talking for Currently Working by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of Walking but not Talking" "for Currently Working by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(work_muspc2)
 
 margins, at(muslimpc=(0(10)100) currwork_d=(0 1)) over(religion_c) pr(outcome(2))
 marginsplot, ///
-title("Probabolity of not Walking but Talking for Currently Working by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of not Walking but Talking" "for Currently Working by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(work_muspc3)
 
 margins, at(muslimpc=(0(10)100) currwork_d=(0 1)) over(religion_c) pr(outcome(3))
 marginsplot, ///
-title("Probabolity of Neither Walking nor Talking for Currently Working by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of Neither Walking nor Talking" "for Currently Working by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(work_muspc4)
 
 grc1leg work_muspc1 work_muspc2 work_muspc3 work_muspc4, ycommon cols(2)
@@ -207,41 +215,200 @@ grc1leg work_muspc1 work_muspc2 work_muspc3 work_muspc4, ycommon cols(2)
 * Media access by % Muslim
 margins, at(muslimpc=(0(10)100) media_access=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
-title("Probabolity of Walking and Talking for Media Access by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of Walking and Talking" "for Media Access by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(media_muspc1) 
 
 margins, at(muslimpc=(0(10)100) media_access=(0 1)) over(religion_c) pr(outcome(1))
 marginsplot, ///
-title("Probabolity of Walking but not Talking for Media Access by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of Walking but not Talking" "for Media Access by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(media_muspc2)
 
 margins, at(muslimpc=(0(10)100) media_access=(0 1)) over(religion_c) pr(outcome(2))
 marginsplot, ///
-title("Probabolity of not Walking but Talking for Media Access by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of not Walking but Talking" "for Media Access by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(media_muspc3)
 
 margins, at(muslimpc=(0(10)100) media_access=(0 1)) over(religion_c) pr(outcome(3))
 marginsplot, ///
-title("Probabolity of Neither Walking nor Talking for Media Access by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of Neither Walking nor Talking" "for Media Access by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(media_muspc4)
 
 grc1leg media_muspc1 media_muspc2 media_muspc3 media_muspc4, ycommon cols(2)
 
-* Cheeck: can I do education and wealth?
 
+* partner's education by % Muslim
 margins, at(muslimpc=(0(10)100) husedlvl=(0 1 2 3)) over(religion_c) pr(outcome(0))
 marginsplot, ///
-title("Probabolity of Walking and Talking for Media Access by % Muslim and Religion", size(*.75)) ///
+title("Probabolity of Walking and Talking" "for Partner's Education by % Muslim and Religion", size(*.75)) ///
 ytitle("Pr(Walk and Talk)", size(*.75)) ///
-ysize(40) xsize(80) 
+xtitle("% Muslim", size(*.75) ) ///
+ysize(40) xsize(80) name(hused_muspc1)
 
-*graph bar admissionsper, over(month2020, label (angle(45))) blabel(bar, format(%4.1f)) ytitle ("Monthly change") title("Admissions") name(admis)
+margins, at(muslimpc=(0(10)100) husedlvl=(0 1 2 3)) over(religion_c) pr(outcome(1))
+marginsplot, ///
+title("Probabolity of Walking but not Talking" "for Partner's Education by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
+ysize(40) xsize(80) name(hused_muspc2)
 
-name(media_muspc1) 
+margins, at(muslimpc=(0(10)100) husedlvl=(0 1 2 3)) over(religion_c) pr(outcome(2))
+marginsplot, ///
+title("Probabolity of not Walking but Talking" "for Partner's Education by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
+ysize(40) xsize(80) name(hused_muspc3)
+
+margins, at(muslimpc=(0(10)100) husedlvl=(0 1 2 3)) over(religion_c) pr(outcome(3))
+marginsplot, ///
+title("Probabolity of Neither Walking nor Talking" "for Partner's Education by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Muslim", size(*.75) ) ///
+ysize(40) xsize(80) name(hused_muspc4)
+
+grc1leg hused_muspc1 hused_muspc2 hused_muspc3 hused_muspc4, ycommon cols(2)
+
+
+
+******* By % Christian  *********
+
+* Urban by % Christian
+margins, at(christianpc=(0(10)100) urban=(0 1)) over(religion_c) pr(outcome(0))
+marginsplot, ///
+title("Probabolity of Walking and Talking" "for Urban by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_chrpc1) 
+
+margins, at(christianpc=(0(10)100) urban=(0 1)) over(religion_c) pr(outcome(1))
+marginsplot, ///
+title("Probabolity of Walking but not Talking" "for Urban by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_chrpc2)
+
+margins, at(christianpc=(0(10)100) urban=(0 1)) over(religion_c) pr(outcome(2))
+marginsplot, ///
+title("Probabolity of not Walking but Talking" "for Urban by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_chrpc3)
+
+margins, at(christianpc=(0(10)100) urban=(0 1)) over(religion_c) pr(outcome(3))
+marginsplot, ///
+title("Probabolity of Neither Walking nor Talking" "for Urban by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_chrpc4)
+
+grc1leg urban_chrpc1 urban_chrpc2 urban_chrpc3 urban_chrpc4, ycommon cols(2)
+
+
+* Currently working by % Christian
+margins, at(christianpc=(0(10)100) currwork_d=(0 1)) over(religion_c) pr(outcome(0))
+marginsplot, ///
+title("Probabolity of Walking and Talking" "for Currently Working by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(work_chrpc1) 
+
+margins, at(christianpc=(0(10)100) currwork_d=(0 1)) over(religion_c) pr(outcome(1))
+marginsplot, ///
+title("Probabolity of Walking but not Talking" "for Currently Working by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(work_chrpc2)
+
+margins, at(christianpc=(0(10)100) currwork_d=(0 1)) over(religion_c) pr(outcome(2))
+marginsplot, ///
+title("Probabolity of not Walking but Talking" "for Currently Working by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(work_chrpc3)
+
+margins, at(christianpc=(0(10)100) currwork_d=(0 1)) over(religion_c) pr(outcome(3))
+marginsplot, ///
+title("Probabolity of Neither Walking nor Talking" "for Currently Working by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(work_chrpc4)
+
+grc1leg work_chrpc1 work_chrpc2 work_chrpc3 work_chrpc4, ycommon cols(2)
+
+
+* Media access by % Christian
+margins, at(christianpc=(0(10)100) media_access=(0 1)) over(religion_c) pr(outcome(0))
+marginsplot, ///
+title("Probabolity of Walking and Talking" "for Media Access by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(media_chrpc1) 
+
+margins, at(christianpc=(0(10)100) media_access=(0 1)) over(religion_c) pr(outcome(1))
+marginsplot, ///
+title("Probabolity of Walking but not Talking" "for Media Access by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(media_chrpc2)
+
+margins, at(christianpc=(0(10)100) media_access=(0 1)) over(religion_c) pr(outcome(2))
+marginsplot, ///
+title("Probabolity of not Walking but Talking" "for Media Access by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(media_chrpc3)
+
+margins, at(christianpc=(0(10)100) media_access=(0 1)) over(religion_c) pr(outcome(3))
+marginsplot, ///
+title("Probabolity of Neither Walking nor Talking" "for Media Access by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(media_chrpc4)
+
+grc1leg media_chrpc1 media_chrpc2 media_chrpc3 media_chrpc4, ycommon cols(2)
+
+
+* partner's education by % Christian
+margins, at(christianpc=(0(10)100) husedlvl=(0 1 2 3)) over(religion_c) pr(outcome(0))
+marginsplot, ///
+title("Probabolity of Walking and Talking" "for Partner's Education by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(hused_chrpc1)
+
+margins, at(christianpc=(0(10)100) husedlvl=(0 1 2 3)) over(religion_c) pr(outcome(1))
+marginsplot, ///
+title("Probabolity of Walking but not Talking" "for Partner's Education by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(hused_chrpc2)
+
+margins, at(christianpc=(0(10)100) husedlvl=(0 1 2 3)) over(religion_c) pr(outcome(2))
+marginsplot, ///
+title("Probabolity of not Walking but Talking" "for Partner's Education by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(hused_chrpc3)
+
+margins, at(christianpc=(0(10)100) husedlvl=(0 1 2 3)) over(religion_c) pr(outcome(3))
+marginsplot, ///
+title("Probabolity of Neither Walking nor Talking" "for Partner's Education by % Christian and Religion", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Christian", size(*.75) ) ///
+ysize(40) xsize(80) name(hused_chrpc4)
+
+grc1leg hused_chrpc1 hused_chrpc2 hused_chrpc3 hused_chrpc4, ycommon cols(2)
+
+
+
+
 
 
 
