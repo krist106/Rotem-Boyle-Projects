@@ -32,6 +32,8 @@ set scheme cleanplots
 
 ** To run margins - for predicted probabilities:
 
+********     BY AGE  ********
+
 * Currently working by age over religion
 margins, at(age=(20(10)60) currwork_d=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
@@ -125,8 +127,6 @@ ysize(40) xsize(80) name(urban4)
 grc1leg urban1 urban2 urban3 urban4, ycommon cols(2) ysize(40) xsize(80)
 
 
-
-
 * From Tom, create MEs, using statistical significance
 mgen if urban == 0, dydx(currwork_d) at(age=(20(10)60)) stub(PrGH0) stats(all) replace 
 mgen if urban == 1, dydx(currwork_d) at(age=(20(10)60)) stub(PrGH1) stats(all) replace 
@@ -146,6 +146,92 @@ xsize(20) ysize(12.5) name(urban_work7)
 grc1leg urban_work5 urban_work6 urban_work7 urban_work8, ycommon cols(2)
 
 
+******* By % Muslim
+
+* Urban by % Muslim
+margins, at(muslimpc=(0(5)100) urban=(0 1)) over(religion_c) pr(outcome(0))
+marginsplot, ///
+title("Probabolity of Walking and Talking for Urban by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+ysize(40) xsize(80) name(urban_%mus1) 
+
+margins, at(muslimpc=(0(5)100) urban=(0 1)) over(religion_c) pr(outcome(1))
+marginsplot, ///
+title("Probabolity of Walking but not Talking for Urban by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+ysize(40) xsize(80) name(urban_%mus2)
+
+margins, at(muslimpc=(0(5)100) urban=(0 1)) over(religion_c) pr(outcome(2))
+marginsplot, ///
+title("Probabolity of not Walking but Talking for Urban by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+ysize(40) xsize(80) name(urban_%mus3)
+
+margins, at(muslimpc=(0(5)100) urban=(0 1)) over(religion_c) pr(outcome(3))
+marginsplot, ///
+title("Probabolity of Neither Walking nor Talking for Urban by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+ysize(40) xsize(80) name(urban_%mus4)
+
+grc1leg urban_%mus1 urban_%mus2 urban_%mus3 urban_%mus4, ycommon cols(2)
+
+
+* Currently working by % Muslim
+margins, at(muslimpc=(0(5)100) currwork_d=(0 1)) over(religion_c) pr(outcome(0))
+marginsplot, ///
+title("Probabolity of Walking and Talking for Currently Working by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+ysize(40) xsize(80) name(work_%mus1) 
+
+margins, at(muslimpc=(0(5)100) currwork_d=(0 1)) over(religion_c) pr(outcome(1))
+marginsplot, ///
+title("Probabolity of Walking but not Talking for Currently Working by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+ysize(40) xsize(80) name(work_%mus2)
+
+margins, at(muslimpc=(0(5)100) currwork_d=(0 1)) over(religion_c) pr(outcome(2))
+marginsplot, ///
+title("Probabolity of not Walking but Talking for Currently Working by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+ysize(40) xsize(80) name(work_%mus3)
+
+margins, at(muslimpc=(0(5)100) currwork_d=(0 1)) over(religion_c) pr(outcome(3))
+marginsplot, ///
+title("Probabolity of Neither Walking nor Talking for Currently Working by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+ysize(40) xsize(80) name(work_%mus4)
+
+grc1leg work_%mus1 work_%mus2 work_%mus3 work_%mus4, ycommon cols(2)
+
+
+* Media access by % Muslim
+margins, at(muslimpc=(0(5)100) media_access=(0 1)) over(religion_c) pr(outcome(0))
+marginsplot, ///
+title("Probabolity of Walking and Talking for Media Access by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+ysize(40) xsize(80) name(media_%mus1) 
+
+margins, at(muslimpc=(0(5)100) media_access=(0 1)) over(religion_c) pr(outcome(1))
+marginsplot, ///
+title("Probabolity of Walking but not Talking for Media Access by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+ysize(40) xsize(80) name(media_%mus2)
+
+margins, at(muslimpc=(0(5)100) media_access=(0 1)) over(religion_c) pr(outcome(2))
+marginsplot, ///
+title("Probabolity of not Walking but Talking for Media Access by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+ysize(40) xsize(80) name(media_%mus3)
+
+margins, at(muslimpc=(0(5)100) media_access=(0 1)) over(religion_c) pr(outcome(3))
+marginsplot, ///
+title("Probabolity of Neither Walking nor Talking for Media Access by % Muslim and Religion", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+ysize(40) xsize(80) name(media_%mus4)
+
+grc1leg media_%mus1 media_%mus2 media_%mus3 media_%mus4, ycommon cols(2)
+
+* Cheeck: can I do education and wealth?
 
 
 * plot probabilities across age, by religion, for outcomes
@@ -212,9 +298,3 @@ mlincom (4-2)-(3-1), rowname(ADC age SD: Difference) add
 
 mlincom, twidth(25) title(ADC by religion)
 
-* Trying with % Muslim
-margins, at(muslimpc=(0(5)100) urban=(0 1)) over(religion_c) pr(outcome(2))
-marginsplot, ///
-title("Probabolity of Walking and Talking for Currently Working by Age and Religion", size(*.75)) ///
-ytitle("Pr(Not Walk but Talk)", size(*.75)) ///
-ysize(40) xsize(80) 
