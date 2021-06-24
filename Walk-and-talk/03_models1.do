@@ -165,6 +165,7 @@ xtitle("% Muslim", size(*.75) ) ///
 ysize(40) xsize(80) name(urban_muspc4)
 
 grc1leg urban_muspc1 urban_muspc2 urban_muspc3 urban_muspc4, cols(2)
+*** ycommon  *** as needed
 
 
 // Create MEs, using statistical significance
