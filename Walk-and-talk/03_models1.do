@@ -23,10 +23,13 @@ use 02_women.dta if never_married==0
 drop if age<25
 
 * June 10 - By religion - simplfied variables
-mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc c.christianpc) i.country, base(0)
+mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country, base(0)
 generate model_sample=e(sample)
-estimates store reli
+estimates store reli_m
 
+* June 10 - By religion - simplfied variables
+mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.christianpc) i.country, base(0)
+estimates store reli_c
 
 set scheme cleanplots
 
@@ -128,28 +131,11 @@ ysize(40) xsize(80) name(urban4)
 grc1leg urban1 urban2 urban3 urban4, ycommon cols(2) ysize(40) xsize(80)
 
 
-* From Tom, create MEs, using statistical significance
-mgen if urban == 0, dydx(currwork_d) at(age=(20(10)60)) stub(PrGH0) stats(all) replace 
-mgen if urban == 1, dydx(currwork_d) at(age=(20(10)60)) stub(PrGH1) stats(all) replace 
-
-twoway ///
-(line PrGH0d_pr2 PrGH0age if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
-(line PrGH0d_pr2 PrGH0age if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
-(line PrGH1d_pr2 PrGH1age if PrGH1pval1 , color(red) lpattern(longdash) )   ///
-(line PrGH1d_pr2 PrGH1age if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
-, legend(order(1 3) label(1 "Rural") label(3 "Urban")) ///
-ytitle("Pr(Not walking but talking | Working) -" "Pr(Not walking but talking | Not working)" , size(*.75) ) ///
-xtitle("Age", size(*.75) ) ///
-title("Probability of not Walking but Talking for working and non-working by Age and residency", size(*.75) ) ///
-note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
-xsize(20) ysize(12.5) name(urban_work7)
-
-grc1leg urban_work5 urban_work6 urban_work7 urban_work8, ycommon cols(2)
-
 
 ******* By % Muslim
 
 * Urban by % Muslim
+est restore reli_m
 margins, at(muslimpc=(0(10)100) urban=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
 title("Probability of Walking and Talking" "for Urban by % Muslim and Religion", size(*.75)) ///
@@ -181,7 +167,74 @@ ysize(40) xsize(80) name(urban_muspc4)
 grc1leg urban_muspc1 urban_muspc2 urban_muspc3 urban_muspc4, cols(2)
 
 
+// Create MEs, using statistical significance
+
+est restore reli_m
+mgen if religion_c == 1, dydx(urban) at(muslimpc=(0(10)100)) stub(PrGH0) stats(all) replace
+mgen if religion_c == 2, dydx(urban) at(muslimpc=(0(10)100)) stub(PrGH1) stats(all) replace 
+mgen if religion_c == 3, dydx(urban) at(muslimpc=(0(10)100)) stub(PrGH2) stats(all) replace 
+
+twoway ///
+(line PrGH0d_pr0 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr0 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr0 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr0 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr0 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr0 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Walking and talking | Urban) -" "Pr(Walking and talking | Rural)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of Walking and Talking" "for different Religions by Urbanity and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(urban_muspc_1)
+
+twoway ///
+(line PrGH0d_pr1 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr1 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr1 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr1 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr1 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr1 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Walking but not talking | Urban) -" "Pr(Walking but not talking | Rural)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of Walking but not Talking" "for different Religions by Urbanity and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(urban_muspc_2)
+
+twoway ///
+(line PrGH0d_pr2 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr2 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr2 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr2 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr2 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr2 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Not walking but talking | Urban) -" "Pr(Not walking but talking | Rural)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of not Walking but Talking" "for different Religions by Urbanity and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(urban_muspc_3)
+
+twoway ///
+(line PrGH0d_pr3 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr3 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr3 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr3 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr3 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr3 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Neither walking nor talking | Urban) -" "Pr(Neither walking nor talking | Rural)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of neither Walking nor Talking" "for different Religions by Urbanity and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(urban_muspc_4)
+
+grc1leg urban_muspc_1 urban_muspc_2 urban_muspc_3 urban_muspc_4, cols(2)
+
+
 * Currently working by % Muslim
+est restore reli_m
 margins, at(muslimpc=(0(10)100) currwork_d=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
 title("Probability of Walking and Talking" "for Currently Working by % Muslim and Religion", size(*.75)) ///
@@ -213,7 +266,73 @@ ysize(40) xsize(80) name(work_muspc4)
 grc1leg work_muspc1 work_muspc2 work_muspc3 work_muspc4, cols(2)
 
 
+// Create MEs, using statistical significance
+
+est restore reli_m
+mgen if religion_c == 1, dydx(currwork_d) at(muslimpc=(0(10)100)) stub(PrGH0) stats(all) replace
+mgen if religion_c == 2, dydx(currwork_d) at(muslimpc=(0(10)100)) stub(PrGH1) stats(all) replace 
+mgen if religion_c == 3, dydx(currwork_d) at(muslimpc=(0(10)100)) stub(PrGH2) stats(all) replace 
+
+twoway ///
+(line PrGH0d_pr0 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr0 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr0 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr0 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr0 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr0 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Walking and talking | Currently working) -" "Pr(Walking and talking | Currently not working)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of Walking and Talking" "for different Religions by Work and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(work_muspc_1)
+
+twoway ///
+(line PrGH0d_pr1 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr1 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr1 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr1 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr1 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr1 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Walking but not talking | Currently working) -" "Pr(Walking but not talking | Currently not working)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of Walking but not Talking" "for different Religions by Work and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(work_muspc_2)
+
+twoway ///
+(line PrGH0d_pr2 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr2 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr2 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr2 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr2 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr2 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Not walking but talking | Currently working) -" "Pr(Not walking but talking | Currently not working)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of not Walking but Talking" "for different Religions by Work and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(work_muspc_3)
+
+twoway ///
+(line PrGH0d_pr3 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr3 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr3 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr3 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr3 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr3 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Neither walking nor talking | Currently working) -" "Pr(Neither walking nor talking | Currently not working)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of neither Walking nor Talking" "for different Religions by Work and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(work_muspc_4)
+
+grc1leg work_muspc_1 work_muspc_2 work_muspc_3 work_muspc_4, cols(2)
+
 * Media access by % Muslim
+est restore reli_m
 margins, at(muslimpc=(0(10)100) media_access=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
 title("Probability of Walking and Talking" "for Media Access by % Muslim and Religion", size(*.75)) ///
@@ -245,7 +364,73 @@ ysize(40) xsize(80) name(media_muspc4)
 grc1leg media_muspc1 media_muspc2 media_muspc3 media_muspc4, cols(2)
 
 
+// Create MEs, using statistical significance
+
+est restore reli_m
+mgen if religion_c == 1, dydx(media_access) at(muslimpc=(0(10)100)) stub(PrGH0) stats(all) replace
+mgen if religion_c == 2, dydx(media_access) at(muslimpc=(0(10)100)) stub(PrGH1) stats(all) replace 
+mgen if religion_c == 3, dydx(media_access) at(muslimpc=(0(10)100)) stub(PrGH2) stats(all) replace 
+
+twoway ///
+(line PrGH0d_pr0 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr0 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr0 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr0 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr0 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr0 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Walking and talking | Has media access) -" "Pr(Walking and talking | No media access)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of Walking and Talking" "for different Religions by Media Access and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(media_muspc_1)
+
+twoway ///
+(line PrGH0d_pr1 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr1 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr1 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr1 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr1 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr1 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Walking but not talking | Has media access) -" "Pr(Walking but not talking | No media access)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of Walking but not Talking" "for different Religions by Media Access and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(media_muspc_2)
+
+twoway ///
+(line PrGH0d_pr2 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr2 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr2 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr2 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr2 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr2 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Not walking but talking | Has media access) -" "Pr(Not walking but talking | No media access)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of not Walking but Talking" "for different Religions by Media Access and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(media_muspc_3)
+
+twoway ///
+(line PrGH0d_pr3 PrGH0muslimpc if PrGH0pval1 , color(blue) lpattern(longdash) )   ///
+(line PrGH0d_pr3 PrGH0muslimpc if PrGH0pval1 < 0.05, color(blue) lpattern(solid) ) ///
+(line PrGH1d_pr3 PrGH1muslimpc if PrGH1pval1 , color(red) lpattern(longdash) )   ///
+(line PrGH1d_pr3 PrGH1muslimpc if PrGH1pval1 < 0.05, color(red) lpattern(solid) ) ///
+(line PrGH2d_pr3 PrGH1muslimpc if PrGH2pval1 , color(green) lpattern(longdash) )   ///
+(line PrGH2d_pr3 PrGH1muslimpc if PrGH2pval1 < 0.05, color(green) lpattern(solid) ) ///
+, legend(order(1 3 5) label(1 "Muslim") label(3 "Christian") label(5 "Hindu")) ///
+ytitle("Pr(Neither walking nor talking | Has media access) -" "Pr(Neither walking nor talking | No media access)" , size(*.75) ) ///
+xtitle("% Muslim", size(*.75) ) ///
+title("Probability of neither Walking nor Talking" "for different Religions by Media Access and % Muslim", size(*.75) ) ///
+note("Dashed lines indicate that the difference in the probabilities is not significant at the 0.05 level", size(*.5) ) ///
+xsize(20) ysize(12.5) name(media_muspc_4)
+
+grc1leg media_muspc_1 media_muspc_2 media_muspc_3 media_muspc_4, cols(2)
+
 * partner's education by % Muslim
+est restore reli_m
 margins, at(muslimpc=(0(10)100) husedlvl=(0 1 2 3)) over(religion_c) pr(outcome(0))
 marginsplot, ///
 title("Probability of Walking and Talking" "for Partner's Education by % Muslim and Religion", size(*.75)) ///
@@ -281,6 +466,7 @@ grc1leg hused_muspc1 hused_muspc2 hused_muspc3 hused_muspc4, cols(2)
 ******* By % Christian  *********
 
 * Urban by % Christian
+est restore reli_c
 margins, at(christianpc=(0(10)100) urban=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
 title("Probability of Walking and Talking" "for Urban by % Christian and Religion", size(*.75)) ///
@@ -315,6 +501,7 @@ grc1leg urban_muspc1 urban_muspc2 urban_muspc3 urban_muspc4 urban_chrpc1 urban_c
 
 
 * Currently working by % Christian
+est restore reli_c
 margins, at(christianpc=(0(10)100) currwork_d=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
 title("Probability of Walking and Talking" "for Currently Working by % Christian and Religion", size(*.75)) ///
@@ -348,6 +535,7 @@ grc1leg work_chrpc1 work_chrpc2 work_chrpc3 work_chrpc4, cols(2)
 grc1leg work_muspc1 work_muspc2 work_muspc3 work_muspc4 work_chrpc1 work_chrpc2 work_chrpc3 work_chrpc4, cols(4)
 
 * Media access by % Christian
+est restore reli_c
 margins, at(christianpc=(0(10)100) media_access=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
 title("Probability of Walking and Talking" "for Media Access by % Christian and Religion", size(*.75)) ///
@@ -382,6 +570,7 @@ grc1leg media_muspc1 media_muspc2 media_muspc3 media_muspc4 media_chrpc1 media_c
 
 
 * partner's education by % Christian
+est restore reli_c
 margins, at(christianpc=(0(10)100) husedlvl=(0 1 2 3)) over(religion_c) pr(outcome(0))
 marginsplot, ///
 title("Probability of Walking and Talking" "for Partner's Education by % Christian and Religion", size(*.75)) ///
