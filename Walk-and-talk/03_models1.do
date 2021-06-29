@@ -629,6 +629,19 @@ estimates store muslim
 
 
 *table of AMEs, with a group comparison model
+est restore reli_m
+margins, at(urban=(0 1)) over(religion_c) pr(outcome(0)) post
+
+*** TRY THIS ONE
+mlincom (6-3), rowname(ADC Urban: Diff Hindu) add clear
+mlincom (5-2), rowname(ADC Urban: Diff Christian) add
+mlincom (4-1), rowname(ADC Urban: Diff Muslim) add
+
+est restore reli_m
+margins , at(media_access=(0 1)) over(religion_c) pr(outcome(0)) post
+mlincom (6-3), rowname(ADC Media: Diff Hindu) add 
+mlincom (5-2), rowname(ADC Media: Diff Christian) add
+mlincom (4-1), rowname(ADC Media: Diff Muslim) add
 
 quietly { // results are summarized below
 * Urban 
