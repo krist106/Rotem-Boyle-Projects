@@ -1087,4 +1087,106 @@ mlincom, twidth(25) title(ADC by religion)
 * interpretation for outcome "mlincom 2-1" : The gap between variable=1 and variable=0 in belonging to outcomeX is significantly larger among x religion compared to these from y religion (value and value, respectively, 2nd difference: value, p=)."
 
 
+quietly {
+est restore reli_m
+margins , at(age=gen(age)) at(age=gen(age+11.8)) over(religion_c) pr(outcome(0)) post
+mlincom (4-1), rowname(ADC age SD: Muslim) add clear
+mlincom (5-2), rowname(ADC age SD: Christian) add
+mlincom (6-3), rowname(ADC age SD: Hindu) add
+mlincom (5-2)-(4-1), rowname(ADC age SD: Diff Christian-Muslim) add
+mlincom (6-3)-(4-1), rowname(ADC age SD: Diff Hindu-Muslim) add
+mlincom (6-3)-(5-2), rowname(ADC age SD: Diff Hindu-Christian) add
+}
 
+mlincom, twidth(25) title(ADC by religion)
+
+quietly {
+est restore reli_m
+margins , at(age=gen(age)) at(age=gen(age+11.8)) over(religion_c) pr(outcome(1)) post
+mlincom (4-1), rowname(ADC age SD: Muslim) add clear
+mlincom (5-2), rowname(ADC age SD: Christian) add
+mlincom (6-3), rowname(ADC age SD: Hindu) add
+mlincom (5-2)-(4-1), rowname(ADC age SD: Diff Christian-Muslim) add
+mlincom (6-3)-(4-1), rowname(ADC age SD: Diff Hindu-Muslim) add
+mlincom (6-3)-(5-2), rowname(ADC age SD: Diff Hindu-Christian) add
+}
+
+mlincom, twidth(25) title(ADC by religion)
+
+quietly {
+est restore reli_m
+margins , at(age=gen(age)) at(age=gen(age+11.8)) over(religion_c) pr(outcome(2)) post
+mlincom (4-1), rowname(ADC age SD: Muslim) add clear
+mlincom (5-2), rowname(ADC age SD: Christian) add
+mlincom (6-3), rowname(ADC age SD: Hindu) add
+mlincom (5-2)-(4-1), rowname(ADC age SD: Diff Christian-Muslim) add
+mlincom (6-3)-(4-1), rowname(ADC age SD: Diff Hindu-Muslim) add
+mlincom (6-3)-(5-2), rowname(ADC age SD: Diff Hindu-Christian) add
+}
+
+mlincom, twidth(25) title(ADC by religion)
+
+quietly {
+est restore reli_m
+margins , at(age=gen(age)) at(age=gen(age+11.8)) over(religion_c) pr(outcome(3)) post
+mlincom (4-1), rowname(ADC age SD: Muslim) add clear
+mlincom (5-2), rowname(ADC age SD: Christian) add
+mlincom (6-3), rowname(ADC age SD: Hindu) add
+mlincom (5-2)-(4-1), rowname(ADC age SD: Diff Christian-Muslim) add
+mlincom (6-3)-(4-1), rowname(ADC age SD: Diff Hindu-Muslim) add
+mlincom (6-3)-(5-2), rowname(ADC age SD: Diff Hindu-Christian) add
+}
+
+mlincom, twidth(25) title(ADC by religion)
+
+quietly {
+est restore reli_m
+margins , at(muslimpc=gen(muslimpc)) at(muslimpc=gen(muslimpc+39.9)) over(religion_c) pr(outcome(0)) post
+mlincom (4-1), rowname(ADC % Muslim: Muslim) add clear
+mlincom (5-2), rowname(ADC % Muslim: Christian) add
+mlincom (6-3), rowname(ADC % Muslim: Hindu) add
+mlincom (5-2)-(4-1), rowname(ADC % Muslim: Diff Christian-Muslim) add
+mlincom (6-3)-(4-1), rowname(ADC % Muslim: Diff Hindu-Muslim) add
+mlincom (6-3)-(5-2), rowname(ADC % Muslim: Diff Hindu-Christian) add
+}
+
+mlincom, twidth(25) title(ADC by religion)
+
+quietly {
+est restore reli_m
+margins , at(muslimpc=gen(muslimpc)) at(muslimpc=gen(muslimpc+39.9)) over(religion_c) pr(outcome(1)) post
+mlincom (4-1), rowname(ADC % Muslim: Muslim) add clear
+mlincom (5-2), rowname(ADC % Muslim: Christian) add
+mlincom (6-3), rowname(ADC % Muslim: Hindu) add
+mlincom (5-2)-(4-1), rowname(ADC % Muslim: Diff Christian-Muslim) add
+mlincom (6-3)-(4-1), rowname(ADC % Muslim: Diff Hindu-Muslim) add
+mlincom (6-3)-(5-2), rowname(ADC % Muslim: Diff Hindu-Christian) add
+}
+
+mlincom, twidth(25) title(ADC by religion)
+
+quietly {
+est restore reli_m
+margins , at(muslimpc=gen(muslimpc)) at(muslimpc=gen(muslimpc+39.9)) over(religion_c) pr(outcome(2)) post
+mlincom (4-1), rowname(ADC % Muslim: Muslim) add clear
+mlincom (5-2), rowname(ADC % Muslim: Christian) add
+mlincom (6-3), rowname(ADC % Muslim: Hindu) add
+mlincom (5-2)-(4-1), rowname(ADC % Muslim: Diff Christian-Muslim) add
+mlincom (6-3)-(4-1), rowname(ADC % Muslim: Diff Hindu-Muslim) add
+mlincom (6-3)-(5-2), rowname(ADC % Muslim: Diff Hindu-Christian) add
+}
+
+mlincom, twidth(25) title(ADC by religion)
+
+quietly {
+est restore reli_m
+margins , at(muslimpc=gen(muslimpc)) at(muslimpc=gen(muslimpc+39.9)) over(religion_c) pr(outcome(3)) post
+mlincom (4-1), rowname(ADC % Muslim: Muslim) add clear
+mlincom (5-2), rowname(ADC % Muslim: Christian) add
+mlincom (6-3), rowname(ADC % Muslim: Hindu) add
+mlincom (5-2)-(4-1), rowname(ADC % Muslim: Diff Christian-Muslim) add
+mlincom (6-3)-(4-1), rowname(ADC % Muslim: Diff Hindu-Muslim) add
+mlincom (6-3)-(5-2), rowname(ADC % Muslim: Diff Hindu-Christian) add
+}
+
+mlincom, twidth(25) title(ADC by religion)
