@@ -29,6 +29,10 @@ mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork
 generate model_sample=e(sample)
 estimates store reli_m1
 
+*summery table
+*install baselinetable
+baselinetable urban(cat value(1) novaluelabel) wealthq(cat) media_access(cat value(1) novaluelabel) currwork_d(cat value(1) novaluelabel) age(cts novarlabel afterheading("age, mean (sd)")) educlvl(cat) husedlvl(cat) religion_c(cat) waves2(cat), by(decoupling) exportexcel(summery_table, replace) if model_sample==1
+
 * To export to a Word document
 *outreg2 reli_m using simplfied%muslim, word replace eform sideway label(proper) dec(3)
 
