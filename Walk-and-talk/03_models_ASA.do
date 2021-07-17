@@ -31,9 +31,19 @@ estimates store reli_m
 
 *summery table
 *install baselinetable
-baselinetable urban(cat value(1) novaluelabel) wealthq(cat) media_access(cat value(1) novaluelabel) currwork_d(cat value(1) novaluelabel) age(cts novarlabel afterheading("Age, mean (sd)")) educlvl(cat) husedlvl(cat) religion_c(cat) muslimpc(cts novarlabel afterheading("% Muslim, mean (sd)") ) waves2(cat) if model_sample==1, by(decoupling) exportexcel(summery_table, replace)
+baselinetable urban(cat value(1) novaluelabel countformat(%15.0gc)) ///
+wealthq(cat countformat(%15.0gc)) ///
+media_access(cat value(1) novaluelabel countformat(%15.0gc)) ///
+currwork_d(cat value(1) novaluelabel countformat(%15.0gc)) ///
+age(cts novarlabel afterheading("Age, mean (sd)")) ///
+educlvl(cat countformat(%15.0gc)) ///
+husedlvl(cat countformat(%15.0gc)) ///
+religion_c(cat countformat(%15.0gc)) ///
+muslimpc(cts novarlabel afterheading("% Muslim, mean (sd)")) ///
+waves2(cat novarlabel countformat(%15.0gc)) if model_sample==1, ///
+by(decoupling) exportexcel(summery_table, replace)
 
-* To export to a Word document
+* To export the mlogit model to a Word document
 *outreg2 reli_m using simplfied%muslim, word replace eform sideway label(proper) dec(3)
 
 * By religion - simplfied variables - % Christian
