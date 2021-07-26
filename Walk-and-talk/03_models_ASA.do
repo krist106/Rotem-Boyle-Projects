@@ -58,6 +58,13 @@ set scheme cleanplots
 * Descriptive statistics:
 tab decoupling waves2 if model_sample==1, co
 
+*** Religion over time
+tab decoupling religion_c if model_sample==1 & waves2==1, co
+tab decoupling religion_c if model_sample==1 & waves2==2, co
+
+xtable decoupling religion_c if model_sample==1 & waves2==1, filename(religion_wave1.xlsx)
+xtable decoupling religion_c if model_sample==1 & waves2==2, filename(religion_wave2.xlsx)
+
 *************** To run margins - for predicted probabilities:
 
 ********     BY AGE  ********
