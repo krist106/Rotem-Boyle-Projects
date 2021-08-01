@@ -25,7 +25,7 @@ use 02_women.dta if never_married==0
 drop if age<25
 
 * By religion - simplfied variables - % Muslim
-mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country, rrr base(0)
+mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country, base(0)
 generate model_sample=e(sample)
 estimates store reli_m
 
@@ -52,8 +52,35 @@ estimates store reli_c
 
 set scheme cleanplots
 
-*** This will predoce the figure based on the mlogit. But given the interaction terms, it contains too much information
-*coefplot ., keep(walk_notalk:) bylabel("Walking but not talking") || ., keep(talk_nowalk:) bylabel("Not walking but talking") || ., keep(neither:) bylabel("Neither walking nor talking") ||, eform drop(_cons *country *urban *wealthq *educlvl *media_access#religion_c) scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(70) xline(1) sub(,size(medium)) xtitle(Relative Risk Ratio) name(test2)
+*** This will predoce the figure based on the mlogit.
+* Option one: significance using * ** ***
+coefplot ., keep(walk_notalk:) bylabel("Walking but not talking") || ///
+ ., keep(talk_nowalk:) bylabel("Not walking but talking") || ///
+ ., keep(neither:) bylabel("Neither walking nor talking") ||, ///
+ eform drop(_cons *country *urban *wealthq *educlvl *muslimpc ) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(70) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+ nooffset coeflabels(, interaction(" x ")) ///
+ headings(1.religion_c#1.media_access = "{bf:Interaction Effects}") ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span)
+*name(test2)
+
+* to remove interaction effects: *religion_c#*media_access *media_access
+
+* Option two: significance in blue, nonsignificant in red
+coefplot (., if(@ll<1 & @ul>1)) (., if(@ll>1 | @ul<1)) ., keep(walk_notalk:) bylabel("Walking but not talking") || ///
+ (., if(@ll<1 & @ul>1))  (., if(@ll>1 | @ul<1)) ., keep(talk_nowalk:) bylabel("Not walking but talking") || ///
+ (., if(@ll<1 & @ul>1))  (., if(@ll>1 | @ul<1)) ., keep(neither:) bylabel("Neither walking nor talking") || ///
+ , eform drop(_cons *country *urban *wealthq *educlvl *religion_c#*media_access *media_access *muslimpc) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(70) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+ nooffset coeflabels(, interaction(" x ")) ///
+ headings(1.religion_c#1.currwork_d = "{bf:Interaction Effects}") ///
+ note("Significant coefficients are displayed in blue and nonsignificant coefficients are displayed in red")
+
 
 * Descriptive statistics:
 tab decoupling waves2 if model_sample==1, co
