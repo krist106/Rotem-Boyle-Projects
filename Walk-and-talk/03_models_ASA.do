@@ -50,6 +50,8 @@ by(decoupling) exportexcel(summery_table, replace)
 mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.christianpc) i.country, base(0)
 estimates store reli_c
 
+***NOTE that the rrr were dropped 
+
 set scheme cleanplots
 
 *** This will predoce the figure based on the mlogit.
