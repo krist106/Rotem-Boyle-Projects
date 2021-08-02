@@ -1146,6 +1146,102 @@ mlincom, twidth(25) title(ADC by religion)
 * interpretation for outcome "mlincom 2-1" : The gap between variable=1 and variable=0 in belonging to outcomeX is significantly larger among x religion compared to these from y religion (value and value, respectively, 2nd difference: value, p=)."
 
 
+*** Checking the wealthq as binery - 1/3 vs 4/5 and 1/4 vs 5
+recode wealthq (1/4 = 0) (5=1), gen(wealthq_5)
+label variable wealthq_5 "Wealthiest qualitie"
+quietly mlogit decoupling ib3.religion_c##(i.urban i.wealthq_5 i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country, base(0)
+estimates store reli_m1
+
+recode wealthq (1/3 = 0) (4/5 = 1), gen(wealthq_45)
+label variable wealthq_45 "Wealthiest qualitie"
+quietly mlogit decoupling ib3.religion_c##(i.urban i.wealthq_45 i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country, base(0)
+estimates store reli_m2
+
+
+quietly {
+est restore reli_m1
+margins , dydx(wealthq_5) over(religion_c) pr(outcome(0)) post
+mlincom (1), rowname(ADC WHQ5: Muslim) add clear
+mlincom (2), rowname(ADC WHQ5: Christian) add
+mlincom (3), rowname(ADC WHQ5: Hindu) add
+mlincom (2-1), rowname(ADC WHQ5: Diff Christian-Muslim) add
+mlincom (3-1), rowname(ADC WHQ5: Diff Hindu-Muslim) add
+mlincom (3-2), rowname(ADC WHQ5: Diff Hindu-Christian) add
+
+est restore reli_m2
+margins , dydx(wealthq_45) over(religion_c) pr(outcome(0)) post
+mlincom (1), rowname(ADC WHQ45: Muslim) add 
+mlincom (2), rowname(ADC WHQ45: Christian) add
+mlincom (3), rowname(ADC WHQ45: Hindu) add
+mlincom (2-1), rowname(ADC WHQ45: Diff Christian-Muslim) add
+mlincom (3-1), rowname(ADC WHQ45: Diff Hindu-Muslim) add
+mlincom (3-2), rowname(ADC WHQ45: Diff Hindu-Christian) add
+}
+mlincom, twidth(25) title(ADC by religion)
+
+quietly {
+est restore reli_m1
+margins , dydx(wealthq_5) over(religion_c) pr(outcome(1)) post
+mlincom (1), rowname(ADC WHQ5: Muslim) add clear
+mlincom (2), rowname(ADC WHQ5: Christian) add
+mlincom (3), rowname(ADC WHQ5: Hindu) add
+mlincom (2-1), rowname(ADC WHQ5: Diff Christian-Muslim) add
+mlincom (3-1), rowname(ADC WHQ5: Diff Hindu-Muslim) add
+mlincom (3-2), rowname(ADC WHQ5: Diff Hindu-Christian) add
+
+est restore reli_m2
+margins , dydx(wealthq_45) over(religion_c) pr(outcome(1)) post
+mlincom (1), rowname(ADC WHQ45: Muslim) add clear
+mlincom (2), rowname(ADC WHQ45: Christian) add
+mlincom (3), rowname(ADC WHQ45: Hindu) add
+mlincom (2-1), rowname(ADC WHQ45: Diff Christian-Muslim) add
+mlincom (3-1), rowname(ADC WHQ45: Diff Hindu-Muslim) add
+mlincom (3-2), rowname(ADC WHQ45: Diff Hindu-Christian) add
+}
+mlincom, twidth(25) title(ADC by religion)
+
+quietly {
+est restore reli_m1
+margins , dydx(wealthq_5) over(religion_c) pr(outcome(2)) post
+mlincom (1), rowname(ADC WHQ5: Muslim) add clear
+mlincom (2), rowname(ADC WHQ5: Christian) add
+mlincom (3), rowname(ADC WHQ5: Hindu) add
+mlincom (2-1), rowname(ADC WHQ5: Diff Christian-Muslim) add
+mlincom (3-1), rowname(ADC WHQ5: Diff Hindu-Muslim) add
+mlincom (3-2), rowname(ADC WHQ5: Diff Hindu-Christian) add
+
+est restore reli_m2
+margins , dydx(wealthq_45) over(religion_c) pr(outcome(2)) post
+mlincom (1), rowname(ADC WHQ45: Muslim) add 
+mlincom (2), rowname(ADC WHQ45: Christian) add
+mlincom (3), rowname(ADC WHQ45: Hindu) add
+mlincom (2-1), rowname(ADC WHQ45: Diff Christian-Muslim) add
+mlincom (3-1), rowname(ADC WHQ45: Diff Hindu-Muslim) add
+mlincom (3-2), rowname(ADC WHQ45: Diff Hindu-Christian) add
+}
+mlincom, twidth(25) title(ADC by religion)
+
+quietly {
+est restore reli_m1
+margins , dydx(wealthq_5) over(religion_c) pr(outcome(3)) post
+mlincom (1), rowname(ADC WHQ5: Muslim) add clear
+mlincom (2), rowname(ADC WHQ5: Christian) add
+mlincom (3), rowname(ADC WHQ5: Hindu) add
+mlincom (2-1), rowname(ADC WHQ5: Diff Christian-Muslim) add
+mlincom (3-1), rowname(ADC WHQ5: Diff Hindu-Muslim) add
+mlincom (3-2), rowname(ADC WHQ5: Diff Hindu-Christian) add
+
+est restore reli_m2
+margins , dydx(wealthq_45) over(religion_c) pr(outcome(3)) post
+mlincom (1), rowname(ADC WHQ45: Muslim) add 
+mlincom (2), rowname(ADC WHQ45: Christian) add
+mlincom (3), rowname(ADC WHQ45: Hindu) add
+mlincom (2-1), rowname(ADC WHQ45: Diff Christian-Muslim) add
+mlincom (3-1), rowname(ADC WHQ45: Diff Hindu-Muslim) add
+mlincom (3-2), rowname(ADC WHQ45: Diff Hindu-Christian) add
+}
+mlincom, twidth(25) title(ADC by religion)
+
 
 ************ A figure with the 4 categories of discordance, by country and wave
 
