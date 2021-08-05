@@ -87,6 +87,11 @@ coefplot (., if(@ll<1 & @ul>1)) (., if(@ll>1 | @ul<1)) ., keep(walk_notalk:) byl
 * Descriptive statistics:
 tab decoupling waves2 if model_sample==1, co
 
+tab decoupling waves2 [iweight=popwt] if model_sample==1, co // Here we use the native POPWT
+
+tab decoupling waves2 [iweight=womwt] if model_sample==1, co // Here we use WOMWT which I created - women age 15-49 in total population
+
+
 *** Religion over time
 tab decoupling religion_c if model_sample==1 & waves2==1, co
 tab decoupling religion_c if model_sample==1 & waves2==2, co
