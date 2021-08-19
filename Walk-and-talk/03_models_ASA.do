@@ -21,11 +21,10 @@ use 02_women.dta if never_married==0
 
 *** Multinomial Logistic Regression ***
 
-
 drop if age<25
 
 * By religion - simplfied variables - % Muslim
-mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country, base(0)
+mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store reli_m
 
