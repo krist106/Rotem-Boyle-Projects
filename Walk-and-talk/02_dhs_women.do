@@ -666,6 +666,19 @@ label values wealthq wealthq_l
 
 label variable age "Age"
 
+recode religion (1000=1) (2100=2) (2300/2901=3) (4000=4) (9998=.) (nonmiss=.), gen(religion_4c)
+label define reli_4c 1 "Muslim" 2 "Catholic" 3 "Protestant" 4 "Hindu"
+label values religion_4c reli_4c
+label variable religion_4c "Religion by categories"
+order religion_4c, after(religion_c)
+
+* For wealthiest qualitie
+recode wealthq (1/4 = 0) (5=1), gen(wealthq_5)
+label define wlt_l 0 "Bottom 4" 0 "Richest"
+label values wealthq_5 wlt_l
+label variable wealthq_5 "Wealthiest qualitie"
+order wealthq_5, after(wealthq)
+
 ** Save to a new file
 save 02_women, replace
 
