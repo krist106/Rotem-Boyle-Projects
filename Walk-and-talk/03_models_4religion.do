@@ -16,7 +16,9 @@ cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 clear
 
 ** Here we limit the file in memory to married or were married women. So in fact, we can remove all the if never_married==0 from the models below
-use 02_women.dta if never_married==0
+use 02_women.dta 
+
+drop if never_married==0
 
 
 *** Multinomial Logistic Regression ***
@@ -29,7 +31,7 @@ mlogit decoupling ib4.religion_4c##(i.urban i.wealthq_5 i.media_access i.currwor
 generate model_sample=e(sample)
 estimates store reli_m
 
-*summery table
+*summary table
 *install baselinetable
 baselinetable urban(cat value(1) novaluelabel countformat(%15.0gc)) ///
 wealthq(cat countformat(%15.0gc)) ///
@@ -48,12 +50,6 @@ by(decoupling) exportexcel(summery_table, replace)
 *Use this one:
 esttab reli_m using simplfied%muslim3.rtf, eform label wide unstack replace se(3)
 
-
-* By religion - simplfied variables - % Christian
-mlogit decoupling ib3.religion_c##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.christianpc) i.country, base(0)
-estimates store reli_c
-
-***NOTE that the rrr were dropped 
 
 set scheme cleanplots
 
@@ -96,18 +92,21 @@ tab decoupling waves2 [iweight=womwt] if model_sample==1, co // Here we use WOMW
 
 
 *** Religion over time
-tab decoupling religion_c if model_sample==1 & waves2==1, co
-tab decoupling religion_c if model_sample==1 & waves2==2, co
+tab decoupling religion_4c if model_sample==1 & waves2==1, co
+tab decoupling religion_4c if model_sample==1 & waves2==2, co
 
-xtable decoupling religion_c if model_sample==1 & waves2==1, filename(religion_wave1.xlsx)
-xtable decoupling religion_c if model_sample==1 & waves2==2, filename(religion_wave2.xlsx)
+xtable decoupling religion_4c if model_sample==1 & waves2==1, filename(religion_wave1.xlsx)
+xtable decoupling religion_4c if model_sample==1 & waves2==2, filename(religion_wave2.xlsx)
 
 *************** To run margins - for predicted probabilities:
 
 ********     BY AGE  ********
 
+** We ran these and didn't see much evidence of interaction effects
+
 * Currently working by age over religion
-margins, at(age=(20(10)60) currwork_d=(0 1)) over(religion_c) pr(outcome(0))
+
+/*margins, at(age=(20(10)60) currwork_d=(0 1)) over(religion_c) pr(outcome(0))
 marginsplot, ///
 title("Probability of Walking and Talking for Currently Working by Age and Religion", size(*.75)) ///
 ytitle("Pr(Walk and Talk)", size(*.75)) ///
@@ -236,7 +235,8 @@ grc1leg urban_muspc1 urban_muspc2 urban_muspc3 urban_muspc4, cols(2)
 *** ycommon  *** as needed
 
 
-// Create MEs, using statistical significance
+// Create marginal effects, using statistical significance
+* Interaction with percent Muslim
 
 est restore reli_m
 mgen if religion_c == 1, dydx(urban) at(muslimpc=(0(10)100)) stub(PrGH0) stats(all) replace
@@ -692,11 +692,8 @@ margins, at(age=(20(5)60)) over(religion_c) pr(outcome(3))
 marginsplot, name(model4) title(Neither walking nor talking)
 
 grc1leg model1 model2 model3 model4, ycommon cols(2) ysize(40) xsize(80)
+*/
 
-
-
-mlogit decoupling ib0.mus_chr##(i.urban ib3.wealthq i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2) i.country, base(0)
-estimates store muslim
 
 
 *table of AMEs, with a group comparison model
@@ -1230,17 +1227,7 @@ mlincom, twidth(25) title(ADC by religion)
 * interpretation for outcome "mlincom 2-1" : The gap between variable=1 and variable=0 in belonging to outcomeX is significantly larger among x religion compared to these from y religion (value and value, respectively, 2nd difference: value, p=)."
 
 
-*** Checking the wealthq as binery - 1/3 vs 4/5 and 1/4 vs 5
-recode wealthq (1/4 = 0) (5=1), gen(wealthq_5)
-label variable wealthq_5 "Wealthiest qualitie"
-quietly mlogit decoupling ib3.religion_c##(i.urban i.wealthq_5 i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country, base(0)
-estimates store reli_m1
-
-recode wealthq (1/3 = 0) (4/5 = 1), gen(wealthq_45)
-label variable wealthq_45 "Wealthiest qualitie"
-quietly mlogit decoupling ib3.religion_c##(i.urban i.wealthq_45 i.media_access i.currwork_d c.age i.educlvl i.husedlvl i.waves2 c.muslimpc) i.country, base(0)
-estimates store reli_m2
-
+/*
 *** If using the normal wealthhq
 
 margins , dydx(wealthq) over(religion_c) pr(outcome(1)) post
@@ -1357,6 +1344,7 @@ mlincom (3-2), rowname(ADC WHQ45: Diff Hindu-Christian) add
 }
 mlincom, twidth(25) title(ADC by religion)
 
+*/
 
 ************ A figure with the 4 categories of discordance, by country and wave
 

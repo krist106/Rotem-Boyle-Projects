@@ -16,7 +16,9 @@ cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 clear
 
 ** Here we limit the file in memory to married or were married women. So in fact, we can remove all the if never_married==0 from the models below
-use 02_women.dta if never_married==0
+use 02_women.dta 
+
+drop if never_married==0
 
 
 *** Multinomial Logistic Regression ***
