@@ -18,8 +18,7 @@ clear
 ** Here we limit the file in memory to married or were married women. So in fact, we can remove all the if never_married==0 from the models below
 use 02_women.dta 
 
-* Liz, the coding is 1=never got married, 0=married or was once married
-drop if never_married==1
+drop if ever_married==0
 
 
 *** Multinomial Logistic Regression ***
