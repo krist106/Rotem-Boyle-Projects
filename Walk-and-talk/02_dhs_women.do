@@ -48,9 +48,9 @@ recode marstat (11/22=1 yes) (98=.) (nonmiss=0 no), gen(marstat_d)
 label variable marstat_d "currently married dummy"
 order marstat_d, a(marstat)
 
-recode marstat (11/34=0 no) (10=1 yes) (98=.), gen(never_married)
-label variable never_married "never married"
-order never_married, a(marstat_d)
+recode marstat (10=0 no) (11/34=1 yes)  (98=.), gen(ever_married)
+label variable ever_married "ever married"
+order ever_married, a(marstat_d)
 
 * agefrstmar - age at first marriage
 * range from 0 to 63, with niu of 479,000. As in marstat there are 450,679 who never married, it seems that the never married were classified as niu.
@@ -690,10 +690,10 @@ label variable religion_4c "Religion by categories"
 order religion_4c, after(religion_c)
 
 * For wealthiest qualitie
-recode wealthq (1/4 = 0) (5=1), gen(wealthq_5)
+recode wealthq (1/4 = 0) (5=1) (8=.), gen(wealthq_5)
 label define wlt_l 0 "Bottom 4" 1 "Richest"
 label values wealthq_5 wlt_l
-label variable wealthq_5 "Wealthiest qualitie"
+label variable wealthq_5 "Wealthiest quintile"
 order wealthq_5, after(wealthq)
 
 ** Save to a new file
