@@ -466,6 +466,8 @@ gen polviolence_p1 = max(battles_p1, riots_p1, civ_violence_p1)
 label variable polviolence_p1 "Exposure to political violence last year"
 */
 
+drop battle* riot* civ_violenc*
+
 ** Organizing the popdensity variable
 replace popdensity = popdensity_2000 if year==1997
 replace popdensity = popdensity_2000 if year==1998
@@ -642,7 +644,7 @@ order smod, a(urban)
 order travel_times, a(smod)
 order travel_times_c, a(travel_times)
 */
-
+drop geo*
 *** I am exluding Liberia as there is no data on attitudes in 2007
 recode sample (5006 10802 12003 18001 20402 23102 28804 32402 35603 40003 40404 42601 45003 45003 45402 46603 50802 51603 52402 56203 56603 58603 64603 68604 71603 80003 81806 83404 85403 89404 = 1 "First wave") (5007 10803 12004 18002 20404 23104 28806 32403 35604 40007 40406 42603 45004 45004 45405 46605 50803 51604 52405 56204 56605 58604 64606 68610 71605 80006 81808 83406 85404 89405 = 2 "Second wave") (nonmiss=.), gen(waves2)
 label variable waves2 "Maximum variation two waves"
