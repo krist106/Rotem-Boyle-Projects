@@ -14,7 +14,7 @@ clear
 
 * Set a small sample
 
-*use 02_women.dta if never_married==0
+*use 02_women.dta if ever_married==1
 
 *drop if age <25
 
