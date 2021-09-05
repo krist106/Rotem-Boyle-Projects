@@ -691,7 +691,7 @@ order religion_4c, after(religion_c)
 
 * For wealthiest qualitie
 recode wealthq (1/4 = 0) (5=1), gen(wealthq_5)
-label define wlt_l 0 "Bottom 4" 0 "Richest"
+label define wlt_l 0 "Bottom 4" 1 "Richest"
 label values wealthq_5 wlt_l
 label variable wealthq_5 "Wealthiest qualitie"
 order wealthq_5, after(wealthq)
