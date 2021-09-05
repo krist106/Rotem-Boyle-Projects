@@ -18,7 +18,8 @@ clear
 ** Here we limit the file in memory to married or were married women. So in fact, we can remove all the if never_married==0 from the models below
 use 02_women.dta 
 
-drop if never_married==0
+* Liz, the coding is 1=never got married, 0=married or was once married
+drop if never_married==1
 
 
 *** Multinomial Logistic Regression ***
@@ -27,9 +28,17 @@ drop if never_married==0
 drop if age<25
 
 * By religion - simplfied variables - % Muslim
-mlogit decoupling ib4.religion_4c##(i.urban i.wealthq_5 i.media_access i.currwork_d c.age c.edugap i.waves2 c.muslimpc) i.country [pw=popwt], base(0)
+mlogit decoupling ib4.religion_4c##(i.urban i.wealthq_5 i.media_access i.currwork_d c.age i.edugap i.waves2 c.muslimpc) i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store reli_m
+
+mlogit decoupling i.educlvl i.media_access i.urban i.wealthq_5 i.currwork_d ib1.edugap c.age c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0)
+generate model_sample=e(sample)
+estimates store mo1
+
+mlogit decoupling i.educlvl i.media_access i.urban ib3.wealthq i.currwork_d ib1.edugap c.age c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0)
+estimates store mo2
+
 
 *summary table
 *install baselinetable
@@ -49,9 +58,17 @@ by(decoupling) exportexcel(summery_table, replace)
 *outreg2 reli_m using simplfied%muslim1, word replace eform sideway label(proper) dec(3)
 *Use this one:
 esttab reli_m using simplfied%muslim3.rtf, eform label wide unstack replace se(3)
-
+esttab mo1 using model1.rtf, noomitted eform label wide unstack replace se(3)
+esttab mo2 using model2.rtf, noomitted eform label wide unstack replace se(3)
 
 set scheme cleanplots
+
+* hist of the % categories in a cluster
+hist de1pc if model_sample==1, name(hist1)
+hist de2pc if model_sample==1, name(hist2)
+hist de3pc if model_sample==1, name(hist3)
+hist de4pc if model_sample==1, name(hist4)
+graph combine hist1 hist2 hist3 hist4
 
 *** This will predoce the figure based on the mlogit.
 * Option one: significance using * ** ***
