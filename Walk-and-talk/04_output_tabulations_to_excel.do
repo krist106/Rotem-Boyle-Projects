@@ -13,7 +13,7 @@
 cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 
 clear
-use 02_women.dta if never_married==0
+use 02_women.dta if ever_married==1
 
 tab2xl decoupling country [iweight=perweight] using testfile, col(1) row(1)
 
