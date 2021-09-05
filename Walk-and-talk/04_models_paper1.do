@@ -31,15 +31,15 @@ estimates store mo1
 mlogit decoupling i.educlvl i.media_access i.urban ib3.wealthq i.currwork_d ib1.edugap c.age c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0)
 estimates store mo2
 
-mlogit decoupling ib1.edugap##(i.educlvl i.media_access i.urban i.wealthq_5 i.currwork_d c.age c.de2pc c.muslimpc) i.waves2 i.country [pw=popwt], base(0)
+mlogit decoupling ib1.edugap##(i.media_access i.urban i.wealthq_5 i.currwork_d c.age c.de2pc c.muslimpc) i.educlvl i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
-estimates store mo1
+estimates store mo3
 
 
 * To export the mlogit model to a Word document
 *outreg2 MODEL NAME using simplfied%muslim1, word replace eform sideway label(proper) dec(3)
 *Use this one:
-esttab mo1 using model1.rtf, noomitted eform label wide unstack replace se(3)
+esttab mo1 using model3.rtf, noomitted eform label wide unstack replace se(3)
 esttab mo2 using model2.rtf, noomitted eform label wide unstack replace se(3)
 
 set scheme cleanplots
