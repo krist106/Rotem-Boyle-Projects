@@ -13,7 +13,7 @@ cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 clear
 
 ** Here we limit the file in memory to married or were married women. So in fact, we can remove all the if never_married==0 from the models below
-use 02_women.dta if never_married==0
+use 02_women.dta if ever_married==1
 
 correlate urban muslim never_married agefrstmar_c educlvl pipedwtr media_access polviolence_p1 global_human_footprint travel_times
 
