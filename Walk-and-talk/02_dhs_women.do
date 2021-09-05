@@ -351,6 +351,23 @@ order de2, a(de1)
 order de3, a(de2)
 order de4, a(de3)
 
+* Get the % of each category in every cluster
+by dhsid, sort: egen de1pc = mean(100 * de1)
+label variable de1pc "% Walking and talking"
+order de1pc, a(de1)
+
+by dhsid, sort: egen de2pc = mean(100 * de2)
+label variable de2pc "% Walking but not talking"
+order de2pc, a(de2)
+
+by dhsid, sort: egen de3pc = mean(100 * de3)
+label variable de3pc "% Not walking but talking"
+order de3pc, a(de3)
+
+by dhsid, sort: egen de4pc = mean(100 * de4)
+label variable de4pc "% Neither walking not talking"
+order de4pc, a(de4)
+
 * dv events
 * 0=no; 1=no; 8=missing; 9=not in universe (n is approximately 350,000)
 recode dveever (1=1 yes) (0=0) (8/9=.), gen(dveever_d)
