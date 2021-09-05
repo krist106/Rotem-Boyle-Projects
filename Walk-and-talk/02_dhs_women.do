@@ -49,7 +49,7 @@ label variable marstat_d "currently married dummy"
 order marstat_d, a(marstat)
 
 recode marstat (10=0 no) (11/34=1 yes)  (98=.), gen(ever_married)
-label variable ever_married "ever married"
+label variable ever_married "Ever married"
 order ever_married, a(marstat_d)
 
 * agefrstmar - age at first marriage
@@ -67,6 +67,13 @@ label define reli_c 1 "Muslim" 2 "Christian" 3 "Hindu"
 label values religion_c reli_c
 label variable religion_c "Religion by categories"
 order religion_c, after(religion)
+
+*Four main religions
+recode religion (1000=1) (2100=2) (2300/2901=3) (4000=4) (9998=.) (nonmiss=.), gen(religion_4c)
+label define reli_4c 1 "Muslim" 2 "Catholic" 3 "Protestant" 4 "Hindu"
+label values religion_4c reli_4c
+label variable religion_4c "Religion by categories"
+order religion_4c, after(religion_c)
 
 * Three main religions + other
 *recode religion (1000=1) (2000/2999=2) (4000=3) (9998=.) (nonmiss=4), gen(religion_c)
@@ -392,6 +399,7 @@ label values urban urbanl
 label variable urban "Urban"
 
 *** Recode battles ***
+/*
 * Remove missing data with a loop
 forvalues i=1997/2018 {
 replace battles_`i' = . if battles_`i'==-998
@@ -456,7 +464,7 @@ rename d_civ_violence_p1 civ_violence_p1
 *A max variable for political violence
 gen polviolence_p1 = max(battles_p1, riots_p1, civ_violence_p1)
 label variable polviolence_p1 "Exposure to political violence last year"
-
+*/
 
 ** Organizing the popdensity variable
 replace popdensity = popdensity_2000 if year==1997
@@ -490,7 +498,7 @@ order popdensity_log, after(popdensity)
 
 
 ** Create subnational region variable with labels **
-
+/*
 decode(country), gen(ct)
 levelsof ct, local(ctstring)
 
@@ -568,6 +576,8 @@ drop geo*str region_temp
 drop region_label_t_gen
 rename idregion_gen subnational
 label variable subnational "subnational regions"
+order subnational, a(country)
+
 ** End general region creation **
 
 drop idhspsu caseid hhid psu strata domain hhnum clusterno drinkwtr ct region_label_gen newsbrig tvbrig radiobrig decbighh decdailypur decfamvisit decfemearn decfemhcare sxcanrefuse nosexothwf nosextired dvaargue dvaburnfood dvagoout dvaifnosex dvanegkid dveever dvppush dvpslap bhcpermit 
@@ -623,6 +633,16 @@ label values smod smodl
 
 drop smod_*
 
+*merge m:m dhsid using "C:\Users\Nir\Documents\Projects\2020\Early warning systems\DHS data\gis data\spatial join - prio-grid\master_DHS_spatialjoin.dta", nogen
+*keep in 1/1904087
+
+*drop mountains_mean droughtyr_spi excluded diamsec_dist diamsec_dist_s petroleum_dist petroleum_dist_s
+
+order smod, a(urban)
+order travel_times, a(smod)
+order travel_times_c, a(travel_times)
+*/
+
 *** I am exluding Liberia as there is no data on attitudes in 2007
 recode sample (5006 10802 12003 18001 20402 23102 28804 32402 35603 40003 40404 42601 45003 45003 45402 46603 50802 51603 52402 56203 56603 58603 64603 68604 71603 80003 81806 83404 85403 89404 = 1 "First wave") (5007 10803 12004 18002 20404 23104 28806 32403 35604 40007 40406 42603 45004 45004 45405 46605 50803 51604 52405 56204 56605 58604 64606 68610 71605 80006 81808 83406 85404 89405 = 2 "Second wave") (nonmiss=.), gen(waves2)
 label variable waves2 "Maximum variation two waves"
@@ -661,19 +681,10 @@ order waves3, a(waves2)
 recode country (818 504 788 = 1 "North Africa") (24 426 454 508 516 710 894 716 = 2 "Southern Africa") (231 404 450 646 729 834 800 = 3 "East Africa") (204 854 384 288 324 466 562 566 686 = 4 "West Africa") (108 120 180 = 5 "Central Africa") (4 50 356 524 586 104 = 6 "South Asia") (nonmiss=.), gen(regions)
 label variable regions "Supranational regions"
 order regions, a(waves3)
-order subnational, a(country)
+
 * recode year (1986/1996 = 1 "1986 to 1996") (1997/2007 = 2 "1997 to 2007") (2008/2017 = 3 "2008 to 2017"), gen(decades)
 * label variable decades "decades of sample"
 
-*merge m:m dhsid using "C:\Users\Nir\Documents\Projects\2020\Early warning systems\DHS data\gis data\spatial join - prio-grid\master_DHS_spatialjoin.dta", nogen
-*keep in 1/1904087
-
-*drop mountains_mean droughtyr_spi excluded diamsec_dist diamsec_dist_s petroleum_dist petroleum_dist_s
-
-order smod, a(urban)
-order travel_times, a(smod)
-order travel_times_c, a(travel_times)
-order religion_c, a(religion)
 
 * Fix some labels
 
@@ -683,11 +694,6 @@ label values wealthq wealthq_l
 
 label variable age "Age"
 
-recode religion (1000=1) (2100=2) (2300/2901=3) (4000=4) (9998=.) (nonmiss=.), gen(religion_4c)
-label define reli_4c 1 "Muslim" 2 "Catholic" 3 "Protestant" 4 "Hindu"
-label values religion_4c reli_4c
-label variable religion_4c "Religion by categories"
-order religion_4c, after(religion_c)
 
 * For wealthiest qualitie
 recode wealthq (1/4 = 0) (5=1) (8=.), gen(wealthq_5)
