@@ -28,7 +28,7 @@ order religion_cf, a(religion_c)
 *** Multinomial Logistic Regression ***
 
 *** Note the models are without rrr
-mlogit decoupling i.educlvl i.media_access i.urban i.wealthq_5 i.currwork_d ib1.edugap c.age c.de2pc i.religion_cf c.muslimpc i.waves2 i.country [pw=popwt], base(0)
+mlogit decoupling i.educlvl i.media_access i.urban i.wealthq_5 i.currwork_d ib1.edugap c.age c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store mo1
 
