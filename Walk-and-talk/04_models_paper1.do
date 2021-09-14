@@ -21,10 +21,14 @@ use 02_women.dta
 keep if ever_married==1
 drop if age<25
 
+recode religion (0=0 "None") (1000=1 "Muslim") (2000/2999=2 "Christian") (3000/3999=3 "Buddhist") (4000=4 "Hindu") (6000/6999=6 "Traditional") (9000=9 "Other") (5000 7000/7999=9) (9998=.), gen(religion_cf)
+label variable religion_cf "Religion by categories"
+order religion_cf, a(religion_c)
+
 *** Multinomial Logistic Regression ***
 
-
-mlogit decoupling i.educlvl i.media_access i.urban i.wealthq_5 i.currwork_d ib1.edugap c.age c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0)
+*** Note the models are without rrr
+mlogit decoupling i.educlvl i.media_access i.urban i.wealthq_5 i.currwork_d ib1.edugap c.age c.de2pc i.religion_cf c.muslimpc i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store mo1
 
@@ -35,6 +39,9 @@ mlogit decoupling ib1.edugap##(i.media_access i.urban i.wealthq_5 i.currwork_d c
 generate model_sample=e(sample)
 estimates store mo3
 
+* With religion_cf
+mlogit decoupling i.educlvl i.media_access i.urban i.wealthq_5 i.currwork_d ib1.edugap c.age c.de2pc i.religion_cf c.muslimpc i.waves2 i.country [pw=popwt], base(0)
+estimates store mo4
 
 * To export the mlogit model to a Word document
 *outreg2 MODEL NAME using simplfied%muslim1, word replace eform sideway label(proper) dec(3)
