@@ -28,6 +28,26 @@ order religion_cf, a(religion_c)
 *** Multinomial Logistic Regression ***
 
 *** Note the models are without rrr
+
+* Baseline model
+mlogit decoupling i.educlvl i.media_access i.urban c.age ib2.religion_cf i.waves2 i.country [pw=popwt], base(0) rrr
+estimates store mo1
+
+* Household
+mlogit decoupling i.educlvl i.media_access i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.waves2 i.country [pw=popwt], base(0) rrr
+estimates store mo2
+
+* Full - with local institutions
+mlogit decoupling i.educlvl i.media_access i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0) rrr
+estimates store mo3
+
+*esttab mo1 using model1_1.rtf, noomitted eform label wide unstack replace se(3)
+*esttab mo2 using model1_2.rtf, noomitted eform label wide unstack replace se(3)
+*esttab mo3 using model1_3.rtf, noomitted eform label wide unstack replace se(3)
+
+esttab mo1 mo2 mo3 using model1_4.rtf, noomitted eform label wide unstack replace se(3)
+
+
 mlogit decoupling i.educlvl i.media_access i.urban i.wealthq_5 i.currwork_d ib1.edugap c.age c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store mo1
