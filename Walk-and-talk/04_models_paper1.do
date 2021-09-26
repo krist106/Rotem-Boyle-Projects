@@ -55,6 +55,13 @@ mtitles("Baseline model" "Household" "Local institutions")
 mlogtest, combine // It computes Wald tests of the null hypothesis that two alternatives can be combained for all pairs of alternatives. In our case, it support the differences among the four decoupling categories
 leastlikely decoupling educlvl radio urban age religion_cf // This helps to identify the least likely observations
 
+mchange, at(radio=1)
+mchange, dec(3)
+mat R= r(table)
+mat B= r(basepred)
+esttab mat(R) using myfile.rtf, title("Marginal effects") nomtitles replace
+esttab mat(B) using myfile.rtf, title("Average Predictions") nomtitles append
+
 
 mlogit decoupling i.educlvl i.media_access i.urban i.wealthq_5 i.currwork_d ib1.edugap c.age c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
