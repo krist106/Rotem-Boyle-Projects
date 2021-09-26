@@ -56,7 +56,7 @@ mlogtest, combine // It computes Wald tests of the null hypothesis that two alte
 leastlikely decoupling educlvl radio urban age religion_cf // This helps to identify the least likely observations
 
 mchange, at(radio=1)
-mchange, dec(3)
+mchange, dec(3) width(30)
 mat R= r(table)
 mat B= r(basepred)
 esttab mat(R) using myfile.rtf, title("Marginal effects") nomtitles replace
