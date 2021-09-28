@@ -59,8 +59,6 @@ mchange, at(radio=1)
 mchange, dec(3) width(30)
 mat R= r(table)
 mat B= r(basepred)
-esttab mat(R) using myfile.rtf, title("Marginal effects") nomtitles replace
-esttab mat(B) using myfile.rtf, title("Average Predictions") nomtitles append
 esttab mat(R) using mchange1.rtf, title("Marginal effects") nomtitles replace 
 esttab mat(B) using mchange1.rtf, title("Average Predictions") nomtitles append
 
