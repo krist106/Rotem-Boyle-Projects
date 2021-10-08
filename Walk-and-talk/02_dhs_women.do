@@ -75,6 +75,11 @@ label values religion_4c reli_4c
 label variable religion_4c "Religion by categories"
 order religion_4c, after(religion_c)
 
+*Main religions
+recode religion (0=0 "None") (1000=1 "Muslim") (2000/2999=2 "Christian") (3000/3999=3 "Buddhist") (4000=4 "Hindu") (6000/6999=6 "Traditional") (9000=9 "Other") (5000 7000/7999=9) (9998=.), gen(religion_cf)
+label variable religion_cf "Religion by categories"
+order religion_cf, a(religion_c)
+
 * Three main religions + other
 *recode religion (1000=1) (2000/2999=2) (4000=3) (9998=.) (nonmiss=4), gen(religion_c)
 *label define reli_c 1 "Muslim" 2 "Christian" 3 "Hindu" 4 "Other"
@@ -108,6 +113,12 @@ order hindu, a(christian)
 by dhsid, sort: egen muslimpc = mean(100 * muslim)
 label variable muslimpc "% Muslim"
 order muslimpc, a(muslim)
+
+recode muslimpc (0/33.4=1) (33.5/66.7=2) (66.8/100=3), gen(muslimmaj)
+label define muslimmajl 1 "Muslim minority" 2 "Muslim equal" 3 "Muslim majority"
+label values muslimmaj muslimmajl
+label variable muslimmaj "Muslim majority-minority"
+order muslimmaj, a(muslimpc)
 
 by dhsid, sort: egen christianpc = mean(100 * christian)
 label variable christianpc "% Christian"
@@ -175,6 +186,8 @@ label variable pipedwtr "Had own piped water"
 * radiobrig - listens to radio: bridging variable
 * 0=no; 1=not at all; 2=less than once a week; 10=yes; 11=at least once a week; 12=almost every day; 98=missing
 recode radiobrig (0/2=0 no) (10/12=1 yes) (98=.), gen(radio)
+label define radiol 0 "Doesn't listens to radio" 1 "Listens to radio"
+label values radio radiol
 label variable radio "woman listens to radio"
 
 * newsbrig - reads newspaper: bridging variable
