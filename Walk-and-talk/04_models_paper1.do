@@ -25,27 +25,36 @@ recode religion (0=0 "None") (1000=1 "Muslim") (2000/2999=2 "Christian") (3000/3
 label variable religion_cf "Religion by categories"
 order religion_cf, a(religion_c)
 
+recode muslimpc (0/33.4=1) (33.5/66.7=2) (66.8/100=3), gen(muslimmaj)
+label define muslimmajl 1 "Muslim minority" 2 "Muslim equal" 3 "Muslim majority"
+label values muslimmaj muslimmajl
+label variable muslimmaj "Muslim majority-minority"
+order muslimmaj, a(muslimpc)
+
+label define radiol 0 "Doesn't listens to radio" 1 "Listens to radio"
+label values radio radiol
+
 *** Multinomial Logistic Regression ***
 
 *** Note the models are without rrr
-
+ *ib2.agefrstmar_c
 * Baseline model
 mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf i.waves2 i.country [pw=popwt], base(0)
 estimates store mo1
 
 * Household
-mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.waves2 i.country [pw=popwt], base(0)
+mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib2.agefrstmar_c ib1.edugap i.waves2 i.country [pw=popwt], base(0)
 estimates store mo2
 
 * Full - with local institutions
-mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0)
+mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib2.agefrstmar_c ib1.edugap c.de2pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
 estimates store mo3
 
 *esttab mo1 using model1_1.rtf, noomitted eform label wide unstack replace se(3)
 *esttab mo2 using model1_2.rtf, noomitted eform label wide unstack replace se(3)
 *esttab mo3 using model1_3.rtf, noomitted eform label wide unstack replace se(3)
 
-esttab mo1 mo2 mo3 using model1909.rtf, ///
+esttab mo1 mo2 mo3 using model1008_2.rtf, ///
 noomitted nobaselevels eform label wide replace se(3) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Baseline model" "Household" "Local institutions") 
