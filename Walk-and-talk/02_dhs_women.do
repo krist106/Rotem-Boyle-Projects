@@ -61,6 +61,16 @@ label values agefrstmar_c c_agel
 label variable agefrstmar_c "Age at first marriage or cohabitation by categories"
 order agefrstmar_c, a(agefrstmar)
 
+recode agefrstmar (0/17=1) (18/63=0) (99=.), gen(mar18)
+label define age18l 1 "Under age 18 when married" 0 "Age 18 and over when married"
+label values mar18 age18l
+label variable mar18 "Under age 18 at first marriage or cohabitation"
+order mar18, a(agefrstmar_c)
+
+by dhsid, sort: egen mar18pc = mean(100 * mar18)
+label variable mar18pc "% Under age 18 when married"
+order mar18pc, a(mar18)
+
 * Three main religions
 recode religion (1000=1) (2000/2999=2) (4000=3) (9998=.) (nonmiss=.), gen(religion_c)
 label define reli_c 1 "Muslim" 2 "Christian" 3 "Hindu"
