@@ -34,31 +34,47 @@ order muslimmaj, a(muslimpc)
 label define radiol 0 "Doesn't listens to radio" 1 "Listens to radio"
 label values radio radiol
 
+recode agefrstmar (0/17=1) (18/63=0) (99=.), gen(mar18)
+label define age18l 1 "Under age 18 when married" 0 "Age 18 and over when married"
+label values mar18 age18l
+label variable mar18 "Under age 18 at first marriage or cohabitation"
+order mar18, a(agefrstmar_c)
+
+by dhsid, sort: egen mar18pc = mean(100 * mar18)
+label variable mar18pc "% Under age 18 when married"
+order mar18pc, a(mar18)
+
 *** Multinomial Logistic Regression ***
 
 *** Note the models are without rrr
- *ib2.agefrstmar_c
+ *ib3.agefrstmar_c
 * Baseline model
 mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf i.waves2 i.country [pw=popwt], base(0)
 estimates store mo1
 
 * Household
-mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib2.agefrstmar_c ib1.edugap i.waves2 i.country [pw=popwt], base(0)
+mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap ib3.agefrstmar_c i.waves2 i.country [pw=popwt], base(0)
 estimates store mo2
 
 * Full - with local institutions
-mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib2.agefrstmar_c ib1.edugap c.de2pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
+mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap ib3.agefrstmar_c c.de2pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
 estimates store mo3
 
 *esttab mo1 using model1_1.rtf, noomitted eform label wide unstack replace se(3)
 *esttab mo2 using model1_2.rtf, noomitted eform label wide unstack replace se(3)
 *esttab mo3 using model1_3.rtf, noomitted eform label wide unstack replace se(3)
 
-esttab mo1 mo2 mo3 using model1008_2.rtf, ///
+esttab mo1 mo2 mo3 using model1014.rtf, ///
 noomitted nobaselevels eform label wide replace se(3) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Baseline model" "Household" "Local institutions") 
 
+/*
+esttab mo1 mo2 mo3 using model1014.csv, ///
+noomitted nobaselevels eform label wide append se(3) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Baseline model" "Household" "Local institutions") 
+*/
 
 * A few post estimation commands
 mlogtest, combine // It computes Wald tests of the null hypothesis that two alternatives can be combained for all pairs of alternatives. In our case, it support the differences among the four decoupling categories
