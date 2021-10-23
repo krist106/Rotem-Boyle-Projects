@@ -34,6 +34,7 @@ keep if model_sample==1
 
 *summary table
 *install baselinetable
+putdocx begin
 baselinetable educlvl(cat countformat(%15.0gc)) ///
 radio(cat value(1) novaluelabel countformat(%15.0gc)) ///
 urban(cat value(1) novaluelabel countformat(%15.0gc)) ///
@@ -41,13 +42,15 @@ age(cts novarlabel afterheading("Age, mean (sd)")) ///
 religion_cf(cat countformat(%15.0gc)) ///
 wealthq(cat countformat(%15.0gc)) ///
 currwork_d(cat value(1) novaluelabel countformat(%15.0gc)) ///
-educlvl(cat countformat(%15.0gc)) ///
 edugap(cat countformat(%15.0gc)) ///
 de2pc(cts novarlabel afterheading("% Walk not talk, mean (sd)")) ///
 mar18pc(cts novarlabel afterheading("% Under age 18 when married, mean (sd)")) ///
 muslimmaj(cat countformat(%15.0gc)) ///
-waves2(cat novarlabel countformat(%15.0gc)) if model_sample==1, ///
-by(decoupling) exportexcel(summery_table, replace)
+waves2(cat value(2) novarlabel countformat(%15.0gc)) ///
+if model_sample==1, ///
+by(decoupling) putdocxtab(summery_table)
+putdocx save summery_table, replace
+*exportexcel(summery_table, replace)
 
 set scheme cleanplots
 
