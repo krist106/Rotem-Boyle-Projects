@@ -21,28 +21,7 @@ use 02_women.dta
 keep if ever_married==1
 drop if age<25
 
-recode religion (0=0 "None") (1000=1 "Muslim") (2000/2999=2 "Christian") (3000/3999=3 "Buddhist") (4000=4 "Hindu") (6000/6999=6 "Traditional") (9000=9 "Other") (5000 7000/7999=9) (9998=.), gen(religion_cf)
-label variable religion_cf "Religion by categories"
-order religion_cf, a(religion_c)
-
-recode muslimpc (0/33.4=1) (33.5/66.7=2) (66.8/100=3), gen(muslimmaj)
-label define muslimmajl 1 "Muslim minority" 2 "Muslim equal" 3 "Muslim majority"
-label values muslimmaj muslimmajl
-label variable muslimmaj "Muslim majority-minority"
-order muslimmaj, a(muslimpc)
-
-label define radiol 0 "Doesn't listens to radio" 1 "Listens to radio"
-label values radio radiol
-
-recode agefrstmar (0/17=1) (18/63=0) (99=.), gen(mar18)
-label define age18l 1 "Under age 18 when married" 0 "Age 18 and over when married"
-label values mar18 age18l
-label variable mar18 "Under age 18 at first marriage or cohabitation"
-order mar18, a(agefrstmar_c)
-
-by dhsid, sort: egen mar18pc = mean(100 * mar18)
-label variable mar18pc "% Under age 18 when married"
-order mar18pc, a(mar18)
+drop waves3 decoupling_3a decoupling_3b age5year marstat agefrstmar cheb drinkwtr currwork employment wkemploywhen wealths newsbrig tvbrig radiobrig sxcanrefuse nosexothwf nosextired dveever dvppush dvpslap pipedwtr
 
 *** Multinomial Logistic Regression ***
 
@@ -53,11 +32,11 @@ mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf i.waves2 i.cou
 estimates store mo1
 
 * Household
-mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap ib3.agefrstmar_c i.waves2 i.country [pw=popwt], base(0)
+mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap ib3 i.waves2 i.country [pw=popwt], base(0)
 estimates store mo2
 
 * Full - with local institutions
-mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap ib3.agefrstmar_c c.de2pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
+mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
 estimates store mo3
 
 *esttab mo1 using model1_1.rtf, noomitted eform label wide unstack replace se(3)
