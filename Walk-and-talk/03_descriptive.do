@@ -82,7 +82,7 @@ xtable decoupling religion_4c if model_sample==1 & waves2==2, filename(religion_
 set scheme plotplain
 
 splitvallabels waves2, length(6) 
-catplot decoupling waves2 [iweight=popwt] if country==50 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==50, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -104,7 +104,7 @@ title(Discordance , size(small))) name(bangladesh)
 
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==108 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==108, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -125,7 +125,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(burundi)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==120 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==120, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -147,7 +147,7 @@ title(Discordance , size(small))) name(cameroon)
 
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==180 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==180, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -168,7 +168,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(congo)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==204 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==204, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -189,7 +189,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(benin)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==231 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==231, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -210,7 +210,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(ethiopia)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==288 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==288, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -231,7 +231,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(ghana)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==324 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==324, ///
 percent(waves2) /// 
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -252,7 +252,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(guinea)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==356 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==356, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -294,7 +294,7 @@ title(Discordance , size(small))) name(india)
 *title(Discordance , size(small))) name(jordan)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==404 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==404, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -315,7 +315,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(kenya)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==426 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==426, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -336,7 +336,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(lesotho)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==450 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==450, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -357,7 +357,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(madagascar)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==454 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==454, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -378,7 +378,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(malawi)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==466 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==466, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -399,7 +399,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(mali)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==508 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==508, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -420,7 +420,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(mozambique)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==516 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==516, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -441,7 +441,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(namibia)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==524 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==524, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -462,7 +462,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(nepal)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==562 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==562, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -483,7 +483,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(niger)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==566 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==566, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -525,7 +525,7 @@ title(Discordance , size(small))) name(nigeria)
 *title(Discordance , size(small))) name(pakistan)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==646 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==646, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -546,7 +546,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(rwanda)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==686 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==686, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -567,7 +567,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(senegal)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==716 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==716, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -588,7 +588,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(zimbabwe)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==800 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==800, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -609,7 +609,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(uganda)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==818 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==818, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -630,7 +630,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(egypt)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==834 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==834, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -651,7 +651,7 @@ symplacement(center) ///
 title(Discordance , size(small))) name(tanzania)
 
 splitvallabels waves2, length(6)  
-catplot decoupling waves2 [iweight=popwt] if country==854 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==854, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
@@ -673,7 +673,7 @@ title(Discordance , size(small))) name(burkina)
 
 
 splitvallabels waves2, length(6) 
-catplot decoupling waves2 [iweight=popwt] if country==894 & model_s==1, ///
+catplot decoupling waves2 [iweight=popwt] if country==894, ///
 percent(waves2) ///
 var1opts(label(labsize(small))) ///
 var2opts(label(labsize(small)) relabel(`r(relabel)') ) ///
