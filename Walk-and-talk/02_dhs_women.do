@@ -225,6 +225,13 @@ gen media_access = max(radio, newspaper, tv, internet)
 label variable media_access "Women's media access"
 label values media_access medial
 
+gen radio_tv = max(radio, tv)
+gen only_news =.
+replace only_news=0 if radio_tv==0
+replace only_news=0 if newspaper==0
+replace only_news=0 if newspaper==1 & radio_tv==1
+replace only_news=1 if newspaper==1 & radio_tv==0
+
 *decbighh - final say on making large household purchases
 * 10=woman; 20=woman and husband; 30=woman and someone else; 40=husband; 50=someone else; 51=other male; 52=other female; 60=other; 98=missing; 99=niu (n=912,611)
 recode decbighh (10/30=1 yes) (40/60=0 no) (98 99 =.), gen(decbighh_d)
