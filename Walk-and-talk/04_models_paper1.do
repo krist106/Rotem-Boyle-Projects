@@ -10,7 +10,6 @@
 
 ******************** For paper 1  ********************
 
-
 cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 
 clear
