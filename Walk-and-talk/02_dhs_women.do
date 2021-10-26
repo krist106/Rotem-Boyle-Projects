@@ -10,7 +10,7 @@
 
 cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 clear
-use idhs_00027.dta, replace
+use idhs_00029.dta, replace
 * use 02_women.dta, replace
 **********************
 *** Organizing the women's variables ***
@@ -186,15 +186,13 @@ label values edugap edugapl
 label variable edugap "Woman have higher education than partner"
 order edugap, a(husedyrs)
 
-* drinkwtr - major source of drinking water.
-* We can create a dummy variable to see if respondent's house had indoor piped water and use it as a proxy for material living standard - Charles 2020 had a similar item on indoor plumbing. The toilettype variables have too many categories which are non-consistence across samples, so I think it will be impossible to build a 'plumbing' variable
-recode drinkwtr (1100 1110 1120 = 1 yes) (1200/6000 = 0 no) (9998=.), gen(pipedwtr)
-label define pipedwtr_l 0 "Hadn't own piped water" 1 "Had own piped water"
-label values pipedwtr pipedwtr_l
-label variable pipedwtr "Had own piped water"
 
 * radiobrig - listens to radio: bridging variable
 * 0=no; 1=not at all; 2=less than once a week; 10=yes; 11=at least once a week; 12=almost every day; 98=missing
+
+replace radiobrig=0 if radioday==0
+replace radiobrig=10 if radioday==1
+
 recode radiobrig (0/2=0 no) (10/12=1 yes) (98=.), gen(radio)
 label define radiol 0 "Doesn't listens to radio" 1 "Listens to radio"
 label values radio radiol
@@ -271,30 +269,6 @@ label values decindex decl
 recode decindex (2/3=1 yes) (0/1=0 no), gen(decindex_d)
 label variable decindex_d "woman has a part in final say"
 
-* sxcanrefuse - woman can refuse sex
-* 0=no; 1=yes; 7=maybe; 8/9 are missing and not in universe
-
-generate refusex_d=.
-replace refusex_d=1 if sxcanrefuse==1
-replace refusex_d=0 if sxcanrefuse==0 | sxcanrefuse==7
-label variable refusex_d "woman can refuse sex dummy"
-* As the total N is 488,448, I think we may wish to look also on:
-* nosexothwf and nosextired
-* 0=no; 1=yes; 7=don't know; 8/9 missing and not in universe
-
-recode nosexothwf (1=1 yes) (0 7 =0 no) (8 9 =.), gen(refusex_othwf)
-label variable refusex_othwf "okay to refuse sex: husband has other women"
-* This variable have 1,734,297 cases
-
-recode nosextired (1=1 yes) (0 7 =0 no) (8 9 =.), gen(refusex_tired)
-label variable refusex_tired "okey to refuse sex: tired or not in mood"
-* This variable have 1,251,808 cases
-
-* A max variable identify if a woman said yes to any of the above 3 variables, leading to a combined yet dummy variable of if woman can refuse sex. The total N is 1,776,651
-gen refusex = max(refusex_d, refusex_othwf, refusex_tired)
-label variable refusex "woman can refuse sex, max variable"
-label define refusexl 0 "no" 1 "yes"
-label values refusex refusexl
 
 * dv attitudes 
 * 0=no; 1=yes; 7=don't know; 8/9 are missing and not in universe
@@ -405,276 +379,13 @@ by dhsid, sort: egen de4pc = mean(100 * de4)
 label variable de4pc "% Neither walking not talking"
 order de4pc, a(de4)
 
-* dv events
-* 0=no; 1=no; 8=missing; 9=not in universe (n is approximately 350,000)
-recode dveever (1=1 yes) (0=0) (8/9=.), gen(dveever_d)
-label variable dveever_d "ever any emotional violence"
-recode dvpslap (1=1 yes) (0=0) (8/9=.), gen(dvpslap_d)
-label variable dvpslap_d "spouse ever slapped"
-recode dvppush (1=1 yes) (0=0) (8/9=.), gen(dvppush_d)
-label variable dvppush_d "spouse ever pushed"
-
-generate dveventindex=dveever_d + dvpslap_d + dvppush_d
-* the total of the dveventany is 411,122. Maybe we shouldn't use it
-label variable dveventindex "wife beating experienced index"
-
-* bhcpermit - barrier to woman's health care: getting permission
-* 10= not a big problem; 11=no probkem at all; 12=small problem; 20=is big problem; 98/99 missing and not in universe
-recode bhcpermit (10/11=0 "not a problem") (12/20=1 "a problem") (98/99=.), gen(bhcpermit_d)
-label variable bhcpermit_d "getting permission is a barrier to woman's health care"
 
 recode urban (2 = 0) (1 = 1)
 label define urbanl 0 "Rural" 1 "Urban"
 label values urban urbanl
 label variable urban "Urban"
 
-*** Recode battles ***
-/*
-* Remove missing data with a loop
-forvalues i=1997/2018 {
-replace battles_`i' = . if battles_`i'==-998
-}
 
-*prior battles
-gen battles_tot_p1=.
-forvalues i=1998/2019 {
-local y=`i'-1
-replace battles_tot_p1 = battles_`y' if year==`i'
-}
-label variable battles_tot_p1 "One year prior total number of battles"
-
-recode battles_tot_p1 (0=0 "no battles") (1/200=1 battles), gen(d_battles_p1)
-label variable d_battles_p1 "One year prior battles, dummy"
-
-drop battle*
-rename d_battles_p1 battles_p1
-
-*** Recode Riots ***
-*Removing missing data -
-
-forvalues i=1997/2018 {
-replace riots_`i' = . if riots_`i'==-998
-}
-
-*prior riots
-gen riots_tot_p1=.
-forvalues i=1998/2019 {
-local y=`i'-1
-replace riots_tot_p1 = riots_`y' if year==`i'
-}
-label variable riots_tot_p1 "One year prior total number of riots"
-
-recode riots_tot_p1 (0=0 "no riots") (1/750=1 riots), gen(d_riots_p1)
-label variable d_riots_p1 "One year prior riots, dummy"
-
-drop riot*
-rename d_riots_p1 riots_p1
-
-*** Recode civ violence ***
-*Removing missing data -
-
-forvalues i=1997/2018 {
-replace civ_violence_`i' = . if civ_violence_`i'==-998
-}
-
-*prior civ_violence
-gen civ_violence_tot_p1=.
-forvalues i=1998/2019 {
-local y=`i'-1
-replace civ_violence_tot_p1 = civ_violence_`y' if year==`i'
-}
-label variable civ_violence_tot_p1 "One year prior total number of acts of violence against civilians"
-
-recode civ_violence_tot_p1 (0=0 "no violence against civilians") (1/350=1 "violence against civilians"), gen(d_civ_violence_p1)
-label variable d_civ_violence_p1 "One year prior violence against civilians, dummy"
-
-drop civ_violenc*
-rename d_civ_violence_p1 civ_violence_p1
-
-*A max variable for political violence
-gen polviolence_p1 = max(battles_p1, riots_p1, civ_violence_p1)
-label variable polviolence_p1 "Exposure to political violence last year"
-*/
-
-drop battle* riot* civ_violenc*
-
-** Organizing the popdensity variable
-replace popdensity = popdensity_2000 if year==1997
-replace popdensity = popdensity_2000 if year==1998
-replace popdensity = popdensity_2000 if year==1999
-replace popdensity = popdensity_2000 if year==2000
-replace popdensity = popdensity_2000 if year==2001
-replace popdensity = popdensity_2000 if year==2002
-replace popdensity = popdensity_2005 if year==2003
-replace popdensity = popdensity_2005 if year==2004
-replace popdensity = popdensity_2005 if year==2005
-replace popdensity = popdensity_2005 if year==2006
-replace popdensity = popdensity_2005 if year==2007
-replace popdensity = popdensity_2010 if year==2008
-replace popdensity = popdensity_2010 if year==2009
-replace popdensity = popdensity_2010 if year==2010
-replace popdensity = popdensity_2010 if year==2011
-replace popdensity = popdensity_2010 if year==2012
-replace popdensity = popdensity_2015 if year==2013
-replace popdensity = popdensity_2015 if year==2014
-replace popdensity = popdensity_2015 if year==2015
-replace popdensity = popdensity_2015 if year==2016
-replace popdensity = popdensity_2015 if year==2017
-replace popdensity = . if popdensity==-998
-
-drop popdensity_*
-
-gen popdensity_log=log(popdensity)
-label variable popdensity_log "Population density logged"
-order popdensity_log, after(popdensity)
-
-
-** Create subnational region variable with labels **
-/*
-decode(country), gen(ct)
-levelsof ct, local(ctstring)
-
-foreach var of varlist geo* {
-gen `var'_copy = `var'
-}
-* drop geo_cm2004_2011_copy
-* drop geo_gn1999_2012_copy geo_gn2005_2012_copy
-drop geoalt_mw2010_2016_copy
-* drop geoalt_ng2008_2013_copy
-replace geo_rw1992_2005_copy = . if year == 2005
-* see that rw is ok
-* drop geo_tz1991_2015_copy
-*drop geo_ug2006_2011_copy
-*my change:
-drop geo_ug2006_2016_copy
-drop geo_jo1990_2017_copy geo_jo2007_2017_copy
-***drop geo_eg1988_2014_copy
-drop geoalt_eg1988_2014
-drop geoalt_ls2004_2014_copy
-* drop geo_ml1987_2012_copy
-drop geo_nm1992_2013_copy
-* drop geo_sn2012_2014_copy geo_sn2015_2016_copy
-drop geoalt_np1996_2016_copy
-
-foreach var of varlist geo_bd1994_2014-geo_zw1994_2015 {
-decode `var', gen(`var'str)
-}
-* drop geo_cm2004_2011str
-* drop geo_gn1999_2012str geo_gn2005_2012str
-drop geoalt_mw2010_2016str
-* drop geoalt_ng2008_2013str
-replace geo_rw1992_2005str = "" if year == 2005
-* drop geo_tz1991_2015str
-* drop geo_ug2006_2011str
-*my change:
-drop geo_ug2006_2016str
-drop geo_jo1990_2017str geo_jo2007_2017str
-***drop geo_eg1988_2014str
-*drop geo_gn1999_2012str
-*drop geo_gn2005_2012str
-drop geoalt_ls2004_2014str
-* drop geo_ml1987_2012str
-drop geo_nm1992_2013str
-* drop geo_sn2012_2014str geo_sn2015_2016str
-drop geoalt_np1996_2016str
-
-egen region_temp = rowmax(geo_*_copy geoalt_*_copy)
-drop geo_*copy geoalt*_copy
-
-gen subnational = country*100 + region_temp
-replace subnational = country*100 if subnational == .
-
-
-egen region_label_t_gen = concat(geo*str)
-gen region_label_gen = ct + " " + substr(region_label_t_gen,1,30)
-egen idregion_gen = group(region_label_gen)
-label variable idregion_gen "Subnational region identifier - general"
-
-sort subnational
-lab def subnational_gen 1 "temp"
-levelsof(idregion_gen), local(levels)
-
-foreach l of local levels {
-gen temp = ""
-replace temp = region_label_gen if idregion_gen == `l'
-levelsof(temp), local(templabel)
-lab def reg_label_gen `l' `templabel', modify
-drop temp
-}
-label values idregion_gen reg_label_gen
-label variable region_label_gen "Full subnational region labels - general"
-drop subnational
-drop geo*str region_temp
-drop region_label_t_gen
-rename idregion_gen subnational
-label variable subnational "subnational regions"
-order subnational, a(country)
-
-** End general region creation **
-
-drop idhspsu caseid hhid psu strata domain hhnum clusterno drinkwtr ct region_label_gen newsbrig tvbrig radiobrig decbighh decdailypur decfamvisit decfemearn decfemhcare sxcanrefuse nosexothwf nosextired dvaargue dvaburnfood dvagoout dvaifnosex dvanegkid dveever dvppush dvpslap bhcpermit 
-
-drop geo*
-
-merge m:m dhsid using "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data\GIS data\master_DHS_GIS.dta", nogen
-keep in 1/1933678
-*keep in 1/1904087
-
-generate travel_times_c=.
-replace travel_times_c=0 if travel_times==0
-replace travel_times_c=1 if travel_times <= 50 & travel_times > 0
-replace travel_times_c=2 if travel_times <= 100 & travel_times > 50
-replace travel_times_c=3 if travel_times <= 250 & travel_times > 100
-replace travel_times_c=4 if travel_times <= 500 & travel_times > 250
-replace travel_times_c=5 if travel_times > 500 & travel_times !=.
-label define ttl 0 "0 hours" 1 "0-50 hours" 2 "50-100 hours" 3 "100-250 hours" 4 "250-500 hours" 5 "500+ hours"
-label values travel_times_c ttl
-label variable travel_times_c "Travel time to a settlement of 50,000 or more people, categories"
-
-** Organizing the SMOD variable
-
-gen smod =.
-replace smod = smod_population_2000 if year==1996
-replace smod = smod_population_2000 if year==1997
-replace smod = smod_population_2000 if year==1998
-replace smod = smod_population_2000 if year==1999
-replace smod = smod_population_2000 if year==2000
-replace smod = smod_population_2000 if year==2001
-replace smod = smod_population_2000 if year==2002
-replace smod = smod_population_2000 if year==2003
-replace smod = smod_population_2000 if year==2004
-replace smod = smod_population_2000 if year==2005
-replace smod = smod_population_2000 if year==2006
-replace smod = smod_population_2000 if year==2007
-replace smod = smod_population_2015 if year==2008
-replace smod = smod_population_2015 if year==2009
-replace smod = smod_population_2015 if year==2010
-replace smod = smod_population_2015 if year==2011
-replace smod = smod_population_2015 if year==2012
-replace smod = smod_population_2015 if year==2013
-replace smod = smod_population_2015 if year==2014
-replace smod = smod_population_2015 if year==2015
-replace smod = smod_population_2015 if year==2016
-replace smod = smod_population_2015 if year==2017
-replace smod = smod_population_2015 if year==2018
-replace smod = . if smod==-9999
-
-label variable smod "SMOD population"
-label define smodl 0 "unpopulated" 1 "rural areas" 2 "low density urban clusters" 3 "high density urban centers"
-label values smod smodl
-
-drop smod_*
-
-*merge m:m dhsid using "C:\Users\Nir\Documents\Projects\2020\Early warning systems\DHS data\gis data\spatial join - prio-grid\master_DHS_spatialjoin.dta", nogen
-*keep in 1/1904087
-
-*drop mountains_mean droughtyr_spi excluded diamsec_dist diamsec_dist_s petroleum_dist petroleum_dist_s
-
-order smod, a(urban)
-order travel_times, a(smod)
-order travel_times_c, a(travel_times)
-*/
-drop geo*
 *** I am exluding Liberia as there is no data on attitudes in 2007
 recode sample (5006 10802 12003 18001 20402 23102 28804 32402 35603 40003 40404 42601 45003 45003 45402 46603 50802 51603 52402 56203 56603 58603 64603 68604 71603 80003 81806 83404 85403 89404 = 1 "First wave") (5007 10803 12004 18002 20404 23104 28806 32403 35604 40007 40406 42603 45004 45004 45405 46605 50803 51604 52405 56204 56605 58604 64606 68610 71605 80006 81808 83406 85404 89405 = 2 "Second wave") (nonmiss=.), gen(waves2)
 label variable waves2 "Maximum variation two waves"
@@ -699,23 +410,6 @@ order waves3, a(waves2)
 *recode sample (5005 5006 10802 12003 18001 20402 20403 23102 23103 28804 28805 32402 35603 40003 40004 40404 40405 40006 42601 42602 45003 45402 45403 45404 46603 46604  50802 51601 51603 52402 52403 52404 56203 56603 56604 58603 64602 64603 64604 68604 68605 68606 68607 68608 68609 71603 71604 71605 80003 80004 80005 81805 81806 83404 83405 85403 89404 = 0 "previous waves") (nonmiss=1 "last wave"), gen(last_wave)
 *label variable last_wave "last wave"
 *order last_wave, a(last_wave1)
-
-
-* Regions of the African Union
-* North egypt 818; marocco 504; tunisia 788; 
-* Southern angola 24; lesotho 426; malawi 454; mozambique 508; namibia 516; south africa 710; zambia 894; zimbabwe 716
-* East ethiopia 231; kenya 404; madagascar 450; rwanda 646; sudan 729; tanzania 834; uganda 800
-* West benin 204; burkina faso 854; cote d'ivoire 384; ghana 288; guinea 324; mali 466; niger 562; nigeria 566; senegal 686
-* Central burundi 108; cameroon 120; congo democratic republic 180; 
-* South Asia Afghanistan 4; Bangladesh 50; India 356; Nepal 524; Pakistan 586; 
-* Myanmar 104; Jordan 400. As Jordan doesn't enter into our decoupling variable, I leave it out. Myanmar is added to South Asia.
-
-recode country (818 504 788 = 1 "North Africa") (24 426 454 508 516 710 894 716 = 2 "Southern Africa") (231 404 450 646 729 834 800 = 3 "East Africa") (204 854 384 288 324 466 562 566 686 = 4 "West Africa") (108 120 180 = 5 "Central Africa") (4 50 356 524 586 104 = 6 "South Asia") (nonmiss=.), gen(regions)
-label variable regions "Supranational regions"
-order regions, a(waves3)
-
-* recode year (1986/1996 = 1 "1986 to 1996") (1997/2007 = 2 "1997 to 2007") (2008/2017 = 3 "2008 to 2017"), gen(decades)
-* label variable decades "decades of sample"
 
 
 * Fix some labels
