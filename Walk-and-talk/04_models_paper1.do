@@ -21,7 +21,14 @@ use 02_women.dta
 keep if ever_married==1
 drop if age<25
 
-drop waves3 decoupling_3a decoupling_3b age5year marstat agefrstmar cheb drinkwtr currwork employment wkemploywhen wealths newsbrig tvbrig radiobrig sxcanrefuse nosexothwf nosextired dveever dvppush dvpslap pipedwtr
+drop waves3 decoupling_3a decoupling_3b age5year marstat agefrstmar cheb currwork employment wkemploywhen wealths newsbrig tvbrig radiobrig 
+
+* Wave 2 of Niger and Tanzania don't have data on religion. Yet somehow it was used in the models.
+drop if sample==56203
+drop if sample==56204
+drop if sample==83404
+drop if sample==83405
+drop if sample==83406
 
 *** Multinomial Logistic Regression ***
 
