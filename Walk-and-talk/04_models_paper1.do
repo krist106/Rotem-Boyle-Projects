@@ -23,34 +23,35 @@ drop if age<25
 drop waves3 decoupling_3a decoupling_3b age5year marstat agefrstmar cheb currwork employment wkemploywhen wealths newsbrig tvbrig radiobrig 
 
 * Wave 2 of Niger and Tanzania don't have data on religion. Yet somehow it was used in the models.
-drop if sample==56203
-drop if sample==56204
-drop if sample==83404
-drop if sample==83405
-drop if sample==83406
+drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
 
 *** Multinomial Logistic Regression ***
 
 *** Note the models are without rrr
  *ib3.agefrstmar_c
 * Baseline model
-mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf i.waves2 i.country [pw=popwt], base(0)
+quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf i.waves2 i.country [pw=popwt], base(0)
 estimates store mo1
 
 * Household
-mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap ib3 i.waves2 i.country [pw=popwt], base(0)
+quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.waves2 i.country [pw=popwt], base(0)
 estimates store mo2
 
 * Full - with local institutions
-mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
+quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
 estimates store mo3
 
 *esttab mo1 using model1_1.rtf, noomitted eform label wide unstack replace se(3)
 *esttab mo2 using model1_2.rtf, noomitted eform label wide unstack replace se(3)
 *esttab mo3 using model1_3.rtf, noomitted eform label wide unstack replace se(3)
 
-esttab mo1 mo2 mo3 using model1014.rtf, ///
-noomitted nobaselevels eform label wide replace se(3) compress unstack  ///
+esttab mo1 mo2 mo3 using model1106.rtf, ///
+noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Baseline model" "Household" "Local institutions") 
+
+esttab mo1 mo2 mo3 using model1106.csv, ///
+noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Baseline model" "Household" "Local institutions") 
 
