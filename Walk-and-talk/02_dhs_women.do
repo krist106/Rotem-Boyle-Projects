@@ -86,7 +86,7 @@ label variable religion_4c "Religion"
 order religion_4c, after(religion_c)
 
 *Main religions
-recode religion (0=0 "None") (1000=1 "Muslim") (2000/2999=2 "Christian") (3000/3999=3 "Buddhist") (4000=4 "Hindu") (6000/6999=6 "Traditional") (9000=9 "Other") (5000 7000/7999=9) (9998=.), gen(religion_cf)
+recode religion (0=0 "No religion") (1000=1 "Muslim") (2000/2999=2 "Christian") (3000/3999=3 "Buddhist") (4000=4 "Hindu") (6000/6999=6 "Traditional") (9000=9 "Other") (5000 7000/7999=9) (9998=.), gen(religion_cf)
 label variable religion_cf "Religion"
 order religion_cf, a(religion_c)
 
@@ -195,7 +195,7 @@ replace radiobrig=0 if radioday==0
 replace radiobrig=10 if radioday==1
 
 recode radiobrig (0/2=0 no) (10/12=1 yes) (98=.), gen(radio)
-label define radiol 0 "Doesn't listens to radio" 1 "Listens to radio"
+label define radiol 0 "Doesn't listens to radio" 1 "Listens to radio frequently"
 label values radio radiol
 label variable radio "Listens to radio frequently"
 
