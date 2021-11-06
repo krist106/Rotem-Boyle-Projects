@@ -22,10 +22,13 @@ use 02_women.dta
 
 keep if ever_married==1
 
-drop if age<25
-
+drop if age<25 | sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
+ 
 * We need a model so we can get the relevant descriptive statistics
-mlogit decoupling i.educlvl i.media_access i.urban i.wealthq_5 i.currwork_d ib1.edugap c.age c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0)
+mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf i.waves2 i.country [pw=popwt], base(0)
+
+
+*mlogit decoupling i.educlvl i.radio i.urban i.wealthq_5 i.currwork_d ib1.edugap c.age c.de2pc c.muslimpc i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store mo1
 
@@ -52,6 +55,8 @@ by(decoupling) putdocxtab(summery_table)
 putdocx save summery_table, replace
 *exportexcel(summery_table, replace)
 
+
+mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf i.waves2 i.country [pw=popwt], base(0)
 set scheme cleanplots
 
 * hist of the % categories in a cluster
@@ -95,7 +100,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -117,7 +122,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -138,7 +143,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -160,7 +165,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -181,7 +186,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -202,7 +207,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -223,7 +228,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -244,7 +249,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -265,7 +270,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -286,7 +291,7 @@ title(Discordance , size(small))) name(india)
 *bar(2, color(maroon) fintensity(inten60)) ///
 *bar(3, color(gray) fintensity(inten40)) ///
 *bar(4, color(navy) fintensity(inten60)) ///
-*legend(rows(2) stack size(small) ///
+*legend(rows(2) stack size(v.small) ///
 *order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 *3 "Supports gender equity/Not empowered in household" ///
 *4 "Rejects gender equity/Not empowered in household") ///
@@ -307,7 +312,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -328,7 +333,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -349,7 +354,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -370,7 +375,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -391,7 +396,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -412,7 +417,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -433,7 +438,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -454,7 +459,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -476,7 +481,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -498,7 +503,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -519,7 +524,7 @@ title(Discordance , size(small))) name(nigeria)
 *bar(2, color(maroon) fintensity(inten60)) ///
 *bar(3, color(gray) fintensity(inten40)) ///
 *bar(4, color(navy) fintensity(inten60)) ///
-*legend(rows(2) stack size(small) ///
+*legend(rows(2) stack size(v.small) ///
 *order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 *3 "Supports gender equity/Not empowered in household" ///
 *4 "Rejects gender equity/Not empowered in household") ///
@@ -540,7 +545,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -561,7 +566,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -582,7 +587,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -603,7 +608,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -624,7 +629,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -646,7 +651,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -668,7 +673,7 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
@@ -690,11 +695,11 @@ bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
-legend(rows(2) stack size(small) ///
+legend(rows(2) stack size(v.small) ///
 order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
 3 "Supports gender equity/Not empowered in household" ///
 4 "Rejects gender equity/Not empowered in household") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(zambia)
 
-grc1leg bangladesh benin burkina burundi cameroon congo egypt ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal nigeria rwanda senegal uganda zambia zimbabwe, cols(7)
+grc1leg bangladesh benin burkina burundi cameroon congo egypt ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal nigeria rwanda senegal uganda zambia zimbabwe, cols(5) ysize(50) xsize(40)
