@@ -122,8 +122,7 @@ coefplot (., if(@ll<1 & @ul>1)) (., if(@ll>1 | @ul<1)) ., keep(walk_notalk:) byl
  xtitle(Relative Risk Ratio) ///
  note("Significant coefficients are displayed in blue and nonsignificant coefficients are displayed in red")
 
-
-
+ 
 *table of AMEs, with a group comparison model
 
 * for outcome0
