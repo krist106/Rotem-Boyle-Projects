@@ -75,19 +75,19 @@ order mar18pc, a(mar18)
 recode religion (1000=1) (2000/2999=2) (4000=3) (9998=.) (nonmiss=.), gen(religion_c)
 label define reli_c 1 "Muslim" 2 "Christian" 3 "Hindu"
 label values religion_c reli_c
-label variable religion_c "Religion by categories"
+label variable religion_c "Religion"
 order religion_c, after(religion)
 
 *Four main religions
 recode religion (1000=1) (2100=2) (2300/2901=3) (4000=4) (9998=.) (nonmiss=.), gen(religion_4c)
 label define reli_4c 1 "Muslim" 2 "Catholic" 3 "Protestant" 4 "Hindu"
 label values religion_4c reli_4c
-label variable religion_4c "Religion by categories"
+label variable religion_4c "Religion"
 order religion_4c, after(religion_c)
 
 *Main religions
 recode religion (0=0 "None") (1000=1 "Muslim") (2000/2999=2 "Christian") (3000/3999=3 "Buddhist") (4000=4 "Hindu") (6000/6999=6 "Traditional") (9000=9 "Other") (5000 7000/7999=9) (9998=.), gen(religion_cf)
-label variable religion_cf "Religion by categories"
+label variable religion_cf "Religion"
 order religion_cf, a(religion_c)
 
 * Three main religions + other
@@ -161,8 +161,9 @@ order employment, a(currwork_d)
 * educlvl - highest educational level
 * 0=no education; 1=primary; 2=secondary; 3=higher; 8=missing
 replace educlvl=. if educlvl==8
-label define educlvl_l 0 "Women's edu: None" 1 "Women's edu: Primary" 2 "Women's edu: Secondary" 3 "Women's edu: Higher"
+label define educlvl_l 0 "None" 1 "Primary school" 2 "Secondary school" 3 "Higher"
 label values educlvl educlvl_l
+label variable educlvl "Education"
 
 * edyrtotal - women's total years of education
 * 0/27=years of education 96=inconsistent; 97=don't know; 98=missing
@@ -181,9 +182,9 @@ replace husedyrs =. if husedyrs>94
 * Education gap
 gen edugap = educlvl - husedlvl
 recode edugap (0 = 1) (1/3 = 2) (-3/-1 = 0)
-label define edugapl 0 "Woman has less educ" 1 "Woman have equal edu as partner" 2 "Woman has more educ"
+label define edugapl 0 "Woman has less educ" 1 "Woman have equal educ as partner" 2 "Woman has more educ"
 label values edugap edugapl
-label variable edugap "Woman have higher education than partner"
+label variable edugap "Education gap"
 order edugap, a(husedyrs)
 
 
@@ -196,7 +197,7 @@ replace radiobrig=10 if radioday==1
 recode radiobrig (0/2=0 no) (10/12=1 yes) (98=.), gen(radio)
 label define radiol 0 "Doesn't listens to radio" 1 "Listens to radio"
 label values radio radiol
-label variable radio "woman listens to radio"
+label variable radio "Listens to radio frequently"
 
 * newsbrig - reads newspaper: bridging variable
 * 0=no; 1=not at all; 2=less than once a week; 10=yes; 11=at least once a week; 12=almost every day; 98=missing, 99=niu
@@ -381,9 +382,9 @@ order de4pc, a(de4)
 
 
 recode urban (2 = 0) (1 = 1)
-label define urbanl 0 "Rural" 1 "Urban"
+label define urbanl 0 "Rural residence" 1 "Urban residence"
 label values urban urbanl
-label variable urban "Urban"
+label variable urban "Urban residence"
 
 
 *** I am exluding Liberia as there is no data on attitudes in 2007
@@ -414,9 +415,10 @@ order waves3, a(waves2)
 
 * Fix some labels
 
-label define wealthq_l 1 "Household wealth - Poorest" 2 "Household wealth - Poorer" 3 "Household wealth - Middle" ///
-4 "Household wealth - Richer" 5 "Household wealth - Richest"
+label define wealthq_l 1 "Poorest wealth quintile" 2 "Poor wealth quintile" 3 "Middle wealth quintile" ///
+4 "Rich wealth quintile" 5 "Richest wealth quintile"
 label values wealthq wealthq_l
+label variable wealthq "Household wealth"
 
 label variable age "Age"
 
