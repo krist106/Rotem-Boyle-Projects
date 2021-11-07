@@ -52,6 +52,14 @@ by(decoupling) putdocxtab(summery_table)
 putdocx save summery_table, replace
 *exportexcel(summery_table, replace)
 
+* I created "only_news" to identify women who only read newspapers and don't listen to radio or watch TV
+tab only_news [fw=popwt]
+* only 0.92% of the sample
+
+*For general discriptive of religion_4c
+tab religion_cf [fw=popwt]
+
+tab edugap [fw=popwt]
 
 set scheme cleanplots
 
@@ -66,7 +74,34 @@ graph combine hist1 hist2 hist3 hist4
 
 ***Change of decoupling over time
 
+tab decoupling country [iweight=popwt] if waves2==1 & model_sample==1, co
+tab decoupling country [iweight=popwt] if waves2==2 & model_sample==1, co
+
 tab decoupling waves2 [iweight=popwt] if model_sample==1, co // Here we use the native POPWT
+
+***This shows country level figures and change
+*** ssc install asgen
+by sample, sort: asgen de1_country_w1 =  de1 if waves2==1, w(popwt)
+by sample, sort: asgen de1_country_w2 = de1 if waves2==2, w(popwt)
+
+by sample, sort: asgen de2_country_w1 = de2 if waves2==1, w(popwt)
+by sample, sort: asgen de2_country_w2 = de2 if waves2==2, w(popwt)
+
+by sample, sort: asgen de3_country_w1 = de3 if waves2==1, w(popwt)
+by sample, sort: asgen de3_country_w2 = de3 if waves2==2, w(popwt)
+
+by sample, sort: asgen de4_country_w1 = de4 if waves2==1, w(popwt)
+by sample, sort: asgen de4_country_w2 = de4 if waves2==2, w(popwt)
+
+
+collapse (mean) de1_country_w1 de1_country_w2 de2_country_w1 de2_country_w2 de3_country_w1 de3_country_w2 de4_country_w1 de4_country_w2, by(country)
+
+gen de1_country_di = (de1_country_w2 - de1_country_w1) * 100
+gen de2_country_di = (de2_country_w2 - de2_country_w1) * 100
+gen de3_country_di = (de3_country_w2 - de3_country_w1) * 100
+gen de4_country_di = (de4_country_w2 - de4_country_w1) *100
+
+graph bar (mean) de1_country_di, blabel(bar, format(%9.3g)) by(country)
 
 *** Religion over time
 tab decoupling religion_4c if model_sample==1 & waves2==1, co
@@ -699,3 +734,6 @@ symplacement(center) ///
 title(Discordance , size(small))) name(zambia)
 
 grc1leg bangladesh benin burkina burundi cameroon congo egypt ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal nigeria rwanda senegal uganda zambia zimbabwe, cols(5) ysize(50) xsize(40)
+
+* sorted by walk_talk first wave
+grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar, cols(5) ysize(50) xsize(40)
