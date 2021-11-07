@@ -101,7 +101,20 @@ gen de2_country_di = (de2_country_w2 - de2_country_w1) * 100
 gen de3_country_di = (de3_country_w2 - de3_country_w1) * 100
 gen de4_country_di = (de4_country_w2 - de4_country_w1) *100
 
+set scheme plotplain
 graph bar (mean) de1_country_di, blabel(bar, format(%9.3g)) by(country)
+
+graph bar (mean) de1_country_di (mean) de2_country_di (mean) de3_country_di (mean) de4_country_di, blabel(bar, position(base) format(%9.2g)) by(, title(Percent change between waves, size(medsmall))) by(country, total) ///
+legend(rows(2) stack size(vsmall) ///
+order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
+3 "Supports gender equity/Not empowered in household" ///
+4 "Rejects gender equity/Not empowered in household")) ///
+intensity(25) ///
+bar(1, color(maroon) fintensity(inten80)) ///
+bar(2, color(maroon) fintensity(inten60)) ///
+bar(3, color(gray) fintensity(inten40)) ///
+bar(4, color(navy) fintensity(inten60)) 
+
 
 *** Religion over time
 tab decoupling religion_4c if model_sample==1 & waves2==1, co
@@ -733,7 +746,28 @@ order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity
 symplacement(center) ///
 title(Discordance , size(small))) name(zambia)
 
+splitvallabels waves2, length(6) 
+catplot decoupling waves2 [iweight=popwt] if model_sample==1, ///
+percent(waves2) ///
+var1opts(label(labsize(small))) ///
+var2opts(label(labsize(small)) relabel(`r(relabel)') ) ///
+ytitle("Level of support", size(small)) ///
+title("Total" ///
+, span size(medium)) ///
+intensity(25) ///
+asyvars stack ///
+bar(1, color(maroon) fintensity(inten80)) ///
+bar(2, color(maroon) fintensity(inten60)) ///
+bar(3, color(gray) fintensity(inten40)) ///
+bar(4, color(navy) fintensity(inten60)) ///
+legend(rows(2) stack size(v.small) ///
+order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
+3 "Supports gender equity/Not empowered in household" ///
+4 "Rejects gender equity/Not empowered in household") ///
+symplacement(center) ///
+title(Discordance , size(small))) name(total)
+
 grc1leg bangladesh benin burkina burundi cameroon congo egypt ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal nigeria rwanda senegal uganda zambia zimbabwe, cols(5) ysize(50) xsize(40)
 
 * sorted by walk_talk first wave
-grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar, cols(5) ysize(50) xsize(40)
+grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar total, cols(5) ysize(50) xsize(40)
