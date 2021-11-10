@@ -122,6 +122,66 @@ coefplot (., if(@ll<1 & @ul>1)) (., if(@ll>1 | @ul<1)) ., keep(walk_notalk:) byl
  xtitle(Relative Risk Ratio) ///
  note("Significant coefficients are displayed in blue and nonsignificant coefficients are displayed in red")
 
+
+* To calculate and plot the average marginal effects
+* This should work less idelly for continuous variables (age, etc.) 
+set scheme cleanplots
+
+est restore mo3
+quietly margins, dydx( educlvl radio urban religion_cf wealthq currwork_d edugap muslimmaj) post
+
+* Here all the variables listed in the margins' dydx are included
+coefplot ///
+(, keep(*:1._predict) label(Walk and talk)) ///
+(, keep(*:2._predict) label(Walk not talk)) ///
+(, keep(*:3._predict) label(Talk not walk))  ///
+(, keep(*:4._predict) label(Neither))  ///
+, swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects)
+
+* To help with the readibility, the variable list is divided into two:
+coefplot ///
+(, keep(*:1._predict) label(Walk and talk)) ///
+(, keep(*:2._predict) label(Walk not talk)) ///
+(, keep(*:3._predict) label(Talk not walk))  ///
+(, keep(*:4._predict) label(Neither)) ,  ///
+drop (*wealthq *currwork_d *edugap *muslimmaj) ///
+swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME1)
+
+coefplot ///
+(, keep(*:1._predict) label(Walk and talk)) ///
+(, keep(*:2._predict) label(Walk not talk)) ///
+(, keep(*:3._predict) label(Talk not walk))  ///
+(, keep(*:4._predict) label(Neither)) ,  ///
+drop (*educlvl *radio *urban *religion_cf) ///
+swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME2)
+
+grc1leg AME1 AME2, ycommon rows(2)
+ 
+ * Or divided into three sub-figures
+coefplot ///
+(, keep(*educlvl:1._predict *radio:1._predict *urban:1._predict) label(Walk and talk)) ///
+(, keep(*educlvl:2._predict *radio:2._predict *urban:2._predict) label(Walk not talk)) ///
+(, keep(*educlvl:3._predict *radio:3._predict *urban:3._predict) label(Talk not walk))  ///
+(, keep(*educlvl:4._predict *radio:4._predict *urban:4._predict) label(Neither)) ,  ///
+swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME3)
+
+coefplot ///
+(, keep(*religion_cf:1._predict *wealthq:1._predict) label(Walk and talk)) ///
+(, keep(*religion_cf:2._predict *wealthq:2._predict) label(Walk not talk)) ///
+(, keep(*religion_cf:3._predict *wealthq:3._predict) label(Talk not walk))  ///
+(, keep(*religion_cf:4._predict *wealthq:4._predict) label(Neither)) ,  ///
+swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME4)
+
+coefplot ///
+(, keep(*currwork_d:1._predict *edugap:1._predict *muslimmaj:1._predict) label(Walk and talk)) ///
+(, keep(*currwork_d:2._predict *edugap:2._predict *muslimmaj:2._predict) label(Walk not talk)) ///
+(, keep(*currwork_d:3._predict *edugap:3._predict *muslimmaj:3._predict) label(Talk not walk))  ///
+(, keep(*currwork_d:4._predict *edugap:4._predict *muslimmaj:4._predict) label(Neither)) ,  ///
+swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME5)
+
+grc1leg AME3 AME4 AME5, ycommon rows(3)
+ 
+ 
  
 *table of AMEs, with a group comparison model
 
@@ -1039,3 +1099,194 @@ marginsplot, name(model4) title(Neither walking nor talking)
 grc1leg model1 model2 model3 model4, ycommon cols(2) ysize(40) xsize(80)
 */
 
+******* 
+
+*** Probebly not needed:
+/*
+
+set scheme cleanplots
+
+* Urban by % Walk and talk
+est restore mo3
+margins, at(de2pc=(0(10)100) urban=(0 1)) pr(outcome(0))
+marginsplot, ///
+title("Probability of Walking and Talking" "for Urban by % Walk and Talk", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_de2pc1) 
+
+margins, at(de2pc=(0(10)100) urban=(0 1)) pr(outcome(1))
+marginsplot, ///
+title("Probability of Walking but not Talking" "for Urban by % Walk and Talk", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_de2pc2)
+
+margins, at(de2pc=(0(10)100) urban=(0 1)) pr(outcome(2))
+marginsplot, ///
+title("Probability of not Walking but Talking" "for Urban by % Walk and Talk", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_de2pc3)
+
+margins, at(de2pc=(0(10)100) urban=(0 1)) pr(outcome(3))
+marginsplot, ///
+title("Probability of Neither Walking nor Talking" "for Urban by % Walk and Talk", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_de2pc4)
+
+grc1leg urban_de2pc1 urban_de2pc2 urban_de2pc3 urban_de2pc4, cols(2)
+*** ycommon  *** as needed
+
+
+* Urban by % Walk and talk
+est restore mo3
+margins, at(de2pc=(0(10)100) urban=(0 1)) over(muslimmaj) pr(outcome(0))
+marginsplot, ///
+title("Probability of Walking and Talking" "for Urban by % Walk and Talk and Muslim majority", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_de2pc5) 
+
+margins, at(de2pc=(0(10)100) urban=(0 1)) over(muslimmaj) pr(outcome(1))
+marginsplot, ///
+title("Probability of Walking but not Talking" "for Urban by % Walk and Talk and Muslim majority", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_de2pc6)
+
+margins, at(de2pc=(0(10)100) urban=(0 1)) over(muslimmaj) pr(outcome(2))
+marginsplot, ///
+title("Probability of not Walking but Talking" "for Urban by % Walk and Talk and Muslim majority", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_de2pc7)
+
+margins, at(de2pc=(0(10)100) urban=(0 1)) over(muslimmaj) pr(outcome(3))
+marginsplot, ///
+title("Probability of Neither Walking nor Talking" "for Urban by % Walk and Talk and Muslim majority", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(urban_de2pc8)
+
+grc1leg urban_de2pc5 urban_de2pc6 urban_de2pc7 urban_de2pc8, cols(2)
+*** ycommon  *** as needed
+
+* Radio by % Walk and talk
+est restore mo3
+margins, at(de2pc=(0(10)100) radio=(0 1)) over(muslimmaj) pr(outcome(0))
+marginsplot, ///
+title("Probability of Walking and Talking" "for Radio by % Walk and Talk and Muslim majority", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(radio_de2pc1) 
+
+margins, at(de2pc=(0(10)100) radio=(0 1)) over(muslimmaj) pr(outcome(1))
+marginsplot, ///
+title("Probability of Walking but not Talking" "for Radio by % Walk and Talk and Muslim majority", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(radio_de2pc2)
+
+margins, at(de2pc=(0(10)100) radio=(0 1)) over(muslimmaj) pr(outcome(2))
+marginsplot, ///
+title("Probability of not Walking but Talking" "for Radio by % Walk and Talk and Muslim majority", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(radio_de2pc3)
+
+margins, at(de2pc=(0(10)100) radio=(0 1)) over(muslimmaj) pr(outcome(3))
+marginsplot, ///
+title("Probability of Neither Walking nor Talking" "for Radio by % Walk and Talk and Muslim majority", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(radio_de2pc4)
+
+grc1leg radio_de2pc1 radio_de2pc2 radio_de2pc3 radio_de2pc4, cols(2)
+*** ycommon  *** as needed
+
+
+* Radio by % Walk and talk
+est restore mo3
+margins, at(de2pc=(0(10)100) currwork_d=(0 1)) over(edugap) pr(outcome(0))
+marginsplot, ///
+title("Probability of Walking and Talking" "for Currently Working by Education Gap", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(work_de2pc1) 
+
+margins, at(de2pc=(0(10)100) currwork_d=(0 1)) over(edugap) pr(outcome(1))
+marginsplot, ///
+title("Probability of Walking but not Talking" "for Currently Working by Education Gap", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(work_de2pc2)
+
+margins, at(de2pc=(0(10)100) currwork_d=(0 1)) over(edugap) pr(outcome(2))
+marginsplot, ///
+title("Probability of not Walking but Talking" "for Currently Working by Education Gap", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(work_de2pc3)
+
+margins, at(de2pc=(0(10)100) currwork_d=(0 1)) over(edugap) pr(outcome(3))
+marginsplot, ///
+title("Probability of Neither Walking nor Talking" "for Currently Working by Education Gap", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(work_de2pc4)
+
+grc1leg work_de2pc1 work_de2pc2 work_de2pc3 work_de2pc4, cols(2)
+*** ycommon  *** as needed
+
+
+* Radio by % Walk and talk
+est restore mo3
+margins, at(currwork_d=(0 1)) over(edugap) pr(outcome(0))
+marginsplot, ///
+title("Probability of Walking and Talking" "for Currently Working by Education Gap", size(*.75)) ///
+ytitle("Pr(Walk and Talk)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80)
+
+ name(work_de2pc1) 
+
+margins, at(de2pc=(0(10)100) currwork_d=(0 1)) over(edugap) pr(outcome(1))
+marginsplot, ///
+title("Probability of Walking but not Talking" "for Currently Working by Education Gap", size(*.75)) ///
+ytitle("Pr(Walking but not Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(work_de2pc2)
+
+margins, at(de2pc=(0(10)100) currwork_d=(0 1)) over(edugap) pr(outcome(2))
+marginsplot, ///
+title("Probability of not Walking but Talking" "for Currently Working by Education Gap", size(*.75)) ///
+ytitle("Pr(Not Walking but Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(work_de2pc3)
+
+margins, at(de2pc=(0(10)100) currwork_d=(0 1)) over(edugap) pr(outcome(3))
+marginsplot, ///
+title("Probability of Neither Walking nor Talking" "for Currently Working by Education Gap", size(*.75)) ///
+ytitle("Pr(Neither Walking nor Talking)", size(*.75)) ///
+xtitle("% Walk not talk", size(*.75) ) ///
+ysize(40) xsize(80) name(work_de2pc4)
+
+grc1leg work_de2pc1 work_de2pc2 work_de2pc3 work_de2pc4, cols(2)
+
+margins, at(currwork_d=(0 1)) over(edugap)
+
+
+quietly mlogit decoupling c.mar18pc##(i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc ib2.muslimmaj) i.waves2 i.country [pw=popwt], base(0)
+estimates store mo4
+
+est restore mo3
+margins, at(mar18pc=(0(10)100) currwork_d=(0 1))
+marginsplot, name(test1)
+
+est restore mo4
+margins, at(mar18pc=(0(10)100) currwork_d=(0 1))
+marginsplot, name(test2)
+
+*/
