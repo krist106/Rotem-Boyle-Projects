@@ -136,7 +136,7 @@ coefplot ///
 (, keep(*:2._predict) label(Walk not talk)) ///
 (, keep(*:3._predict) label(Talk not walk))  ///
 (, keep(*:4._predict) label(Neither))  ///
-, swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects)
+, swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) 
 
 * To help with the readibility, the variable list is divided into two:
 coefplot ///
@@ -163,26 +163,43 @@ coefplot ///
 (, keep(*educlvl:2._predict *radio:2._predict *urban:2._predict) label(Walk not talk)) ///
 (, keep(*educlvl:3._predict *radio:3._predict *urban:3._predict) label(Talk not walk))  ///
 (, keep(*educlvl:4._predict *radio:4._predict *urban:4._predict) label(Neither)) ,  ///
-swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME3)
+ mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) /// 
+	swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME3)
 
 coefplot ///
 (, keep(*religion_cf:1._predict *wealthq:1._predict) label(Walk and talk)) ///
 (, keep(*religion_cf:2._predict *wealthq:2._predict) label(Walk not talk)) ///
 (, keep(*religion_cf:3._predict *wealthq:3._predict) label(Talk not walk))  ///
 (, keep(*religion_cf:4._predict *wealthq:4._predict) label(Neither)) ,  ///
-swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME4)
+ mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME4)
 
 coefplot ///
 (, keep(*currwork_d:1._predict *edugap:1._predict *muslimmaj:1._predict) label(Walk and talk)) ///
 (, keep(*currwork_d:2._predict *edugap:2._predict *muslimmaj:2._predict) label(Walk not talk)) ///
 (, keep(*currwork_d:3._predict *edugap:3._predict *muslimmaj:3._predict) label(Talk not walk))  ///
 (, keep(*currwork_d:4._predict *edugap:4._predict *muslimmaj:4._predict) label(Neither)) ,  ///
-swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME5)
+ mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME5)
 
 grc1leg AME3 AME4 AME5, ycommon rows(3)
  
+
+*est restore mo3
+*mchange educlvl radio urban age religion_cf wealthq currwork_d edugap de2pc mar18pc muslimmaj, amount(sd) brief
+
+*mchangeplot educlvl radio urban age, symbols (D1 D2 D3 D4) sig(.05) leftmargin(5)
  
- 
+
 *table of AMEs, with a group comparison model
 
 * for outcome0
