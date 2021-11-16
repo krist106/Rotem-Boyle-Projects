@@ -10,11 +10,73 @@
 
 cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 clear
-use idhs_00029.dta, replace
+use idhs_00030.dta, replace
 * use 02_women.dta, replace
 **********************
 *** Organizing the women's variables ***
 **********************
+
+replace dvppushfq = 0 if dvppush==0
+replace dvppushfq = 20 if dvppush==1
+recode dvppushfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvpush_di)
+
+replace dvpslapfq = 0 if dvpslap==0
+replace dvpslapfq = 20 if dvpslap==1
+recode dvpslapfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvpslap_di)
+
+replace dvptwistfq = 0 if dvptwist==0
+replace dvptwistfq = 20 if dvptwist==1
+recode dvptwistfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvptwist_di)
+
+replace dvppunchfq = 0 if dvppunch==0
+replace dvppunchfq = 20 if dvppunch==1
+recode dvppunchfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvppunch_di)
+ 
+replace dvpchokefq = 0 if dvpchoke==0
+replace dvpchokefq = 20 if dvpchoke==1
+recode dvpchokefq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvpchoke_di)
+
+replace dvpkickfq = 0 if dvpkick==0
+replace dvpkickfq = 20 if dvpkick==1
+recode dvpkickfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvpkick_di)
+
+replace dvpsexfq = 0 if dvpsex==0
+recode dvpsexfq (0=0)(13=0)(10/12=1)(20=1)(90/100=.), gen(di_dvpsex)
+
+replace dvpsexothfq = 0 if dvpsexoth==0
+recode dvpsexothfq (0=0)(13=0)(11/12=1)(20=1)(90/100=.), gen(di_dvpsexoth)
+
+
+* Two ways of asking about weapons.
+* For Cameroon and Cote d'Ivoire:
+replace dvpknifethfq = 0 if dvpknifeth==0
+recode dvpknifethfq (0=0)(13=0)(11/12=1)(20=1)(90/100=.), gen(di_dvpknife_th)
+* For Cote d'Ivoire only:
+replace dvpknifeusef = 0 if dvpknifeuse==0
+recode dvpknifeusef (0=0)(13=0)(11/12=1)(20=1)(90/100=.), gen(di_dvpknife_att)
+* For all other samples:
+replace dvpknfthusef = 0 if dvpknfthuse==0
+recode dvpknfthusef(0=0)(13=0)(11/12=1)(20=1)(90/100=.), gen(di_dvpknife1)
+* Put together:
+gen di_dvpknife=.
+replace di_dvpknife = 0 if di_dvpknife1==0
+replace di_dvpknife = 1 if di_dvpknife1==1
+replace di_dvpknife = 0 if di_dvpknife_th==0
+replace di_dvpknife = 1 if di_dvpknife_th==1
+replace di_dvpknife = 1 if di_dvpknife_att==1
+
+
+****************************************************************
+*** Combine all IPV variables into one dichotomous variable  ***
+****************************************************************
+
+egen ipv_any = rowmax(di_dvppush di_dvpslap di_dvppunch di_dvpchoke di_dvpkick di_dvpknife di_dvpsex di_dvpsexoth)
+
+tab sample ipv_any [aw=dvweight]
+ 
+* Need to limit this to correct sample size
+graph hbar (mean) ipv_any [aweight = dvweight], over(sample, label(angle(horizontal))) ytitle(Percent experiencing any IPV)
+
 
 
 ** To construct something like POPWT
