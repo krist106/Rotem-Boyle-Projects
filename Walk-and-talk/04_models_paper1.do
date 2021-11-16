@@ -130,6 +130,8 @@ set scheme cleanplots
 est restore mo3
 quietly margins, dydx( educlvl radio urban religion_cf wealthq currwork_d edugap muslimmaj) post
 
+*margins, dydx(*) post
+
 * Here all the variables listed in the margins' dydx are included
 coefplot ///
 (, keep(*:1._predict) label(Walk and talk)) ///
