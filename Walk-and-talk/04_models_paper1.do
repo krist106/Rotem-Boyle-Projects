@@ -33,6 +33,7 @@ drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==
  *ib3.agefrstmar_c
 * Baseline model
 quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf i.waves2 i.country [pw=popwt], base(0)
+generate model_sample=e(sample)
 estimates store mo1
 
 * Household
@@ -43,10 +44,6 @@ estimates store mo2
 quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
 estimates store mo3
 
-*esttab mo1 using model1_1.rtf, noomitted eform label wide unstack replace se(3)
-*esttab mo2 using model1_2.rtf, noomitted eform label wide unstack replace se(3)
-*esttab mo3 using model1_3.rtf, noomitted eform label wide unstack replace se(3)
-
 esttab mo1 mo2 mo3 using model1106.rtf, ///
 noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
@@ -56,6 +53,27 @@ esttab mo1 mo2 mo3 using model1106.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Baseline model" "Household" "Local institutions") 
+
+*****************
+** Using ipv_empowerment variable
+** To be sure we are looking at the same (or as close as posible) samples we used before, lets keep the sample by the first model:
+keep if model_sample==1
+
+* Note that the waves2 is removed
+quietly mlogit ipv_empowerment i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.country [pw=dvweight], base(0)
+estimates store mo5
+
+quietly mlogit ipv_empowerment i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.ipv_emp2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
+estimates store mo6
+
+esttab mo5 mo6 using model1706.rtf, ///
+noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Household" "Local institutions") 
+
+*esttab mo1 using model1_1.rtf, noomitted eform label wide unstack replace se(3)
+*esttab mo2 using model1_2.rtf, noomitted eform label wide unstack replace se(3)
+*esttab mo3 using model1_3.rtf, noomitted eform label wide unstack replace se(3)
 
 /*
 esttab mo1 mo2 mo3 using model1014.csv, ///
