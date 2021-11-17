@@ -22,6 +22,8 @@ drop if age<25
 
 drop waves3 decoupling_3a decoupling_3b age5year marstat agefrstmar cheb currwork employment wkemploywhen wealths newsbrig tvbrig radiobrig 
 
+drop dvaargue dvaburnfood dvagoout dvaifnosex dvanegkid dvppush dvppushfq dvpslap dvpslapfq dvptwist dvptwistfq dvppunch dvppunchfq dvpchoke dvpchokefq dvpkick dvpkickfq dvpknfthuse dvpknfthusef dvpknifeth dvpknifethfq dvpknifeuse dvpknifeusef dvpmsever dvpsex dvpsexfq dvpsexoth dvpsexothfq dvppush_di dvpslap_di dvptwist_di dvppunch_di dvpchoke_di dvpkick_di dvpsex_di dvpsexoth_di dvpknife_th_di dvpknife_att_di dvpknife1_di dvpknife_di dvujustargue dvujustburnfood dvujustgoout dvujustifnosex dvujustnegkid
+
 * Wave 2 of Niger and Tanzania don't have data on religion. Yet somehow it was used in the models.
 drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
 
