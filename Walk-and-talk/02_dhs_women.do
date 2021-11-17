@@ -10,72 +10,66 @@
 
 cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 clear
-use idhs_00030.dta, replace
+use idhs_00031.dta, replace
 * use 02_women.dta, replace
 **********************
 *** Organizing the women's variables ***
 **********************
 
 replace dvppushfq = 0 if dvppush==0
-replace dvppushfq = 20 if dvppush==1
-recode dvppushfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvpush_di)
+recode dvppushfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvppush_di)
 
 replace dvpslapfq = 0 if dvpslap==0
-replace dvpslapfq = 20 if dvpslap==1
 recode dvpslapfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvpslap_di)
 
 replace dvptwistfq = 0 if dvptwist==0
-replace dvptwistfq = 20 if dvptwist==1
 recode dvptwistfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvptwist_di)
 
 replace dvppunchfq = 0 if dvppunch==0
-replace dvppunchfq = 20 if dvppunch==1
 recode dvppunchfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvppunch_di)
  
 replace dvpchokefq = 0 if dvpchoke==0
-replace dvpchokefq = 20 if dvpchoke==1
 recode dvpchokefq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvpchoke_di)
 
 replace dvpkickfq = 0 if dvpkick==0
-replace dvpkickfq = 20 if dvpkick==1
 recode dvpkickfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvpkick_di)
 
 replace dvpsexfq = 0 if dvpsex==0
-recode dvpsexfq (0=0)(13=0)(10/12=1)(20=1)(90/100=.), gen(di_dvpsex)
+recode dvpsexfq (0 13 =0) (11/12 20=1) (90/100=.), gen(dvpsex_di)
 
 replace dvpsexothfq = 0 if dvpsexoth==0
-recode dvpsexothfq (0=0)(13=0)(11/12=1)(20=1)(90/100=.), gen(di_dvpsexoth)
+recode dvpsexothfq (0 13 =0) (11/12 20=1) (90/100=.), gen(dvpsexoth_di)
 
 
 * Two ways of asking about weapons.
 * For Cameroon and Cote d'Ivoire:
 replace dvpknifethfq = 0 if dvpknifeth==0
-recode dvpknifethfq (0=0)(13=0)(11/12=1)(20=1)(90/100=.), gen(di_dvpknife_th)
+recode dvpknifethfq (0 13 =0) (11/12 20=1) (90/100=.), gen(dvpknife_th_di)
 * For Cote d'Ivoire only:
 replace dvpknifeusef = 0 if dvpknifeuse==0
-recode dvpknifeusef (0=0)(13=0)(11/12=1)(20=1)(90/100=.), gen(di_dvpknife_att)
+recode dvpknifeusef (0 13 =0) (11/12 20=1) (90/100=.), gen(dvpknife_att_di)
 * For all other samples:
 replace dvpknfthusef = 0 if dvpknfthuse==0
-recode dvpknfthusef(0=0)(13=0)(11/12=1)(20=1)(90/100=.), gen(di_dvpknife1)
+recode dvpknfthusef (0 13 =0) (11/12 20=1) (90/100=.), gen(dvpknife1_di)
 * Put together:
-gen di_dvpknife=.
-replace di_dvpknife = 0 if di_dvpknife1==0
-replace di_dvpknife = 1 if di_dvpknife1==1
-replace di_dvpknife = 0 if di_dvpknife_th==0
-replace di_dvpknife = 1 if di_dvpknife_th==1
-replace di_dvpknife = 1 if di_dvpknife_att==1
+gen dvpknife_di=.
+replace dvpknife_di = 0 if dvpknife1_di==0
+replace dvpknife_di = 1 if dvpknife1_di==1
+replace dvpknife_di = 0 if dvpknife_th_di==0
+replace dvpknife_di = 1 if dvpknife_th_di==1
+replace dvpknife_di = 1 if dvpknife_att_di==1
 
 
 ****************************************************************
 *** Combine all IPV variables into one dichotomous variable  ***
 ****************************************************************
 
-egen ipv_any = rowmax(di_dvppush di_dvpslap di_dvppunch di_dvpchoke di_dvpkick di_dvpknife di_dvpsex di_dvpsexoth)
+egen ipv_any = rowmax(dvppush_di dvpslap_di dvptwist_di dvppunch_di dvpchoke_di dvpkick_di dvpknife_di dvpsex_di dvpsexoth_di)
 
-tab sample ipv_any [aw=dvweight]
+*tab sample ipv_any [aw=dvweight]
  
 * Need to limit this to correct sample size
-graph hbar (mean) ipv_any [aweight = dvweight], over(sample, label(angle(horizontal))) ytitle(Percent experiencing any IPV)
+*graph hbar (mean) ipv_any [aweight = dvweight], over(sample, label(angle(horizontal))) ytitle(Percent experiencing any IPV)
 
 
 
@@ -385,7 +379,8 @@ label variable dvunjust_d "always oppose wife beating"
 
 * build a new 4 cat var - coupling - if wife beating is ungesitifed and woman have  0, =1 if dosn't have a final say, ... 0-4
 
-* Our dependent variable - decoupling
+*************************************************************************
+* Our dependent variable - rejection of IPV and household empowerment
 generate decoupling=.
 replace decoupling=3 if decindex_d==0 & dvunjust_d==0
 replace decoupling=2 if decindex_d==0 & dvunjust_d==1
@@ -441,6 +436,54 @@ order de3pc, a(de3)
 by dhsid, sort: egen de4pc = mean(100 * de4)
 label variable de4pc "% Neither walking not talking"
 order de4pc, a(de4)
+
+***********************************************************************************
+*** Our alternative dependent variable - experience of IPV and household empowerment
+generate ipv_empowerment=.
+replace ipv_empowerment=3 if decindex_d==0 & ipv_any==1
+replace ipv_empowerment=2 if decindex_d==0 & ipv_any==0
+replace ipv_empowerment=1 if decindex_d==1 & ipv_any==1
+replace ipv_empowerment=0 if decindex_d==1 & ipv_any==0
+label variable ipv_empowerment "Empowered / IPV"
+label define ipv_eml 0 "Empowered and no IPV" 1 "Empowered but experienced IPV" 2 "Disempowered and no IPV" 3 "Disempowered and experienced IPV"
+label values ipv_empowerment ipv_eml
+
+recode ipv_empowerment (0=1) (1/3=0), gen(ipv_emp1)
+label variable ipv_emp1 "Empowered and no IPV"
+
+recode ipv_empowerment (1=1) (0 2 3 =0), gen(ipv_emp2)
+label variable ipv_emp2 "Empowered but experienced IPV"
+
+recode ipv_empowerment (2=1) (0 1 3 =0), gen(ipv_emp3)
+label variable ipv_emp3 "Disempowered and no IPV"
+
+recode ipv_empowerment (3=1) (0/2=0), gen(ipv_emp4)
+label variable ipv_emp4 "Disempowered and experienced IPV"
+
+order ipv_empowerment, a(de4pc)
+order ipv_emp1, a(ipv_empowerment)
+order ipv_emp2, a(ipv_emp1)
+order ipv_emp3, a(ipv_emp2)
+order ipv_emp4, a(ipv_emp3)
+
+* Get the % of each category in every cluster
+by dhsid, sort: egen ipv_emp1pc = mean(100 * ipv_emp1)
+label variable ipv_emp1pc "% Empowered and no IPV"
+order ipv_emp1pc, a(ipv_emp1)
+
+by dhsid, sort: egen ipv_emp2pc = mean(100 * ipv_emp2)
+label variable ipv_emp2pc "% Empowered but experienced IPV"
+order ipv_emp2pc, a(ipv_emp2)
+
+by dhsid, sort: egen ipv_emp3pc = mean(100 * ipv_emp3)
+label variable ipv_emp3pc "% Disempowered and no IPV"
+order ipv_emp3pc, a(ipv_emp3)
+
+by dhsid, sort: egen ipv_emp4pc = mean(100 * ipv_emp4)
+label variable ipv_emp4pc "% Disempowered and experienced IPV"
+order ipv_emp4pc, a(ipv_emp4)
+
+
 
 
 recode urban (2 = 0) (1 = 1)
