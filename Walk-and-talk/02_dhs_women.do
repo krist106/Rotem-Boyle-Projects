@@ -483,8 +483,7 @@ by dhsid, sort: egen ipv_emp4pc = mean(100 * ipv_emp4)
 label variable ipv_emp4pc "% Disempowered and experienced IPV"
 order ipv_emp4pc, a(ipv_emp4)
 
-
-
+**************************************************************
 
 recode urban (2 = 0) (1 = 1)
 label define urbanl 0 "Rural residence" 1 "Urban residence"
