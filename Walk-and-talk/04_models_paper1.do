@@ -59,6 +59,10 @@ mtitles("Baseline model" "Household" "Local institutions")
 ** To be sure we are looking at the same (or as close as posible) samples we used before, lets keep the sample by the first model:
 keep if model_sample==1
 
+*To export the model as a figure, the labels should be shorter:
+label define ipv_eml1 0 "Emp_no_IPV" 1 "Emp_IPV" 2 "Disemp_no_IPV" 3 "Disemp_IPV"
+label values ipv_empowerment ipv_eml1
+
 * Note that the waves2 is removed
 quietly mlogit ipv_empowerment i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.country [pw=dvweight], base(0)
 estimates store mo5
@@ -66,10 +70,27 @@ estimates store mo5
 quietly mlogit ipv_empowerment i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.ipv_emp2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
 estimates store mo6
 
-esttab mo5 mo6 using model1706.rtf, ///
+esttab mo5 mo6 using model1121.rtf, ///
 noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions") 
+
+esttab mo5 mo6 using model1121.csv, ///
+noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Household" "Local institutions") 
+
+coefplot ., keep(Emp_IPV:) bylabel("Empowered but experienced IPV") || ///
+ ., keep( Disemp_no_IPV:) bylabel(" Disempowered and no IPV") || ///
+ ., keep(Disemp_IPV:) bylabel("Disempowered and experienced IPV") ||, ///
+ eform drop(_cons *country ) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(70) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span)
+*name(test2)
 
 *esttab mo1 using model1_1.rtf, noomitted eform label wide unstack replace se(3)
 *esttab mo2 using model1_2.rtf, noomitted eform label wide unstack replace se(3)
