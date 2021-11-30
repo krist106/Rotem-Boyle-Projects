@@ -90,7 +90,39 @@ coefplot ., keep(Emp_IPV:) bylabel("Empowered but experienced IPV") || ///
   cond(@pval<.01, "**",   ///
  cond(@pval<.05, "*", "")))) ///
 	note("* p < .05, ** p < .01, *** p < .001", span)
-*name(test2)
+
+
+*****************
+** Using ipv_exp variable - attitudes towards and experience of IPV
+	
+*To export the model as a figure, the labels should be shorter:
+label define ipv_exp2 0 "Rej_no_IPV" 1 "Rej_IPV" 2 "Apr_no_IPV" 3 "Apr_IPV"
+label values ipv_exp ipv_exp2
+
+* Note that the waves2 is removed
+quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.country [pw=dvweight], base(0)
+estimates store mo9
+
+quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.ipv_emp2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
+estimates store mo10
+	
+esttab mo2 mo3 mo7 mo8 mo9 mo10 using model1130_1.csv, ///
+noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Household" "Local institutions" "Household" "Local institutions" "Household" "Local institutions") 
+
+coefplot ., keep(Rej_IPV:) bylabel("Rejects IPV but experienced IPV") || ///
+ ., keep(Apr_no_IPV:) bylabel("Aprrove IPV but not experienced IPV") || ///
+ ., keep(Apr_IPV:) bylabel("Approve IPV and experienced IPV") ||, ///
+ eform drop(_cons *country ) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(70) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span)
+
+	*name(test2)
 
 *esttab mo1 using model1_1.rtf, noomitted eform label wide unstack replace se(3)
 *esttab mo2 using model1_2.rtf, noomitted eform label wide unstack replace se(3)
