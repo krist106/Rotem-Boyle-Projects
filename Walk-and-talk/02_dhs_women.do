@@ -485,6 +485,39 @@ order ipv_emp4pc, a(ipv_emp4)
 
 **************************************************************
 
+*** Our alternative dependent variable - experience of and attitudes towards IPV 
+generate ipv_exp=.
+replace ipv_exp=3 if dvunjust_d==0 & ipv_any==1
+replace ipv_exp=2 if dvunjust_d==0 & ipv_any==0
+replace ipv_exp=1 if dvunjust_d==1 & ipv_any==1
+replace ipv_exp=0 if dvunjust_d==1 & ipv_any==0
+label variable ipv_exp "Attitude/experienced IPV"
+label define ipv_exp1 0 "Rejects and no IPV" 1 "Rejects IPV but experienced IPV" 2 "Aprrove IPV but not experienced IPV" 3 "Approve IPV and experienced IPV"
+label values ipv_exp ipv_exp1
+
+recode ipv_exp (0=1) (1/3=0), gen(ipv_exp1)
+label variable ipv_exp1 "Rejects and no IPV"
+
+recode ipv_exp (1=1) (0 2 3 =0), gen(ipv_exp2)
+label variable ipv_exp2 "Rejects IPV but experienced IPV"
+
+recode ipv_exp (2=1) (0 1 3 =0), gen(ipv_exp3)
+label variable ipv_exp3 "Aprrove IPV but not experienced IPV"
+
+recode ipv_exp (3=1) (0/2=0), gen(ipv_exp4)
+label variable ipv_exp4 "Approve IPV and experienced IPV"
+
+order ipv_exp, a(ipv_emp4pc)
+order ipv_exp1, a(ipv_exp)
+order ipv_exp2, a(ipv_exp1)
+order ipv_exp3, a(ipv_exp2)
+order ipv_exp4, a(ipv_exp3)
+
+by dhsid, sort: egen ipv_exp2pc = mean(100 * ipv_exp2)
+label variable ipv_emp2pc "% Rejects IPV but experienced IPV"
+order ipv_exp2pc, a(ipv_exp2)
+
+*****************************************************************
 recode urban (2 = 0) (1 = 1)
 label define urbanl 0 "Rural residence" 1 "Urban residence"
 label values urban urbanl
