@@ -32,12 +32,12 @@ drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==
 *** Note the models are without rrr
  *ib3.agefrstmar_c
 * Baseline model
-quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf i.waves2 i.country [pw=popwt], base(0)
-generate model_sample=e(sample)
-estimates store mo1
+*quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf i.waves2 i.country [pw=popwt], base(0)
+*estimates store mo1
 
 * Household
 quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.waves2 i.country [pw=popwt], base(0)
+generate model_sample=e(sample)
 estimates store mo2
 
 * Full - with local institutions
@@ -103,13 +103,13 @@ label values ipv_exp ipv_exp2
 quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.country [pw=dvweight], base(0)
 estimates store mo9
 
-quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.ipv_emp2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
+quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.ipv_exp2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
 estimates store mo10
 	
-esttab mo2 mo3 mo7 mo8 mo9 mo10 using model1130_1.csv, ///
+esttab mo2 mo3 mo9 mo10 using model1212.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Household" "Local institutions" "Household" "Local institutions" "Household" "Local institutions") 
+mtitles("Household" "Local institutions" "Household" "Local institutions") 
 
 coefplot ., keep(Rej_IPV:) bylabel("Rejects IPV but experienced IPV") || ///
  ., keep(Apr_no_IPV:) bylabel("Aprrove IPV but not experienced IPV") || ///
