@@ -10,12 +10,11 @@
 
 cd "C:\Users\Nir\Documents\Projects\2020\Grounded decoupling\IPUMS DHS data"
 clear
-use idhs_00031.dta, replace
 * use 02_women.dta, replace
 **********************
 *** Organizing the women's variables ***
 **********************
-
+use 02_women.dta, replace
 replace dvppushfq = 0 if dvppush==0
 recode dvppushfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvppush_di)
 
@@ -514,7 +513,7 @@ order ipv_exp3, a(ipv_exp2)
 order ipv_exp4, a(ipv_exp3)
 
 by dhsid, sort: egen ipv_exp2pc = mean(100 * ipv_exp2)
-label variable ipv_emp2pc "% Rejects IPV but experienced IPV"
+label variable ipv_exp2pc "% Rejects IPV but experienced IPV"
 order ipv_exp2pc, a(ipv_exp2)
 
 *****************************************************************
