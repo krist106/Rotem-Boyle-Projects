@@ -90,6 +90,21 @@ coefplot ., keep(Emp_IPV:) bylabel("Empowered but experienced IPV") || ///
   cond(@pval<.01, "**",   ///
  cond(@pval<.05, "*", "")))) ///
 	note("* p < .05, ** p < .01, *** p < .001", span)
+	
+
+	*This will plot two models in one figure: right now set for the main models
+coefplot (mo2) (mo3), keep(walk_notalk:) bylabel("Accept IPV/Empowered") || ///
+ (mo2) (mo3), keep(talk_nowalk:) bylabel("Rejects IPV/Unempowered") || ///
+ (mo2) (mo3), keep(neither:) bylabel("Accept IPV/Unempowered") ||, ///
+ eform drop(_cons *country ) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	plotlabels("Household" "Local institutions") ///
+	coeflabels(, wrap(12)) ///to fix the labels
 
 
 *****************
