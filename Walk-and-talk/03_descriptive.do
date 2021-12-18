@@ -107,9 +107,9 @@ graph bar (mean) de1_country_di, blabel(bar, format(%9.3g)) by(country)
 
 graph bar (mean) de1_country_di (mean) de2_country_di (mean) de3_country_di (mean) de4_country_di, blabel(bar, position(base) format(%9.2g)) by(, title(Percent change between waves, size(medsmall))) by(country, total) ///
 legend(rows(2) stack size(vsmall) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household")) ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 intensity(25) ///
 bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
@@ -146,9 +146,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(bangladesh)
 
@@ -168,9 +168,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(burundi)
 
@@ -189,9 +189,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(cameroon)
 
@@ -211,9 +211,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(congo)
 
@@ -232,9 +232,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(benin)
 
@@ -253,9 +253,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(ethiopia)
 
@@ -274,9 +274,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(ghana)
 
@@ -295,9 +295,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(guinea)
 
@@ -316,9 +316,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(india)
 
@@ -337,9 +337,9 @@ title(Discordance , size(small))) name(india)
 *bar(3, color(gray) fintensity(inten40)) ///
 *bar(4, color(navy) fintensity(inten60)) ///
 *legend(rows(2) stack size(v.small) ///
-*order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-*3 "Supports gender equity/Not empowered in household" ///
-*4 "Rejects gender equity/Not empowered in household") ///
+*order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+*3 "Reject IPV/ Unempowered" ///
+*4 "Accept IPV/ Unempowered") ///
 *symplacement(center) ///
 *title(Discordance , size(small))) name(jordan)
 
@@ -358,9 +358,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(kenya)
 
@@ -379,9 +379,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(lesotho)
 
@@ -400,9 +400,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(madagascar)
 
@@ -421,9 +421,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(malawi)
 
@@ -442,9 +442,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(mali)
 
@@ -463,9 +463,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(mozambique)
 
@@ -484,9 +484,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(namibia)
 
@@ -505,9 +505,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(nepal)
 
@@ -527,9 +527,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(niger)
 */
@@ -549,9 +549,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(nigeria)
 
@@ -570,9 +570,9 @@ title(Discordance , size(small))) name(nigeria)
 *bar(3, color(gray) fintensity(inten40)) ///
 *bar(4, color(navy) fintensity(inten60)) ///
 *legend(rows(2) stack size(v.small) ///
-*order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-*3 "Supports gender equity/Not empowered in household" ///
-*4 "Rejects gender equity/Not empowered in household") ///
+*order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+*3 "Reject IPV/ Unempowered" ///
+*4 "Accept IPV/ Unempowered") ///
 *symplacement(center) ///
 *title(Discordance , size(small))) name(pakistan)
 
@@ -591,9 +591,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(rwanda)
 
@@ -612,9 +612,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(senegal)
 
@@ -633,9 +633,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(zimbabwe)
 
@@ -654,9 +654,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(uganda)
 
@@ -675,9 +675,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(egypt)
 
@@ -697,10 +697,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
-symplacement(center) ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///symplacement(center) ///
 title(Discordance , size(small))) name(tanzania)
 */
 
@@ -719,9 +718,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(burkina)
 
@@ -741,9 +740,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(zambia)
 
@@ -762,16 +761,17 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Supports gender equity/Empowered in household" 2 "Rejects gender equity/Empowered in household" ///
-3 "Supports gender equity/Not empowered in household" ///
-4 "Rejects gender equity/Not empowered in household") ///
-symplacement(center) ///
-title(Discordance , size(small))) name(total)
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered") ///
+symplacement(center)) ///
+name(total) ///
+fxsize(100) fysize(25)
 
 grc1leg bangladesh benin burkina burundi cameroon congo egypt ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal nigeria rwanda senegal uganda zambia zimbabwe, cols(5) ysize(50) xsize(40)
 
 * sorted by walk_talk first wave
-grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar total, cols(5) 
+*grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar total, cols(5)  
 
 grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar, name("firstset", replace) cols(5) ysize(50) xsize(40)
 
