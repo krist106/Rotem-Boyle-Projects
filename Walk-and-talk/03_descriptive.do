@@ -25,6 +25,7 @@ keep if ever_married==1
 drop if age<25 | sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
  
 * We need a model so we can get the relevant descriptive statistics
+* Household
 quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store mo1
@@ -770,7 +771,11 @@ title(Discordance , size(small))) name(total)
 grc1leg bangladesh benin burkina burundi cameroon congo egypt ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal nigeria rwanda senegal uganda zambia zimbabwe, cols(5) ysize(50) xsize(40)
 
 * sorted by walk_talk first wave
-grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar total, cols(5) ysize(50) xsize(40)
+grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar total, cols(5) 
+
+grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar, name("firstset", replace) cols(5) ysize(50) xsize(40)
+
+grc1leg total firstset, cols(1) ysize(50) xsize(40)
 
 
 *** For attitudes / experience of IPV
