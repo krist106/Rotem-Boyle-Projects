@@ -82,7 +82,7 @@ graph combine hist1 hist2 hist3 hist4
 tab decoupling country [iweight=popwt] if waves2==1 & model_sample==1, co
 tab decoupling country [iweight=popwt] if waves2==2 & model_sample==1, co
 
-tab decoupling waves2 [iweight=popwt] if model_sample==1, co // Here we use the native POPWT
+tab decoupling waves2 [iweight=popwt] if model_sample==1, co
 
 ***This shows country level figures and change
 *** ssc install asgen
@@ -130,6 +130,8 @@ xtable decoupling religion_4c if model_sample==1 & waves2==2, filename(religion_
 
 
 ************ A figure with the 4 categories of discordance, by country and wave
+by sample, sort: tab de1 [iweight=popwt] if waves2==1 
+tab de1 sample [iweight=popwt] if waves2==1, co
 
 * ssc install splitvallabels
 * findit grc1leg
@@ -772,12 +774,12 @@ symplacement(center)) ///
 name(total) ///
 fxsize(100) fysize(25)
 
-grc1leg bangladesh benin burkina burundi cameroon congo egypt ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal nigeria rwanda senegal uganda zambia zimbabwe, cols(5) ysize(50) xsize(40)
+*grc1leg bangladesh benin burkina burundi cameroon congo egypt ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal nigeria rwanda senegal uganda zambia zimbabwe, cols(5) ysize(50) xsize(40)
 
 * sorted by walk_talk first wave
-*grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar total, cols(5)  
+* mali guinea senegal burkina ethiopia nigeria congo uganda benin kenya cameroon burundi malawi zambia nepal mozambique ghana india lesotho zimbabwe rwanda egypt bangladesh namibia madagascar
 
-grc1leg mali guinea burkina senegal ethiopia nigeria congo uganda benin kenya burundi cameroon malawi zambia nepal mozambique ghana india lesotho zimbabwe egypt rwanda bangladesh namibia madagascar, name("firstset", replace) cols(5) ysize(50) xsize(40)
+grc1leg mali guinea senegal burkina ethiopia nigeria congo uganda benin kenya cameroon burundi malawi zambia nepal mozambique ghana india lesotho zimbabwe rwanda egypt bangladesh namibia madagascar, name("firstset", replace) cols(5) ysize(50) xsize(40)
 
 grc1leg total firstset, cols(1) ysize(50) xsize(40)
 
@@ -787,4 +789,4 @@ quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealt
 generate model_sample1=e(sample)
 estimates store mo2
 
-tab ipv_exp [iweight=dvweight]
+tab ipv_exp [iweight=dvweight] if model_sample1==1
