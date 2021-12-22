@@ -18,7 +18,7 @@ clear
 use 02_women.dta 
 
 keep if ever_married==1
-drop if age<25
+drop if age<18
 
 drop waves3 decoupling_3a decoupling_3b age5year marstat agefrstmar cheb currwork employment wkemploywhen wealths newsbrig tvbrig radiobrig 
 
