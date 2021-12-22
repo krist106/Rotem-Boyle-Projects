@@ -67,7 +67,7 @@ label values ipv_empowerment ipv_eml1
 quietly mlogit ipv_empowerment i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.country [pw=dvweight], base(0)
 estimates store mo5
 
-quietly mlogit ipv_empowerment i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.ipv_emp2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
+quietly mlogit ipv_empowerment i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
 estimates store mo6
 
 esttab mo5 mo6 using model1121.rtf, ///
@@ -118,7 +118,7 @@ label values ipv_exp ipv_exp2
 quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.country [pw=dvweight], base(0)
 estimates store mo9
 
-quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.ipv_exp2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
+quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
 estimates store mo10
 	
 esttab mo2 mo3 mo9 mo10 using model1212.csv, ///
