@@ -22,7 +22,7 @@ use 02_women.dta
 
 keep if ever_married==1
 
-drop if age<25 | sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
+drop if age<18 | sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
  
 * We need a model so we can get the relevant descriptive statistics
 * Household
@@ -51,6 +51,7 @@ waves2(cat value(2) novarlabel countformat(%15.0gc)) ///
 if model_sample==1 [fw=popwt], ///
 by(decoupling) putdocxtab(summery_table)
 putdocx save summery_table, replace
+
 *exportexcel(summery_table, replace)
 
 * I created "only_news" to identify women who only read newspapers and don't listen to radio or watch TV
@@ -61,6 +62,9 @@ tab only_news [fw=popwt]
 tab religion_cf [fw=popwt]
 
 tab edugap [fw=popwt]
+
+summarize age de2pc mar18pc [fw=popwt]
+summarize age de2pc mar18pc
 
 set scheme cleanplots
 
@@ -779,4 +783,8 @@ grc1leg total firstset, cols(1) ysize(50) xsize(40)
 
 
 *** For attitudes / experience of IPV
+quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.country [pw=dvweight], base(0)
+generate model_sample1=e(sample)
+estimates store mo2
+
 tab ipv_exp [iweight=dvweight]
