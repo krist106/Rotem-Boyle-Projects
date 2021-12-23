@@ -109,17 +109,36 @@ gen de4_country_di = (de4_country_w2 - de4_country_w1) *100
 set scheme plotplain
 graph bar (mean) de1_country_di, blabel(bar, format(%9.3g)) by(country)
 
-graph bar (mean) de1_country_di (mean) de2_country_di (mean) de3_country_di (mean) de4_country_di, blabel(bar, position(base) format(%9.2g)) by(, title(Percent change between waves, size(medsmall))) by(country, total) ///
+***To plot the % change between waves
+graph bar (mean) de1_country_di de2_country_di de3_country_di de4_country_di, blabel(bar, position(base) format(%9.2g)) ///
+title(Percent change between waves) subtitle(Total, size(medsmall)) ///
 legend(rows(2) stack size(vsmall) ///
 order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
 3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+4 "Accept IPV/ Unempowered")) ///
 intensity(25) ///
 bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
-bar(4, color(navy) fintensity(inten60)) 
+bar(4, color(navy) fintensity(inten60)) ///
+name("firstset", replace) ///
+fxsize(100) fysize(20)
 
+graph bar (mean) de1_country_di de2_country_di de3_country_di de4_country_di, blabel(bar, position(base) format(%9.2g)) by(country) ///
+legend(rows(2) stack size(vsmall) ///
+order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
+3 "Reject IPV/ Unempowered" ///
+4 "Accept IPV/ Unempowered")) ///
+intensity(25) ///
+bar(1, color(maroon) fintensity(inten80)) ///
+bar(2, color(maroon) fintensity(inten60)) ///
+bar(3, color(gray) fintensity(inten40)) ///
+bar(4, color(navy) fintensity(inten60)) ///
+name("secondset", replace)
+
+grc1leg firstset secondset, cols(1)
+
+sum de1_country_di
 
 *** Religion over time
 tab decoupling religion_4c if model_sample==1 & waves2==1, co
@@ -772,7 +791,7 @@ order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
 4 "Accept IPV/ Unempowered") ///
 symplacement(center)) ///
 name(total) ///
-fxsize(100) fysize(25)
+fxsize(100) fysize(20)
 
 *grc1leg bangladesh benin burkina burundi cameroon congo egypt ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal nigeria rwanda senegal uganda zambia zimbabwe, cols(5) ysize(50) xsize(40)
 
