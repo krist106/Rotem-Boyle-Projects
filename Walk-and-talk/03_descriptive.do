@@ -790,7 +790,7 @@ order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
 3 "Reject IPV/ Unempowered" ///
 4 "Accept IPV/ Unempowered") ///
 symplacement(center)) ///
-name(total) ///
+name(total, replace) ///
 fxsize(100) fysize(20)
 
 *grc1leg bangladesh benin burkina burundi cameroon congo egypt ethiopia ghana guinea india kenya lesotho madagascar malawi mali mozambique namibia nepal nigeria rwanda senegal uganda zambia zimbabwe, cols(5) ysize(50) xsize(40)
