@@ -38,24 +38,41 @@ drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==
 * Household
 quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
-estimates store mo2
+estimates store mo1
 
 * Full - with local institutions
 quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
-estimates store mo3
+estimates store mo2
 
-esttab mo1 mo2 mo3 using model1106.rtf, ///
+esttab mo1 mo2 using model1223.rtf, ///
 noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Baseline model" "Household" "Local institutions") 
+mtitles("Household" "Local institutions") 
 
-esttab mo1 mo2 mo3 using model1106.csv, ///
+esttab mo1 mo2 using model1223.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Baseline model" "Household" "Local institutions") 
+mtitles("Household" "Local institutions") 
+
+
+	*This will plot two models in one figure: right now set for the main models
+coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Accept IPV/Empowered") || ///
+ (mo1) (mo2), keep(talk_nowalk:) bylabel("Rejects IPV/Unempowered") || ///
+ (mo1) (mo2), keep(neither:) bylabel("Accept IPV/Unempowered") ||, ///
+ eform drop(_cons *country ) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	plotlabels("Household" "Local institutions") ///
+	coeflabels(, wrap(12)) ///to fix the labels
+	name("mo1_mo2", replace)
+
 
 *****************
-** Using ipv_empowerment variable
+*/** Using ipv_empowerment variable
 ** To be sure we are looking at the same (or as close as posible) samples we used before, lets keep the sample by the first model:
 keep if model_sample==1
 
@@ -89,53 +106,41 @@ coefplot ., keep(Emp_IPV:) bylabel("Empowered but experienced IPV") || ///
   mlabel(cond(@pval<.001, "***", ///
   cond(@pval<.01, "**",   ///
  cond(@pval<.05, "*", "")))) ///
-	note("* p < .05, ** p < .01, *** p < .001", span)
-	
-
-	*This will plot two models in one figure: right now set for the main models
-coefplot (mo2) (mo3), keep(walk_notalk:) bylabel("Accept IPV/Empowered") || ///
- (mo2) (mo3), keep(talk_nowalk:) bylabel("Rejects IPV/Unempowered") || ///
- (mo2) (mo3), keep(neither:) bylabel("Accept IPV/Unempowered") ||, ///
- eform drop(_cons *country ) ///
- scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
- xtitle(Relative Risk Ratio) ///
-  mlabel(cond(@pval<.001, "***", ///
-  cond(@pval<.01, "**",   ///
- cond(@pval<.05, "*", "")))) ///
-	note("* p < .05, ** p < .01, *** p < .001", span) ///
-	plotlabels("Household" "Local institutions") ///
-	coeflabels(, wrap(12)) ///to fix the labels
-
+	note("* p < .05, ** p < .01, *** p < .001", span)	
+*/
 
 *****************
 ** Using ipv_exp variable - attitudes towards and experience of IPV
-	
+
+keep if model_sample==1
 *To export the model as a figure, the labels should be shorter:
 label define ipv_exp2 0 "Rej_no_IPV" 1 "Rej_IPV" 2 "Apr_no_IPV" 3 "Apr_IPV"
 label values ipv_exp ipv_exp2
 
 * Note that the waves2 is removed
 quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.country [pw=dvweight], base(0)
-estimates store mo9
+estimates store mo3
 
 quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
-estimates store mo10
+estimates store mo4
 	
-esttab mo2 mo3 mo9 mo10 using model1212.csv, ///
+esttab mo1 mo2 mo3 mo4 using model1223.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions" "Household" "Local institutions") 
 
-coefplot ., keep(Rej_IPV:) bylabel("Rejects IPV but experienced IPV") || ///
- ., keep(Apr_no_IPV:) bylabel("Aprrove IPV but not experienced IPV") || ///
- ., keep(Apr_IPV:) bylabel("Approve IPV and experienced IPV") ||, ///
+est restore mo4
+coefplot ., keep(Rej_IPV:) bylabel("Rejects IPV/" "experienced IPV") || ///
+ ., keep(Apr_no_IPV:) bylabel("Aprrove IPV/" "haven't experienced IPV") || ///
+ ., keep(Apr_IPV:) bylabel("Approve IPV/" "experienced IPV") ||, ///
  eform drop(_cons *country ) ///
  scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(70) xline(1) sub(,size(medium)) ///
  xtitle(Relative Risk Ratio) ///
   mlabel(cond(@pval<.001, "***", ///
   cond(@pval<.01, "**",   ///
  cond(@pval<.05, "*", "")))) ///
-	note("* p < .05, ** p < .01, *** p < .001", span)
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	name("mo4", replace)
 
 	*name(test2)
 
