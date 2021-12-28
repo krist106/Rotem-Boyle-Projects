@@ -44,7 +44,7 @@ religion_cf(cat countformat(%15.0gc)) ///
 wealthq(cat countformat(%15.0gc)) ///
 currwork_d(cat value(1) novaluelabel countformat(%15.0gc)) ///
 edugap(cat countformat(%15.0gc)) ///
-de2pc(cts novarlabel afterheading("% Walk not talk, mean (sd)")) ///
+de2pc(cts novarlabel afterheading("% Accept IPV/ Empowered, mean (sd)")) ///
 mar18pc(cts novarlabel afterheading("% Under age 18 when married, mean (sd)")) ///
 muslimmaj(cat countformat(%15.0gc)) ///
 waves2(cat value(2) novarlabel countformat(%15.0gc)) ///
@@ -809,3 +809,39 @@ generate model_sample1=e(sample)
 estimates store mo2
 
 tab ipv_exp [iweight=dvweight] if model_sample1==1
+
+*summary table
+putdocx begin
+baselinetable educlvl(cat countformat(%15.0gc)) ///
+radio(cat value(1) novaluelabel countformat(%15.0gc)) ///
+urban(cat value(1) novaluelabel countformat(%15.0gc)) ///
+age(cts novarlabel afterheading("Age, mean (sd)")) ///
+religion_cf(cat countformat(%15.0gc)) ///
+wealthq(cat countformat(%15.0gc)) ///
+currwork_d(cat value(1) novaluelabel countformat(%15.0gc)) ///
+edugap(cat countformat(%15.0gc)) ///
+de2pc(cts novarlabel afterheading("% Accept IPV/ Empowered, mean (sd)")) ///
+mar18pc(cts novarlabel afterheading("% Under age 18 when married, mean (sd)")) ///
+muslimmaj(cat countformat(%15.0gc)) ///
+if model_sample1==1 [aw=dvweight], ///
+by(ipv_exp, total) putdocxtab(summery_table)
+putdocx save summery_table1, replace
+
+*exportexcel(summery_table, replace)
+
+* With % only
+putdocx begin
+baselinetable educlvl(cat tab("%\%")) ///
+radio(cat value(1) novaluelabel tab("%\%")) ///
+urban(cat value(1) novaluelabel tab("%\%")) ///
+age(cts novarlabel afterheading("Age, mean (sd)")) ///
+religion_cf(cat tab("%\%")) ///
+wealthq(cat tab("%\%")) ///
+currwork_d(cat value(1) novaluelabel tab("%\%")) ///
+edugap(cat tab("%\%")) ///
+de2pc(cts novarlabel afterheading("% Accept IPV/ Empowered, mean (sd)")) ///
+mar18pc(cts novarlabel afterheading("% Under age 18 when married, mean (sd)")) ///
+muslimmaj(cat tab("%\%")) ///
+if model_sample1==1 [aw=dvweight], ///
+by(ipv_exp, total) putdocxtab(summery_table)
+putdocx save summery_table1, replace
