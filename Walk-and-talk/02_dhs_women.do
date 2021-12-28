@@ -14,7 +14,7 @@ clear
 **********************
 *** Organizing the women's variables ***
 **********************
-use 02_women.dta, replace
+use idhs_00031.dta, replace
 replace dvppushfq = 0 if dvppush==0
 recode dvppushfq (0 13 =0) (11/12 20=1) (90/100=.), gen (dvppush_di)
 
@@ -400,16 +400,16 @@ label define dec3b 0 "Rejects gender equity/Empowered in household" 2 "Supports 
 label values decoupling_3b dec3b
 
 recode decoupling (0=1) (1/3=0), gen(de1)
-label variable de1 "Walking and Talking"
+label variable de1 "Reject IPV/ Empowered"
 
 recode decoupling (1=1) (0 2 3 =0), gen(de2)
-label variable de2 "Walking but not Talking"
+label variable de2 "Accept IPV/ Empowered"
 
 recode decoupling (2=1) (0 1 3 =0), gen(de3)
-label variable de3 "Not Walking but Talking"
+label variable de3 "Reject IPV/ Unempowered"
 
 recode decoupling (3=1) (0/2=0), gen(de4)
-label variable de4 "Neither Walking nor Talking"
+label variable de4 "Accept IPV/ Unempowered"
 
 order decoupling, a(dvweight)
 order decoupling_3a, a(decoupling)
@@ -421,19 +421,19 @@ order de4, a(de3)
 
 * Get the % of each category in every cluster
 by dhsid, sort: egen de1pc = mean(100 * de1)
-label variable de1pc "% Walking and talking"
+label variable de1pc "% Reject IPV/ Empowered"
 order de1pc, a(de1)
 
 by dhsid, sort: egen de2pc = mean(100 * de2)
-label variable de2pc "% Walking but not talking"
+label variable de2pc "% Accept IPV/ Empowered"
 order de2pc, a(de2)
 
 by dhsid, sort: egen de3pc = mean(100 * de3)
-label variable de3pc "% Not walking but talking"
+label variable de3pc "% Reject IPV/ Unempowered"
 order de3pc, a(de3)
 
 by dhsid, sort: egen de4pc = mean(100 * de4)
-label variable de4pc "% Neither walking not talking"
+label variable de4pc "% Accept IPV/ Unempowered"
 order de4pc, a(de4)
 
 ***********************************************************************************
@@ -491,20 +491,20 @@ replace ipv_exp=2 if dvunjust_d==0 & ipv_any==0
 replace ipv_exp=1 if dvunjust_d==1 & ipv_any==1
 replace ipv_exp=0 if dvunjust_d==1 & ipv_any==0
 label variable ipv_exp "Attitude/experienced IPV"
-label define ipv_exp1 0 "Rejects and no IPV" 1 "Rejects IPV but experienced IPV" 2 "Approve IPV but not experienced IPV" 3 "Approve IPV and experienced IPV"
+label define ipv_exp1 0 "Reject IPV/ Haven't experienced IPV" 1 "Reject IPV/ Experienced IPV" 2 "Approve IPV/ Haven't experienced IPV" 3 "Approve IPV/ Experienced IPV"
 label values ipv_exp ipv_exp1
 
 recode ipv_exp (0=1) (1/3=0), gen(ipv_exp1)
-label variable ipv_exp1 "Rejects and no IPV"
+label variable ipv_exp1 "Reject IPV/ Haven't experienced IPV"
 
 recode ipv_exp (1=1) (0 2 3 =0), gen(ipv_exp2)
-label variable ipv_exp2 "Rejects IPV but experienced IPV"
+label variable ipv_exp2 "Reject IPV/ Experienced IPV"
 
 recode ipv_exp (2=1) (0 1 3 =0), gen(ipv_exp3)
-label variable ipv_exp3 "Approve IPV but not experienced IPV"
+label variable ipv_exp3 "Approve IPV/ Haven't experienced IPV"
 
 recode ipv_exp (3=1) (0/2=0), gen(ipv_exp4)
-label variable ipv_exp4 "Approve IPV and experienced IPV"
+label variable ipv_exp4 "Approve IPV/ Experienced IPV"
 
 order ipv_exp, a(ipv_emp4pc)
 order ipv_exp1, a(ipv_exp)
@@ -513,7 +513,7 @@ order ipv_exp3, a(ipv_exp2)
 order ipv_exp4, a(ipv_exp3)
 
 by dhsid, sort: egen ipv_exp2pc = mean(100 * ipv_exp2)
-label variable ipv_exp2pc "% Rejects IPV but experienced IPV"
+label variable ipv_exp2pc "% Reject IPV/ Experienced IPV"
 order ipv_exp2pc, a(ipv_exp2)
 
 *****************************************************************
