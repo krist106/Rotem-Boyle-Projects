@@ -491,7 +491,7 @@ replace ipv_exp=2 if dvunjust_d==0 & ipv_any==0
 replace ipv_exp=1 if dvunjust_d==1 & ipv_any==1
 replace ipv_exp=0 if dvunjust_d==1 & ipv_any==0
 label variable ipv_exp "Attitude/experienced IPV"
-label define ipv_exp1 0 "Rejects and no IPV" 1 "Rejects IPV but experienced IPV" 2 "Aprrove IPV but not experienced IPV" 3 "Approve IPV and experienced IPV"
+label define ipv_exp1 0 "Rejects and no IPV" 1 "Rejects IPV but experienced IPV" 2 "Approve IPV but not experienced IPV" 3 "Approve IPV and experienced IPV"
 label values ipv_exp ipv_exp1
 
 recode ipv_exp (0=1) (1/3=0), gen(ipv_exp1)
@@ -501,7 +501,7 @@ recode ipv_exp (1=1) (0 2 3 =0), gen(ipv_exp2)
 label variable ipv_exp2 "Rejects IPV but experienced IPV"
 
 recode ipv_exp (2=1) (0 1 3 =0), gen(ipv_exp3)
-label variable ipv_exp3 "Aprrove IPV but not experienced IPV"
+label variable ipv_exp3 "Approve IPV but not experienced IPV"
 
 recode ipv_exp (3=1) (0/2=0), gen(ipv_exp4)
 label variable ipv_exp4 "Approve IPV and experienced IPV"
