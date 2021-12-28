@@ -18,7 +18,7 @@ clear
 use 02_women.dta 
 
 keep if ever_married==1
-drop if age<18
+drop if age<18 | age>49
 
 drop waves3 decoupling_3a decoupling_3b age5year marstat agefrstmar cheb currwork employment wkemploywhen wealths newsbrig tvbrig radiobrig 
 
@@ -56,9 +56,9 @@ mtitles("Household" "Local institutions")
 
 
 	*This will plot two models in one figure: right now set for the main models
-coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Accept IPV/Empowered") || ///
- (mo1) (mo2), keep(talk_nowalk:) bylabel("Rejects IPV/Unempowered") || ///
- (mo1) (mo2), keep(neither:) bylabel("Accept IPV/Unempowered") ||, ///
+coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Accept IPV/" "Empowered") || ///
+ (mo1) (mo2), keep(talk_nowalk:) bylabel("Rejects IPV/" "Unempowered") || ///
+ (mo1) (mo2), keep(neither:) bylabel("Accept IPV/" "Unempowered") ||, ///
  eform drop(_cons *country ) ///
  scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
  xtitle(Relative Risk Ratio) ///
@@ -67,7 +67,7 @@ coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Accept IPV/Empowered") || ///
  cond(@pval<.05, "*", "")))) ///
 	note("* p < .05, ** p < .01, *** p < .001", span) ///
 	plotlabels("Household" "Local institutions") ///
-	coeflabels(, wrap(12)) ///to fix the labels
+	coeflabels(, wrap(15)) ///to fix the labels
 	name("mo1_mo2", replace)
 
 
