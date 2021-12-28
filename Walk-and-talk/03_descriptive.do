@@ -22,7 +22,7 @@ use 02_women.dta
 
 keep if ever_married==1
 
-drop if age<18 | sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
+drop if age<18 | age>49 | sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
  
 * We need a model so we can get the relevant descriptive statistics
 * Household
