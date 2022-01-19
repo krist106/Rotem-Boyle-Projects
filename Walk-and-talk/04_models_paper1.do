@@ -40,8 +40,9 @@ quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.we
 generate model_sample=e(sample)
 estimates store mo1
 
+***c.de2pc
 * Full - with local institutions
-quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
+quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
 estimates store mo2
 
 esttab mo1 mo2 using model1223.rtf, ///
@@ -49,7 +50,7 @@ noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions") 
 
-esttab mo1 mo2 using model1223.csv, ///
+esttab mo1 mo2 using model0119.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions") 
