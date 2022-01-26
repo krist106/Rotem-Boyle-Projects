@@ -193,6 +193,25 @@ by dhsid, sort: egen hindupc = mean(100 * hindu)
 label variable hindupc "% Hindu"
 order hindupc, a(hindu)
 
+recode muslimpc (0/66.7=0) (66.8/100=1), gen(mus_maj)
+recode hindupc (0/66.7=0) (66.8/100=1) , gen(hin_maj)
+recode christianpc (0/66.7=0) (66.8/100=1), gen(chr_maj)
+
+gen religion_maj=.
+replace religion_maj = 1 if mus_maj==1
+replace religion_maj = 2 if hin_maj==1
+replace religion_maj = 3 if chr_maj==1
+label define religion_majl 1 "Muslim majority" 2 "Hindu majority" 3 "Christian majority"
+label values religion_maj religion_majl
+label variable religion_maj "Religion majority"
+label define mus_majl 1 "Muslim majority"
+label values mus_maj mus_majl
+label define hin_majl 1 "Hindu majority"
+label values hin_maj hin_majl
+label define chr_majl 1 "Christian majority"
+label values chr_maj chr_majl
+
+
 
 * currwork - currently working
 * 0=no; 10=yes; 11=yes spontaneous; 12= yes prompted; 98=missing; 99=niu
