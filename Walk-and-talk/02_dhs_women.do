@@ -127,21 +127,21 @@ label variable mar18pc "% Under age 18 when married"
 order mar18pc, a(mar18)
 
 * Three main religions
-recode religion (1000=1) (2000/2999=2) (4000=3) (9998=.) (nonmiss=.), gen(religion_c)
-label define reli_c 1 "Muslim" 2 "Christian" 3 "Hindu"
+recode religion (1000=2) (2000/2999=3) (4000=1) (9998=.) (nonmiss=.), gen(religion_c)
+label define reli_c 2 "Muslim" 3 "Christian" 1 "Hindu"
 label values religion_c reli_c
 label variable religion_c "Religion"
 order religion_c, after(religion)
 
 *Four main religions
-recode religion (1000=1) (2100=2) (2300/2901=3) (4000=4) (9998=.) (nonmiss=.), gen(religion_4c)
-label define reli_4c 1 "Muslim" 2 "Catholic" 3 "Protestant" 4 "Hindu"
+recode religion (1000=2) (2100=3) (2300/2901=4) (4000=1) (9998=.) (nonmiss=.), gen(religion_4c)
+label define reli_4c 2 "Muslim" 3 "Catholic" 4 "Protestant" 1 "Hindu"
 label values religion_4c reli_4c
 label variable religion_4c "Religion"
 order religion_4c, after(religion_c)
 
 *Main religions
-recode religion (0=0 "No religion") (1000=1 "Muslim") (2000/2999=2 "Christian") (3000/3999=3 "Buddhist") (4000=4 "Hindu") (6000/6999=6 "Traditional") (9000=9 "Other") (5000 7000/7999=9) (9998=.), gen(religion_cf)
+recode religion (0=5 "No religion") (1000=2 "Muslim") (2000/2999=3 "Christian") (3000/3999=6 "Buddhist") (4000=1 "Hindu") (6000/6999=7 "Traditional") (9000=4 "Other") (5000 7000/7999=4) (9998=.), gen(religion_cf)
 label variable religion_cf "Religion"
 order religion_cf, a(religion_c)
 
@@ -156,21 +156,15 @@ order religion_cf, a(religion_c)
 *** Religious composition of community
 
 * First recode into dummies
-recode religion_c (1=1) (2/3 = 0) , gen(muslim)
-label define musliml 1 "Muslim" 0 "Non Muslim"
-label values muslim musliml
+recode religion_c (2=1 "Muslim") (1 3 = 0 "Non Muslim") , gen(muslim)
 label variable muslim "Muslim"
 order muslim, a(religion_c)
 
-recode religion_c (2=1) (1 3 = 0) , gen(christian)
-label define christianl 1 "Christian" 0 "Non Christian"
-label values christian christianl
+recode religion_c (3=1 "Christian") (1 2 = 0 "Non Christian") , gen(christian)
 label variable christian "Christian"
 order christian, a(muslim)
 
-recode religion_c (3=1) (1 2 = 0), gen(hindu)
-label define hindul 1 "Hindu" 0 "Non Hindu"
-label values hindu hindul
+recode religion_c (1=1 "Hindu") (2 3 = 0 "Non Hindu"), gen(hindu)
 label variable hindu "Hindu"
 order hindu, a(christian)
 
@@ -179,9 +173,7 @@ by dhsid, sort: egen muslimpc = mean(100 * muslim)
 label variable muslimpc "% Muslim"
 order muslimpc, a(muslim)
 
-recode muslimpc (0/33.4=1) (33.5/66.7=2) (66.8/100=3), gen(muslimmaj)
-label define muslimmajl 1 "Muslim minority" 2 "Muslim equal" 3 "Muslim majority"
-label values muslimmaj muslimmajl
+recode muslimpc (0/33.4=1 "Muslim minority") (33.5/66.7=2 "Muslim equal") (66.8/100=3 "Muslim majority"), gen(muslimmaj)
 label variable muslimmaj "Muslim majority-minority"
 order muslimmaj, a(muslimpc)
 
@@ -193,9 +185,9 @@ by dhsid, sort: egen hindupc = mean(100 * hindu)
 label variable hindupc "% Hindu"
 order hindupc, a(hindu)
 
-recode muslimpc (0/66.7=0) (66.8/100=1), gen(mus_maj)
-recode hindupc (0/66.7=0) (66.8/100=1) , gen(hin_maj)
-recode christianpc (0/66.7=0) (66.8/100=1), gen(chr_maj)
+recode muslimpc (0/66.7=0) (66.8/100=1 "Muslim majority"), gen(mus_maj)
+recode hindupc (0/66.7=0) (66.8/100=1 "Hindu majority") , gen(hin_maj)
+recode christianpc (0/66.7=0) (66.8/100=1 "Christian majority"), gen(chr_maj)
 
 gen religion_maj=.
 replace religion_maj = 1 if mus_maj==1
@@ -204,20 +196,12 @@ replace religion_maj = 3 if chr_maj==1
 label define religion_majl 1 "Muslim majority" 2 "Hindu majority" 3 "Christian majority"
 label values religion_maj religion_majl
 label variable religion_maj "Religion majority"
-label define mus_majl 1 "Muslim majority"
-label values mus_maj mus_majl
-label define hin_majl 1 "Hindu majority"
-label values hin_maj hin_majl
-label define chr_majl 1 "Christian majority"
-label values chr_maj chr_majl
 
 
 
 * currwork - currently working
 * 0=no; 10=yes; 11=yes spontaneous; 12= yes prompted; 98=missing; 99=niu
-recode currwork (0=0 no) (10/12=1 yes) (98 99 = .), gen(currwork_d)
-label define currwork_i 0 "Currently not working" 1 "Currently working"
-label values currwork_d currwork_i
+recode currwork (0=0 "Currently not working") (10/12=1 "Currently working") (98 99 = .), gen(currwork_d)
 label variable currwork_d "Currently working"
 order currwork_d, a(currwork)
 
