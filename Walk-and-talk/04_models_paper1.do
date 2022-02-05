@@ -36,7 +36,7 @@ drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==
 *estimates store mo1
 
 * Household
-quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.waves2 i.country [pw=popwt], base(0)
+quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store mo1
 
@@ -45,27 +45,27 @@ estimates store mo1
 *quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
 *estimates store mo2
 
-quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt], base(0)
+quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt], base(0)
 estimates store mo2
 
-quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib3.religion_maj i.waves2 i.country [pw=popwt], base(0)
-estimates store mo3
+*quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib3.religion_maj i.waves2 i.country [pw=popwt], base(0)
+*estimates store mo3
 
-esttab mo1 mo2 mo3 using model1226.rtf, ///
+esttab mo1 mo2 using model020522.rtf, ///
 noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Household" "Local institutions" "Local institutions") 
+mtitles("Household" "Local institutions") 
 
-esttab mo1 mo2 mo3 using model0126.csv, ///
+esttab mo1 mo2 using model020522.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Household" "Local institutions" "Local institutions") 
+mtitles("Household" "Local institutions") 
 
 
 	*This will plot two models in one figure: right now set for the main models
-coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Accept IPV/" "Empowered") || ///
- (mo1) (mo2), keep(talk_nowalk:) bylabel("Rejects IPV/" "Unempowered") || ///
- (mo1) (mo2), keep(neither:) bylabel("Accept IPV/" "Unempowered") ||, ///
+coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Cell 2" "Support IPV/" "Decision maker") || ///
+ (mo1) (mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Unempowered") || ///
+ (mo1) (mo2), keep(neither:) bylabel("Cell 4" "Support IPV/" "Unempowered") ||, ///
  eform drop(_cons *country ) ///
  scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
  xtitle(Relative Risk Ratio) ///
@@ -74,9 +74,13 @@ coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Accept IPV/" "Empowered") || /
  cond(@pval<.05, "*", "")))) ///
 	note("* p < .05, ** p < .01, *** p < .001", span) ///
 	plotlabels("Household" "Local institutions") ///
-	coeflabels(, wrap(15)) ///to fix the labels
+	yscale(noline alt) ///
+	coeflabels(, notick labgap(5) wrap(15)) ///to fix the labels
+	headings(1.educlvl = "{bf:Individual-level}" ///
+			 1.wealthq = "{bf:Household}" ///
+			 mar18pc = "{bf:Community-level}", labgap(0)) ///
 	name("mo1_mo2", replace)
-
+	graph play mlogit
 
 *****************
 */** Using ipv_empowerment variable
@@ -125,29 +129,36 @@ label define ipv_exp2 0 "Rej_no_IPV" 1 "Rej_IPV" 2 "Apr_no_IPV" 3 "Apr_IPV"
 label values ipv_exp ipv_exp2
 
 * Note that the waves2 is removed
-quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.country [pw=dvweight], base(0)
+quietly mlogit ipv_exp i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap i.country [pw=dvweight], base(0)
 estimates store mo3
 
-quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.de2pc c.mar18pc ib2.muslimmaj i.country [pw=dvweight], base(0)
+quietly mlogit ipv_exp i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.country [pw=dvweight], base(0)
 estimates store mo4
 	
-esttab mo1 mo2 mo3 mo4 using model1223.csv, ///
+esttab mo1 mo2 mo3 mo4 using model020522_1.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions" "Household" "Local institutions") 
 
 est restore mo4
-coefplot ., keep(Rej_IPV:) bylabel("Rejects IPV/" "experienced IPV") || ///
- ., keep(Apr_no_IPV:) bylabel("Aprrove IPV/" "haven't experienced IPV") || ///
- ., keep(Apr_IPV:) bylabel("Approve IPV/" "experienced IPV") ||, ///
+coefplot ., keep(Rej_IPV:) bylabel("Support physical" "integrity/" "experienced IPV") || ///
+ ., keep(Apr_no_IPV:) bylabel("Support IPV/" "haven't" "experienced IPV") || ///
+ ., keep(Apr_IPV:) bylabel("Support IPV/" "experienced IPV") ||, ///
  eform drop(_cons *country ) ///
- scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(70) xline(1) sub(,size(medium)) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
  xtitle(Relative Risk Ratio) ///
   mlabel(cond(@pval<.001, "***", ///
   cond(@pval<.01, "**",   ///
  cond(@pval<.05, "*", "")))) ///
 	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	yscale(noline alt) ///
+	coeflabels(, notick labgap(5) wrap(15)) ///to fix the labels
+	headings(1.educlvl = "{bf:Individual-level}" ///
+			 1.wealthq = "{bf:Household}" ///
+			 mar18pc = "{bf:Community-level}", labgap(0)) ///
 	name("mo4", replace)
+	graph play mlogit1
+
 
 	*name(test2)
 
