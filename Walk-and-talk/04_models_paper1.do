@@ -63,9 +63,9 @@ mtitles("Household" "Local institutions")
 
 
 	*This will plot two models in one figure: right now set for the main models
-coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Cell 2" "Support IPV/" "Decision maker") || ///
- (mo1) (mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Unempowered") || ///
- (mo1) (mo2), keep(neither:) bylabel("Cell 4" "Support IPV/" "Unempowered") ||, ///
+coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
+ (mo1) (mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") || ///
+ (mo1) (mo2), keep(neither:) bylabel("Cell 4" "Support IPV/" "Not dec. maker") ||, ///
  eform drop(_cons *country ) ///
  scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
  xtitle(Relative Risk Ratio) ///
@@ -76,11 +76,16 @@ coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Cell 2" "Support IPV/" "Decisi
 	plotlabels("Household" "Local institutions") ///
 	yscale(noline alt) ///
 	coeflabels(, notick labgap(5) wrap(15)) ///to fix the labels
+	orderby(2) ///
 	headings(1.educlvl = "{bf:Individual-level}" ///
 			 1.wealthq = "{bf:Household}" ///
-			 mar18pc = "{bf:Community-level}", labgap(0)) ///
+			 mar18pc = "{bf:Community-level}" ///
+			 2.waves2 = "{bf:Fixed-effect}", labgap(0)) ///	 
 	name("mo1_mo2", replace)
+	
 	graph play mlogit
+
+	
 
 *****************
 */** Using ipv_empowerment variable
