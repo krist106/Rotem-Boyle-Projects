@@ -145,9 +145,9 @@ constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions" "Household" "Local institutions") 
 
 est restore mo4
-coefplot ., keep(Rej_IPV:) bylabel("Support physical" "integrity/" "experienced IPV") || ///
- ., keep(Apr_no_IPV:) bylabel("Support IPV/" "haven't" "experienced IPV") || ///
- ., keep(Apr_IPV:) bylabel("Support IPV/" "experienced IPV") ||, ///
+coefplot ., keep(Rej_IPV:) bylabel("Support physical" "integrity/" "Experienced IPV") || ///
+ ., keep(Apr_no_IPV:) bylabel("Approve IPV/" "No IPV") || ///
+ ., keep(Apr_IPV:) bylabel("Approve IPV/" "Experienced IPV") ||, ///
  eform drop(_cons *country ) ///
  scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
  xtitle(Relative Risk Ratio) ///
@@ -159,7 +159,7 @@ coefplot ., keep(Rej_IPV:) bylabel("Support physical" "integrity/" "experienced 
 	coeflabels(, notick labgap(5) wrap(15)) ///to fix the labels
 	headings(1.educlvl = "{bf:Individual-level}" ///
 			 1.wealthq = "{bf:Household}" ///
-			 mar18pc = "{bf:Community-level}", labgap(0)) ///
+			  mar18pc = "{bf:Community-level}", nogap labgap(0) ) ///
 	name("mo4", replace)
 	graph play mlogit1
 
