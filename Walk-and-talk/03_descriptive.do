@@ -26,7 +26,7 @@ drop if age<18 | age>49 | sample==56203 | sample==56204 | sample==83404 | sample
  
 * We need a model so we can get the relevant descriptive statistics
 * Household
-quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.waves2 i.country [pw=popwt], base(0)
+quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store mo1
 
@@ -83,6 +83,9 @@ tab decoupling country [iweight=popwt] if waves2==1 & model_sample==1, co
 tab decoupling country [iweight=popwt] if waves2==2 & model_sample==1, co
 
 tab decoupling waves2 [iweight=popwt] if model_sample==1, co
+*to export:
+xtable decoupling waves2 [iweight=popwt], co filename(change_wave.xlsx) 
+
 
 ***This shows country level figures and change
 *** ssc install asgen
