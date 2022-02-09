@@ -75,17 +75,48 @@ coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decisio
 	note("* p < .05, ** p < .01, *** p < .001", span) ///
 	plotlabels("Household" "Local institutions") ///
 	yscale(noline alt) ///
-	coeflabels(, notick labgap(5) wrap(15)) ///to fix the labels
+	coeflabels /// Fixing the labels
+				(1.educlvl = "Primary" 2.educlvl = "Secondary" 3.educlvl = "Higher" ///
+				1.radio = "Radio freq" 1.currwork_d = "Working" 1.urban = "Urban" ///
+				1.wealthq = "Poorest" 2.wealthq = "Poorer" 4.wealthq = "Richer" 5.wealthq = "Richest" ///
+				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
+				, notick labgap(2) wrap(15)) ///
 	orderby(2) ///
 	headings(1.educlvl = "{bf:Individual-level}" ///
 			 1.wealthq = "{bf:Household}" ///
 			 mar18pc = "{bf:Community-level}" ///
-			 2.waves2 = "{bf:Fixed-effect}", nogap labgap(0) ) ///	 
+			 2.waves2 = "{bf:Fixed-effect}", nogap labgap(0) ) ///	
 	name("mo1_mo2", replace)
-	
 	graph play mlogit
 	
 
+***** FOR Stanford talk
+coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
+ (mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") || ///
+ (mo2), keep(neither:) bylabel("Cell 4" "Accept IPV/" "Not dec. maker") ||, ///
+ eform drop(_cons *country *waves2 ) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	plotlabels("Local institutions") ///
+	yscale(noline alt) ///
+	coeflabels(1.educlvl = "Primary" 2.educlvl = "Secondary" 3.educlvl = "Higher" ///
+				1.radio = "Radio freq" 1.currwork_d = "Working" 1.urban = "Urban" ///
+				1.wealthq = "Poorest" 2.wealthq = "Poorer" 4.wealthq = "Richer" 5.wealthq = "Richest" ///
+				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
+				, notick labgap(2) wrap(15)) ///to fix the labels
+	headings(1.educlvl = "{bf:Individual-level}" ///
+			 1.wealthq = "{bf:Household}" ///
+			 mar18pc = "{bf:Community-level}" ///
+			, nogap labgap(0) ) ///	
+	name("mo2", replace)
+	graph play mlogit
+	
+	
+	
 *****************
 */** Using ipv_empowerment variable
 ** To be sure we are looking at the same (or as close as posible) samples we used before, lets keep the sample by the first model:
