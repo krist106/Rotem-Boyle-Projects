@@ -90,7 +90,7 @@ coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decisio
 	graph play mlogit
 	
 
-***** FOR Stanford talk
+*********************** FOR Stanford talk **************************************
 coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
  (mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") || ///
  (mo2), keep(neither:) bylabel("Cell 4" "Accept IPV/" "Not dec. maker") ||, ///
@@ -115,7 +115,49 @@ coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision make
 	name("mo2", replace)
 	graph play mlogit
 	
+
+coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
+ (mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") ||, ///
+ eform drop(_cons *educlvl *radio *age *urban *edugap *mar18pc *country *waves2 ) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(60) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	plotlabels("Local institutions") ///
+	yscale(noline alt) ///
+	coeflabels(1.educlvl = "Primary" 2.educlvl = "Secondary" 3.educlvl = "Higher" ///
+				1.radio = "Radio freq" 1.currwork_d = "Working" 1.urban = "Urban" ///
+				1.wealthq = "Poorest" 2.wealthq = "Poorer" 4.wealthq = "Richer" 5.wealthq = "Richest" ///
+				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
+				, notick labgap(2) wrap(15)) ///to fix the labels
+	headings(1.educlvl = "{bf:Individual-level}" ///
+			 1.wealthq = "{bf:Household}" ///
+			 mar18pc = "{bf:Community-level}" ///
+			, nogap labgap(0) ) ///	
+	name("mo2_1", replace)
 	
+		
+coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
+ (mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") ||, ///
+ eform drop(_cons *educlvl *radio *age *religion_cf *urban *mar18pc *mus_maj *hin_maj *waves2 *country) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(60) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	plotlabels("Local institutions") ///
+	yscale(noline alt) ///
+	coeflabels(1.educlvl = "Primary" 2.educlvl = "Secondary" 3.educlvl = "Higher" ///
+				1.radio = "Radio freq" 1.currwork_d = "Working" 1.urban = "Urban" ///
+				1.wealthq = "Poorest" 2.wealthq = "Poorer" 4.wealthq = "Richer" 5.wealthq = "Richest" ///
+				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
+				, notick labgap(2) wrap(15)) ///to fix the labels
+	name("mo2_2", replace)
+	
+************** END of Stanford talk *****************
 	
 *****************
 */** Using ipv_empowerment variable
