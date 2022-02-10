@@ -118,7 +118,7 @@ coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision make
 
 coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
  (mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") ||, ///
- eform drop(_cons *educlvl *radio *age *urban *edugap *mar18pc *country *waves2 ) ///
+ eform drop(_cons *educlvl *radio *age *currwork_d *urban *wealthq *edugap *mar18pc *waves2 *country) ///
  scheme(cleanplots) byopts(rows(1)) msize(large) ysize(40) xsize(60) xline(1) sub(,size(medium)) ///
  xtitle(Relative Risk Ratio) ///
   mlabel(cond(@pval<.001, "***", ///
@@ -132,11 +132,8 @@ coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision make
 				1.wealthq = "Poorest" 2.wealthq = "Poorer" 4.wealthq = "Richer" 5.wealthq = "Richest" ///
 				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
 				, notick labgap(2) wrap(15)) ///to fix the labels
-	headings(1.educlvl = "{bf:Individual-level}" ///
-			 1.wealthq = "{bf:Household}" ///
-			 mar18pc = "{bf:Community-level}" ///
-			, nogap labgap(0) ) ///	
 	name("mo2_1", replace)
+	graph play stanford
 	
 		
 coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
@@ -156,7 +153,7 @@ coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision make
 				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
 				, notick labgap(2) wrap(15)) ///to fix the labels
 	name("mo2_2", replace)
-	
+	graph play stanford
 	
 	coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
  (mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") ||, ///
@@ -175,7 +172,7 @@ coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision make
 				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
 				, notick labgap(2) wrap(15)) ///to fix the labels
 	name("mo2_3", replace)
-	
+	graph play stanford
 	
 ************** END of Stanford talk *****************
 	
