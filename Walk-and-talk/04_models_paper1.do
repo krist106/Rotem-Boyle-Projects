@@ -40,6 +40,10 @@ quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i
 generate model_sample=e(sample)
 estimates store mo1
 
+*** To check the IIA assumption and the distinguishable of the categories
+*mlogtest, haus
+*mlogtest, combine
+
 ***c.de2pc
 * Full - with local institutions
 *quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
@@ -269,6 +273,8 @@ mtitles("Baseline model" "Household" "Local institutions")
 
 * A few post estimation commands
 mlogtest, combine // It computes Wald tests of the null hypothesis that two alternatives can be combained for all pairs of alternatives. In our case, it support the differences among the four decoupling categories
+
+mlogtest, hausman 
 leastlikely decoupling educlvl radio urban age religion_cf // This helps to identify the least likely observations
 
 mchange, at(radio=1)
