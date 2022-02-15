@@ -180,6 +180,73 @@ coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision make
 	
 ************** END of Stanford talk *****************
 	
+	
+****** Testing logit **********
+logit de2 i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if model_sample==1 , or 
+estimates store logit1
+
+logit de3 i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if model_sample==1 , or 
+estimates store logit2
+
+esttab mlogit1 mlogit2 using model021522_logit.csv, ///
+noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Accept IPV/" "Decision maker" "Support physical integrity/" "Not dec. maker") 
+
+
+coefplot logit1, bylabel("Accept IPV/" "Decision maker") ///
+	  || logit2, bylabel("Support physical integrity/" "Not dec. maker") ///
+	  ||, drop (_cons *country) ///
+	  eform ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
+ xtitle(Odds Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	yscale(noline alt) ///
+	coeflabels /// Fixing the labels
+				(1.educlvl = "Primary" 2.educlvl = "Secondary" 3.educlvl = "Higher" ///
+				1.radio = "Radio freq" 1.currwork_d = "Working" 1.urban = "Urban" ///
+				1.wealthq = "Poorest" 2.wealthq = "Poorer" 4.wealthq = "Richer" 5.wealthq = "Richest" ///
+				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
+				, notick labgap(2) wrap(15)) ///
+	headings(1.educlvl = "{bf:Individual-level}" ///
+			 1.wealthq = "{bf:Household}" ///
+			 mar18pc = "{bf:Community-level}" ///
+			 2.waves2 = "{bf:Fixed-effect}", nogap labgap(0) ) ///	
+	name("logit", replace)
+	  
+
+est restore mo2
+quietly margins, dydx(educlvl radio age religion_cf currwork_d urban wealthq edugap mar18pc mus_maj hin_maj) post
+
+coefplot ///
+(, keep(*:2._predict) label("Accept IPV/" "Decision maker")) ///
+(, keep(*:3._predict) label("Support physical integrity/" "Not dec. maker")) , ///
+mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) /// 
+	coeflabels /// Fixing the labels
+				(1.educlvl = "Primary" 2.educlvl = "Secondary" 3.educlvl = "Higher" ///
+				1.radio = "Radio freq" 1.currwork_d = "Working" 1.urban = "Urban" ///
+				1.wealthq = "Poorest" 2.wealthq = "Poorer" 4.wealthq = "Richer" 5.wealthq = "Richest" ///
+				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
+				, notick labgap(2) wrap(15)) ///
+				headings(1.educlvl = "{bf:Individual-level}" ///
+			 1.wealthq = "{bf:Household}" ///
+			 mar18pc = "{bf:Community-level}" ///
+			 2.waves2 = "{bf:Fixed-effect}", nogap labgap(0) ) ///	
+			 scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
+		xtitle(Average marginal effects) ///
+		swapnames xline(0) yscale(noline alt) ///
+		name("AME", replace)
+			 
+	
+*************************************************************
+	
+	
 *****************
 */** Using ipv_empowerment variable
 ** To be sure we are looking at the same (or as close as posible) samples we used before, lets keep the sample by the first model:
