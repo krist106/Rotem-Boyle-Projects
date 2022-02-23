@@ -245,8 +245,114 @@ mlabel(cond(@pval<.001, "***", ///
 			 
 	
 ************************************************************
+
+*********Testing with Catholic and Protestant
+* Household
+quietly 
+mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap i.waves2 i.country [pw=popwt], base(0)
+generate mo_sample_catholic=e(sample)
+estimates store mo3
+
+quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt], base(0)
+estimates store mo4
+
+/*
+esttab mo3 mo4 using model022322_Cat_Prot.rtf, ///
+noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Household" "Local institutions") 
+*/
+
+esttab mo3 mo4 using model022322_Cat_Prot.csv, ///
+noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Household" "Local institutions") 
+
+
+	*This will plot two models in one figure: right now set for the main models
+coefplot (mo3) (mo4), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
+ (mo3) (mo4), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") || ///
+ (mo3) (mo4), keep(neither:) bylabel("Cell 4" "Accept IPV/" "Not dec. maker") ||, ///
+ eform drop(_cons *country ) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	plotlabels("Household" "Local institutions") ///
+	yscale(noline alt) ///
+	coeflabels /// Fixing the labels
+				(1.educlvl = "Primary" 2.educlvl = "Secondary" 3.educlvl = "Higher" ///
+				1.radio = "Radio freq" 1.currwork_d = "Working" 1.urban = "Urban" ///
+				1.wealthq = "Poorest" 2.wealthq = "Poorer" 4.wealthq = "Richer" 5.wealthq = "Richest" ///
+				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
+				, notick labgap(2) wrap(15)) ///
+	orderby(2) ///
+	headings(1.educlvl = "{bf:Individual-level}" ///
+			 1.wealthq = "{bf:Household}" ///
+			 mar18pc = "{bf:Community-level}" ///
+			 2.waves2 = "{bf:Fixed-effect}", nogap labgap(0) ) ///	
+	name("Cat_Prot", replace)
+	graph play mlogit
 	
+********************
+
+*********Testing by South Asia VS Africa
+* Household
+quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap i.waves2 i.region [pw=popwt], base(0)
+generate mo_sample_region=e(sample)
+estimates store mo5
+
+quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.region [pw=popwt], base(0)
+estimates store mo6
+
+/*
+esttab mo5 mo6 using model022322_region.rtf, ///
+noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Household" "Local institutions") 
+*/
+
+esttab mo5 mo6 using model022322_region.csv, ///
+noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Household" "Local institutions") 
+
+
+	*This will plot two models in one figure: right now set for the main models
+coefplot (mo5) (mo6), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
+ (mo5) (mo6), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") || ///
+ (mo5) (mo6), keep(neither:) bylabel("Cell 4" "Accept IPV/" "Not dec. maker") ||, ///
+ eform drop(_cons *country ) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	plotlabels("Household" "Local institutions") ///
+	yscale(noline alt) ///
+	coeflabels /// Fixing the labels
+				(1.educlvl = "Primary" 2.educlvl = "Secondary" 3.educlvl = "Higher" ///
+				1.radio = "Radio freq" 1.currwork_d = "Working" 1.urban = "Urban" ///
+				1.wealthq = "Poorest" 2.wealthq = "Poorer" 4.wealthq = "Richer" 5.wealthq = "Richest" ///
+				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
+				, notick labgap(2) wrap(15)) ///
+	orderby(2) ///
+	headings(1.educlvl = "{bf:Individual-level}" ///
+			 1.wealthq = "{bf:Household}" ///
+			 mar18pc = "{bf:Community-level}" ///
+			 2.waves2 = "{bf:Fixed-effect}", nogap labgap(0) ) ///	
+	name("region", replace)
+	graph play mlogit
+
 	
+	esttab mo3 mo4 mo5 mo6 using model022322_test.csv, ///
+noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
+constant obslast scalars("chi2 Wald chi-squared") ///
+mtitles("Household" "Local institutions" "Household" "Local institutions") 
+
 *****************
 */** Using ipv_empowerment variable
 ** To be sure we are looking at the same (or as close as posible) samples we used before, lets keep the sample by the first model:
