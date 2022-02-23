@@ -145,6 +145,11 @@ recode religion (0=7 "No religion") (1000=2 "Muslim") (2000/2999=3 "Christian") 
 label variable religion_cf "Religion"
 order religion_cf, a(religion_c)
 
+recode religion (0=7 "No religion") (1000=2 "Muslim") (2100=3 "Catholic") (2300/2901=4 "Protestant") (3000/3999=5 "Buddhist") (4000=1 "Hindu") (6000/6999=6 "Traditional") (9000=7 "Other") (5000 7000/7999=7) (9998=.) (nonmiss=.) , gen(religion_C_P)
+label variable religion_C_P "Religion"
+order religion_C_P, a(religion_cf)
+
+
 * Three main religions + other
 *recode religion (1000=1) (2000/2999=2) (4000=3) (9998=.) (nonmiss=4), gen(religion_c)
 *label define reli_c 1 "Muslim" 2 "Christian" 3 "Hindu" 4 "Other"
@@ -551,6 +556,9 @@ order waves3, a(waves2)
 *label variable last_wave "last wave"
 *order last_wave, a(last_wave1)
 
+
+recode country (4 50 104 356 524 586 = 1 "South Asia") (nonmiss=0 "Africa") , gen(region)
+label variable region "Region"
 
 * Fix some labels
 
