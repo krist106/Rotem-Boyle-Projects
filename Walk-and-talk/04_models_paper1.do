@@ -36,37 +36,70 @@ drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==
 *estimates store mo1
 
 * Household
+/*
 quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store mo1
-
-*** To check the IIA assumption and the distinguishable of the categories
-*mlogtest, haus
-*mlogtest, combine
+*/
 
 ***c.de2pc
 * Full - with local institutions
 *quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
 *estimates store mo2
 
-quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt], base(0)
+quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt], base(0)
+generate model_sample=e(sample)
 estimates store mo2
+
+*** To check the IIA assumption and the distinguishable of the categories
+*mlogtest, haus
+*mlogtest, combine
 
 *quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib3.religion_maj i.waves2 i.country [pw=popwt], base(0)
 *estimates store mo3
 
-esttab mo1 mo2 using model020522.rtf, ///
+esttab mo1 mo2 using model022822.rtf, ///
 noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions") 
 
-esttab mo1 mo2 using model020522.csv, ///
+esttab mo1 mo2 using model022822.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Household" "Local institutions") 
+mtitles("Local institutions" "Local institutions") 
+
+
+*This will plot our main model in a figure:
+coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
+		(mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") || ///
+		(mo2), keep(neither:) bylabel("Cell 4" "Accept IPV/" "Not dec. maker") ||, ///
+ eform drop(_cons *country ) ///
+ scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
+ xtitle(Relative Risk Ratio) ///
+  mlabel(cond(@pval<.001, "***", ///
+  cond(@pval<.01, "**",   ///
+ cond(@pval<.05, "*", "")))) ///
+	note("* p < .05, ** p < .01, *** p < .001", span) ///
+	plotlabels("Local institutions") ///
+	yscale(noline alt) ///
+	coeflabels /// Fixing the labels
+				(1.educlvl = "Primary" 2.educlvl = "Secondary" 3.educlvl = "Higher" ///
+				1.radio = "Radio freq" 1.currwork_d = "Working" 1.urban = "Urban" ///
+				1.wealthq = "Poorest" 2.wealthq = "Poorer" 4.wealthq = "Richer" 5.wealthq = "Richest" ///
+				0.edugap = "Educ: W<M" 2.edugap = "Educ: W>M" ///
+				, notick labgap(2) wrap(15)) ///
+	orderby(2) ///
+	headings(1.educlvl = "{bf:Individual-level}" ///
+			 1.wealthq = "{bf:Household}" ///
+			 mar18pc = "{bf:Community-level}" ///
+			 2.waves2 = "{bf:Fixed-effect}", nogap labgap(0) ) ///	
+	name("local_ins", replace)
+	graph play mlogit
+
 
 
 	*This will plot two models in one figure: right now set for the main models
+	/*
 coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
  (mo1) (mo2), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") || ///
  (mo1) (mo2), keep(neither:) bylabel("Cell 4" "Accept IPV/" "Not dec. maker") ||, ///
@@ -92,7 +125,7 @@ coefplot (mo1) (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decisio
 			 2.waves2 = "{bf:Fixed-effect}", nogap labgap(0) ) ///	
 	name("mo1_mo2", replace)
 	graph play mlogit
-	
+	*/
 
 *********************** FOR Stanford talk **************************************
 coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
@@ -247,6 +280,7 @@ mlabel(cond(@pval<.001, "***", ///
 ************************************************************
 
 *********Testing with Catholic and Protestant
+/*
 * Household
 quietly 
 mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap i.waves2 i.country [pw=popwt], base(0)
@@ -297,15 +331,16 @@ coefplot (mo3) (mo4), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decisio
 	graph play mlogit
 	
 ********************
-
+*/
 *********Testing by South Asia VS Africa
-* Household
-quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap i.waves2 i.region [pw=popwt], base(0)
+* Africa
+quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==0, base(0)
 generate mo_sample_region=e(sample)
-estimates store mo5
+estimates store mo3
 
-quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.region [pw=popwt], base(0)
-estimates store mo6
+* South Asia
+quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==1, base(0)
+estimates store mo4
 
 /*
 esttab mo5 mo6 using model022322_region.rtf, ///
@@ -314,10 +349,10 @@ constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions") 
 */
 
-esttab mo5 mo6 using model022322_region.csv, ///
+esttab mo3 mo4 using model022822_robustness.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Household" "Local institutions") 
+mtitles("Africa" "South Asia") 
 
 
 	*This will plot two models in one figure: right now set for the main models
