@@ -25,7 +25,7 @@ drop waves3 decoupling_3a decoupling_3b age5year marstat agefrstmar cheb currwor
 drop dvaargue dvaburnfood dvagoout dvaifnosex dvanegkid dvppush dvppushfq dvpslap dvpslapfq dvptwist dvptwistfq dvppunch dvppunchfq dvpchoke dvpchokefq dvpkick dvpkickfq dvpknfthuse dvpknfthusef dvpknifeth dvpknifethfq dvpknifeuse dvpknifeusef dvpmsever dvpsex dvpsexfq dvpsexoth dvpsexothfq dvppush_di dvpslap_di dvptwist_di dvppunch_di dvpchoke_di dvpkick_di dvpsex_di dvpsexoth_di dvpknife_th_di dvpknife_att_di dvpknife1_di dvpknife_di dvujustargue dvujustburnfood dvujustgoout dvujustifnosex dvujustnegkid
 
 * Wave 2 of Niger and Tanzania don't have data on religion. Yet somehow it was used in the models.
-drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
+drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406 | sample==81804 | sample==81806 | sample==81807 | sample==81808
 
 *** Multinomial Logistic Regression ***
 
@@ -47,7 +47,7 @@ estimates store mo1
 *quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib2.muslimmaj i.waves2 i.country [pw=popwt], base(0)
 *estimates store mo2
 
-quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt], base(0)
+quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store mo2
 
@@ -215,16 +215,30 @@ coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision make
 	
 	
 ****** Testing logit **********
-logit de2 i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if model_sample==1 , or 
+quietly logit de1 i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if model_sample==1 , or 
 estimates store logit1
 
-logit de3 i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if model_sample==1 , or 
+quietly logit de2 i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if model_sample==1 , or 
 estimates store logit2
 
-esttab mlogit1 mlogit2 using model021522_logit.csv, ///
+quietly logit de3 i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if model_sample==1 , or 
+estimates store logit3
+
+quietly logit de4 i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if model_sample==1 , or 
+estimates store logit4
+
+quietly logit dvunjust_d decindex_d i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if model_sample==1 , or 
+estimates store logit5
+
+quietly logit decindex_d dvunjust_d i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if model_sample==1 , or 
+estimates store logit6
+
+
+
+esttab logit1 logit2 logit3 logit4 logit5 logit6 using model030122_logit.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Accept IPV/" "Decision maker" "Support physical integrity/" "Not dec. maker") 
+mtitles("Cell 1" "Cell 2" "Cell 3" "Cell 4" "Oppose IPV" "Decision maker") 
 
 
 coefplot logit1, bylabel("Accept IPV/" "Decision maker") ///
