@@ -19,13 +19,14 @@ use 02_women.dta
 
 keep if ever_married==1
 drop if age<18 | age>49
+drop if religion_cf==1 & region==0
 
 drop waves3 decoupling_3a decoupling_3b age5year marstat agefrstmar cheb currwork employment wkemploywhen wealths newsbrig tvbrig radiobrig 
 
 drop dvaargue dvaburnfood dvagoout dvaifnosex dvanegkid dvppush dvppushfq dvpslap dvpslapfq dvptwist dvptwistfq dvppunch dvppunchfq dvpchoke dvpchokefq dvpkick dvpkickfq dvpknfthuse dvpknfthusef dvpknifeth dvpknifethfq dvpknifeuse dvpknifeusef dvpmsever dvpsex dvpsexfq dvpsexoth dvpsexothfq dvppush_di dvpslap_di dvptwist_di dvppunch_di dvpchoke_di dvpkick_di dvpsex_di dvpsexoth_di dvpknife_th_di dvpknife_att_di dvpknife1_di dvpknife_di dvujustargue dvujustburnfood dvujustgoout dvujustifnosex dvujustnegkid
 
 * Wave 2 of Niger and Tanzania don't have data on religion. Yet somehow it was used in the models.
-drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406 | sample==81804 | sample==81806 | sample==81807 | sample==81808
+drop if sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
 
 *** Multinomial Logistic Regression ***
 
@@ -63,10 +64,10 @@ noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions") 
 
-esttab mo1 mo2 using model022822.csv, ///
+esttab mo2 using model030222.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Local institutions" "Local institutions") 
+mtitles("Local institutions") 
 
 
 *This will plot our main model in a figure:
@@ -235,7 +236,7 @@ estimates store logit6
 
 
 
-esttab logit1 logit2 logit3 logit4 logit5 logit6 using model030122_logit.csv, ///
+esttab logit1 logit2 logit3 logit4 logit5 logit6 using model030222_logit.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Cell 1" "Cell 2" "Cell 3" "Cell 4" "Oppose IPV" "Decision maker") 
@@ -348,12 +349,12 @@ coefplot (mo3) (mo4), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decisio
 */
 *********Testing by South Asia VS Africa
 * Africa
-quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==0, base(0)
+quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==0, base(0)
 generate mo_sample_region=e(sample)
 estimates store mo3
 
 * South Asia
-quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==1, base(0)
+quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==1, base(0)
 estimates store mo4
 
 /*
@@ -363,7 +364,7 @@ constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions") 
 */
 
-esttab mo3 mo4 using model022822_robustness.csv, ///
+esttab mo3 mo4 using model030222_robustness.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Africa" "South Asia") 
