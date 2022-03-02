@@ -557,7 +557,7 @@ order waves3, a(waves2)
 *order last_wave, a(last_wave1)
 
 
-recode country (4 50 104 356 524 586 = 1 "South Asia") (nonmiss=0 "Africa") , gen(region)
+recode country (4 50 104 356 524 586 = 1 "South Asia") (818 = .) (nonmiss=0 "Africa"), gen(region)
 label variable region "Region"
 
 * Fix some labels
