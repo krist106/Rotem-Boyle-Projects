@@ -95,7 +95,7 @@ coefplot (mo2), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision make
 			 mar18pc = "{bf:Community-level}" ///
 			 2.waves2 = "{bf:Fixed-effect}", nogap labgap(0) ) ///	
 	name("local_ins", replace)
-	graph play mlogit
+	graph play mlogit1
 
 
 
@@ -349,13 +349,17 @@ coefplot (mo3) (mo4), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decisio
 */
 *********Testing by South Asia VS Africa
 * Africa
-quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==0, base(0)
+quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==0, base(0)
 generate mo_sample_region=e(sample)
 estimates store mo3
 
 * South Asia
-quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==1, base(0)
+quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==1, base(0)
 estimates store mo4
+
+* Africa + Catholic / Protestant
+quietly mlogit decoupling i.educlvl i.radio c.age ib4.religion_C_P i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt] if region==0, base(0)
+estimates store mo5
 
 /*
 esttab mo5 mo6 using model022322_region.rtf, ///
@@ -364,22 +368,22 @@ constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Household" "Local institutions") 
 */
 
-esttab mo3 mo4 using model030222_robustness.csv, ///
+esttab mo2 mo3 mo4 mo5 using model031622.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Africa" "South Asia") 
+mtitles("Local institutions" "Africa" "South Asia" "Africa: Catholic/Protestant") 
 
 
 	*This will plot two models in one figure: right now set for the main models
-coefplot (mo5) (mo6), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
- (mo5) (mo6), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") || ///
- (mo5) (mo6), keep(neither:) bylabel("Cell 4" "Accept IPV/" "Not dec. maker") ||, ///
- eform drop(_cons *country ) ///
- scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
- xtitle(Relative Risk Ratio) ///
-  mlabel(cond(@pval<.001, "***", ///
-  cond(@pval<.01, "**",   ///
- cond(@pval<.05, "*", "")))) ///
+coefplot (mo3) (mo4), keep(walk_notalk:) bylabel("Cell 2" "Accept IPV/" "Decision maker") || ///
+		 (mo3) (mo4), keep(talk_nowalk:) bylabel("Cell 3" "Support physical" "integrity/" "Not dec. maker") || ///
+		 (mo3) (mo4), keep(neither:) bylabel("Cell 4" "Accept IPV/" "Not dec. maker") ||, ///
+	eform drop(_cons *country ) ///
+	scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(		medium)) ///
+	xtitle(Relative Risk Ratio) ///
+	mlabel(cond(@pval<.001, "***", ///
+	cond(@pval<.01, "**",   ///
+	cond(@pval<.05, "*", "")))) ///
 	note("* p < .05, ** p < .01, *** p < .001", span) ///
 	plotlabels("Household" "Local institutions") ///
 	yscale(noline alt) ///
@@ -450,21 +454,19 @@ label define ipv_exp2 0 "Rej_no_IPV" 1 "Rej_IPV" 2 "Apr_no_IPV" 3 "Apr_IPV"
 label values ipv_exp ipv_exp2
 
 * Note that the waves2 is removed
-quietly mlogit ipv_exp i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap i.country [pw=dvweight], base(0)
-estimates store mo3
 
-quietly mlogit ipv_exp i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.country [pw=dvweight], base(0)
-estimates store mo4
+quietly mlogit ipv_exp i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.country [pw=dvweight] if model_sample==1, base(0)
+estimates store mo6
 	
-esttab mo1 mo2 mo3 mo4 using model020522_1.csv, ///
+esttab mo6 using model031622_test.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Household" "Local institutions" "Household" "Local institutions") 
+mtitles("Local institutions") 
 
-est restore mo4
+est restore mo6
 coefplot ., keep(Rej_IPV:) bylabel("Support physical" "integrity/" "Experienced IPV") || ///
- ., keep(Apr_no_IPV:) bylabel("Approve IPV/" "No IPV") || ///
- ., keep(Apr_IPV:) bylabel("Approve IPV/" "Experienced IPV") ||, ///
+ ., keep(Apr_no_IPV:) bylabel("Accept IPV/" "No IPV") || ///
+ ., keep(Apr_IPV:) bylabel("Accept IPV/" "Experienced IPV") ||, ///
  eform drop(_cons *country ) ///
  scheme(cleanplots) byopts(rows(1)) msize(large) ysize(70) xsize(40) xline(1) sub(,size(medium)) ///
  xtitle(Relative Risk Ratio) ///
@@ -477,7 +479,7 @@ coefplot ., keep(Rej_IPV:) bylabel("Support physical" "integrity/" "Experienced 
 	headings(1.educlvl = "{bf:Individual-level}" ///
 			 1.wealthq = "{bf:Household}" ///
 			  mar18pc = "{bf:Community-level}", nogap labgap(0) ) ///
-	name("mo4", replace)
+	name("mo6", replace)
 	graph play mlogit1
 
 
