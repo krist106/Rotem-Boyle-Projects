@@ -141,7 +141,7 @@ label variable religion_4c "Religion"
 order religion_4c, after(religion_c)
 
 *Main religions
-recode religion (0=7 "No religion") (1000=2 "Muslim") (2000/2999=3 "Christian") (3000/3999=4 "Buddhist") (4000=1 "Hindu") (6000/6999=5 "Traditional") (9000=6 "Other") (5000 7000/7999=6) (9998=.), gen(religion_cf)
+recode religion (1000=2 "Muslim") (2000/2999=3 "Christian") (3000/3999=4 "Buddhist") (4000=1 "Hindu") (6000/6999=5 "Traditional") (9000=6 "Other") (0=6) (5000 7000/7999=6) (9998=.), gen(religion_cf)
 label variable religion_cf "Religion"
 order religion_cf, a(religion_c)
 
