@@ -59,10 +59,10 @@ estimates store mo2
 *quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib3.religion_maj i.waves2 i.country [pw=popwt], base(0)
 *estimates store mo3
 
-esttab mo1 mo2 using model022822.rtf, ///
+esttab mo2 using model031722.rtf, ///
 noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
-mtitles("Household" "Local institutions") 
+mtitles("Local institutions") 
 
 esttab mo2 using model030222.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
@@ -236,7 +236,7 @@ estimates store logit6
 
 
 
-esttab logit1 logit2 logit3 logit4 logit5 logit6 using model030222_logit.csv, ///
+esttab logit1 logit2 logit3 logit4 logit5 logit6 using model031722_logit.csv, ///
 noomitted nobaselevels eform label replace b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Cell 1" "Cell 2" "Cell 3" "Cell 4" "Oppose IPV" "Decision maker") 
@@ -563,12 +563,12 @@ coefplot (., if(@ll<1 & @ul>1)) (., if(@ll>1 | @ul<1)) ., keep(walk_notalk:) byl
 * This should work less idelly for continuous variables (age, etc.) 
 set scheme cleanplots
 
-est restore mo3
-quietly margins, dydx( educlvl radio urban religion_cf wealthq currwork_d edugap muslimmaj) post
+est restore mo2
+quietly margins, dydx( educlvl radio urban religion_cf wealthq currwork_d edugap mus_maj hin_maj) post
 
 *margins, dydx(*) post
 
-* Here all the variables listed in the margins' dydx are included
+/* Here all the variables listed in the margins' dydx are included
 coefplot ///
 (, keep(*:1._predict) label(Walk and talk)) ///
 (, keep(*:2._predict) label(Walk not talk)) ///
@@ -593,14 +593,14 @@ coefplot ///
 drop (*educlvl *radio *urban *religion_cf) ///
 swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME2)
 
-grc1leg AME1 AME2, ycommon rows(2)
+grc1leg AME1 AME2, ycommon rows(2)*/
  
  * Or divided into three sub-figures
 coefplot ///
-(, keep(*educlvl:1._predict *radio:1._predict *urban:1._predict) label(Walk and talk)) ///
-(, keep(*educlvl:2._predict *radio:2._predict *urban:2._predict) label(Walk not talk)) ///
-(, keep(*educlvl:3._predict *radio:3._predict *urban:3._predict) label(Talk not walk))  ///
-(, keep(*educlvl:4._predict *radio:4._predict *urban:4._predict) label(Neither)) ,  ///
+(, keep(*educlvl:1._predict *radio:1._predict *urban:1._predict) label("Cell 1: Support Physical integrity/" "Decision maker")) ///
+(, keep(*educlvl:2._predict *radio:2._predict *urban:2._predict) label("Cell 2: Accept IPV/" "Decision maker")) ///
+(, keep(*educlvl:3._predict *radio:3._predict *urban:3._predict) label("Cell 3: Support physical integrity/" "Not dec. maker"))  ///
+(, keep(*educlvl:4._predict *radio:4._predict *urban:4._predict) label("Cell 4: Accept IPV/" "Not dec. maker")) ,  ///
  mlabel(cond(@pval<.001, "***", ///
   cond(@pval<.01, "**",   ///
  cond(@pval<.05, "*", "")))) ///
@@ -608,10 +608,10 @@ coefplot ///
 	swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME3)
 
 coefplot ///
-(, keep(*religion_cf:1._predict *wealthq:1._predict) label(Walk and talk)) ///
-(, keep(*religion_cf:2._predict *wealthq:2._predict) label(Walk not talk)) ///
-(, keep(*religion_cf:3._predict *wealthq:3._predict) label(Talk not walk))  ///
-(, keep(*religion_cf:4._predict *wealthq:4._predict) label(Neither)) ,  ///
+(, keep(*religion_cf:1._predict *wealthq:1._predict) label("Cell 1: Support Physical integrity/" "Decision maker")) ///
+(, keep(*religion_cf:2._predict *wealthq:2._predict) label("Cell 2: Accept IPV/" "Decision maker")) ///
+(, keep(*religion_cf:3._predict *wealthq:3._predict) label("Cell 3: Support physical integrity/" "Not dec. maker"))  ///
+(, keep(*religion_cf:4._predict *wealthq:4._predict) label("Cell 4: Accept IPV/" "Not dec. maker")) ,  ///
  mlabel(cond(@pval<.001, "***", ///
   cond(@pval<.01, "**",   ///
  cond(@pval<.05, "*", "")))) ///
@@ -619,10 +619,10 @@ coefplot ///
 	swapnames vertical yline(0) legend(rows(2)) ytitle (Average marginal effects) name(AME4)
 
 coefplot ///
-(, keep(*currwork_d:1._predict *edugap:1._predict *muslimmaj:1._predict) label(Walk and talk)) ///
-(, keep(*currwork_d:2._predict *edugap:2._predict *muslimmaj:2._predict) label(Walk not talk)) ///
-(, keep(*currwork_d:3._predict *edugap:3._predict *muslimmaj:3._predict) label(Talk not walk))  ///
-(, keep(*currwork_d:4._predict *edugap:4._predict *muslimmaj:4._predict) label(Neither)) ,  ///
+(, keep(*currwork_d:1._predict *edugap:1._predict *mus_maj:1._predict *hin_maj:1._predict) label("Cell 1: Support Physical integrity/" "Decision maker")) ///
+(, keep(*currwork_d:2._predict *edugap:2._predict *mus_maj:2._predict *hin_maj:2._predict) label("Cell 2: Accept IPV/" "Decision maker")) ///
+(, keep(*currwork_d:3._predict *edugap:3._predict *mus_maj:3._predict *hin_maj:3._predict) label("Cell 3: Support physical integrity/" "Not dec. maker"))  ///
+(, keep(*currwork_d:4._predict *edugap:4._predict *mus_maj:4._predict *hin_maj:4._predict) label("Cell 4: Accept IPV/" "Not dec. maker")) ,  ///
  mlabel(cond(@pval<.001, "***", ///
   cond(@pval<.01, "**",   ///
  cond(@pval<.05, "*", "")))) ///
