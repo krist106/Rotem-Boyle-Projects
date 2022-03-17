@@ -145,7 +145,7 @@ recode religion (1000=2 "Muslim") (2000/2999=3 "Christian") (3000/3999=4 "Buddhi
 label variable religion_cf "Religion"
 order religion_cf, a(religion_c)
 
-recode religion (0=8 "No religion") (1000=2 "Muslim") (2100=3 "Catholic") (2300/2901=4 "Protestant") (3000/3999=5 "Buddhist") (4000=1 "Hindu") (6000/6999=6 "Traditional") (9000=7 "Other") (5000 7000/7999=7) (9998=.) (nonmiss=.) , gen(religion_C_P)
+recode religion (1000=2 "Muslim") (2100=3 "Catholic") (2300/2901=4 "Protestant") (3000/3999=5 "Buddhist") (4000=1 "Hindu") (6000/6999=6 "Traditional") (9000=7 "Other") (0 5000 7000/7999=7) (9998=.) (nonmiss=.) , gen(religion_C_P)
 label variable religion_C_P "Religion"
 order religion_C_P, a(religion_cf)
 
