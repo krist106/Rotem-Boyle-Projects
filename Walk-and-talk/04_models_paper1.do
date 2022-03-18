@@ -291,7 +291,30 @@ mlabel(cond(@pval<.001, "***", ///
 		swapnames xline(0) yscale(noline alt) ///
 		name("AME", replace)
 			 
-	
+			 
+
+quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt], base(0) nolog
+
+mtable, dydx(educlvl) stat(pvalue) dec(2)
+
+* Exporting Average Marginal Effects to a Word docoment
+quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt], nolog
+ 
+ eststo mlogit
+
+ 
+ foreach o in 0 1 2 3  {
+    quietly margins, dydx(educlvl radio age religion_cf currwork_d urban wealthq edugap mar18pc mus_maj hin_maj) predict(outcome(`o')) post
+      eststo, title(Outcome `o')
+      estimates restore mlogit
+   }
+
+. eststo drop mlogit
+
+. esttab using AMEtest1.rtf, replace noobs se(2) b(2) ///
+ mtitles("Cell 1" "Cell 2" "Cell 3" "Cell 4") nonumbers title(Average Marginal Effects)
+ 
+
 ************************************************************
 
 *********Testing with Catholic and Protestant
