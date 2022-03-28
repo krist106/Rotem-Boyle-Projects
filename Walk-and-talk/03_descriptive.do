@@ -21,16 +21,21 @@ clear
 use 02_women.dta 
 
 keep if ever_married==1
-
 drop if age<18 | age>49 | sample==56203 | sample==56204 | sample==83404 | sample==83405 | sample==83406
+drop if religion_cf==1 & region==0
  
 * We need a model so we can get the relevant descriptive statistics
 * Household
-quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap i.waves2 i.country [pw=popwt], base(0)
+quietly mlogit decoupling i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.waves2 i.country [pw=popwt], base(0)
 generate model_sample=e(sample)
 estimates store mo1
 
 keep if model_sample==1
+
+*** How many household in each cluster:
+bys dhsid: gen dup_dhsid1=_N
+
+bys idhshid: gen dup_hh=_N
 
 
 *summary table
