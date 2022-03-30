@@ -43,19 +43,39 @@ bys idhshid: gen dup_hh=_N
 putdocx begin
 baselinetable educlvl(cat countformat(%15.0gc)) ///
 radio(cat value(1) novaluelabel countformat(%15.0gc)) ///
-urban(cat value(1) novaluelabel countformat(%15.0gc)) ///
 age(cts novarlabel afterheading("Age, mean (sd)")) ///
 religion_cf(cat countformat(%15.0gc)) ///
-wealthq(cat countformat(%15.0gc)) ///
 currwork_d(cat value(1) novaluelabel countformat(%15.0gc)) ///
+urban(cat value(1) novaluelabel countformat(%15.0gc)) ///
+wealthq(cat countformat(%15.0gc)) ///
 edugap(cat countformat(%15.0gc)) ///
-de2pc(cts novarlabel afterheading("% Accept IPV/ Empowered, mean (sd)")) ///
 mar18pc(cts novarlabel afterheading("% Under age 18 when married, mean (sd)")) ///
-muslimmaj(cat countformat(%15.0gc)) ///
+mus_maj(cat value(1) novaluelabel countformat(%15.0gc)) ///
+hin_maj(cat value(1) novaluelabel countformat(%15.0gc)) ///
 waves2(cat value(2) novarlabel countformat(%15.0gc)) ///
 if model_sample==1 [fw=popwt], ///
-by(decoupling) putdocxtab(summery_table)
+by(decoupling, total) putdocxtab(summery_table)
 putdocx save summery_table, replace
+
+* With % only
+putdocx begin
+baselinetable educlvl(cat tab("%\%")) ///
+radio(cat value(1) novaluelabel tab("%\%")) ///
+age(cts novarlabel afterheading("Age, mean (sd)")) ///
+religion_cf(cat tab("%\%")) ///
+currwork_d(cat value(1) novaluelabel tab("%\%")) ///
+urban(cat value(1) novaluelabel tab("%\%")) ///
+wealthq(cat tab("%\%")) ///
+edugap(cat tab("%\%")) ///
+mar18pc(cts novarlabel afterheading("% Under age 18 when married, mean (sd)")) ///
+mus_maj(cat value(1) novaluelabel tab("%\%")) ///
+hin_maj(cat value(1) novaluelabel tab("%\%")) ///
+waves2(cat value(2) novaluelabel tab("%\%")) ///
+if model_sample==1 [aw=popwt], ///
+by(decoupling, total) putdocxtab(summery_table)
+putdocx save summery_table1, replace
+
+
 
 *exportexcel(summery_table, replace)
 
@@ -83,6 +103,7 @@ graph combine hist1 hist2 hist3 hist4
 
 
 ***Change of decoupling over time
+tab decoupling [iweight=popwt]
 
 tab decoupling country [iweight=popwt] if waves2==1 & model_sample==1, co
 tab decoupling country [iweight=popwt] if waves2==2 & model_sample==1, co
@@ -121,9 +142,9 @@ graph bar (mean) de1_country_di, blabel(bar, format(%9.3g)) by(country)
 graph bar (mean) de1_country_di de2_country_di de3_country_di de4_country_di, blabel(bar, position(base) format(%9.2g)) ///
 title(Percent change between waves) subtitle(Total, size(medsmall)) ///
 legend(rows(2) stack size(vsmall) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered")) ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" 2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker")) ///
 intensity(25) ///
 bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
@@ -134,9 +155,9 @@ fxsize(100) fysize(20)
 
 graph bar (mean) de1_country_di de2_country_di de3_country_di de4_country_di, blabel(bar, position(base) format(%9.2g)) by(country) ///
 legend(rows(2) stack size(vsmall) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered")) ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" 2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker")) ///
 intensity(25) ///
 bar(1, color(maroon) fintensity(inten80)) ///
 bar(2, color(maroon) fintensity(inten60)) ///
@@ -149,11 +170,11 @@ grc1leg firstset secondset, cols(1)
 sum de1_country_di
 
 *** Religion over time
-tab decoupling religion_4c if model_sample==1 & waves2==1, co
-tab decoupling religion_4c if model_sample==1 & waves2==2, co
+tab decoupling religion_cf if model_sample==1 & waves2==1, co
+tab decoupling religion_cf if model_sample==1 & waves2==2, co
 
-xtable decoupling religion_4c if model_sample==1 & waves2==1, filename(religion_wave1.xlsx)
-xtable decoupling religion_4c if model_sample==1 & waves2==2, filename(religion_wave2.xlsx)
+xtable decoupling religion_cf if model_sample==1 & waves2==1, filename(religion_wave1.xlsx)
+xtable decoupling religion_cf if model_sample==1 & waves2==2, filename(religion_wave2.xlsx)
 
 
 ************ A figure with the 4 categories of discordance, by country and wave
@@ -179,9 +200,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(bangladesh)
 
@@ -201,9 +223,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(burundi)
 
@@ -222,9 +245,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(cameroon)
 
@@ -244,9 +268,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(congo)
 
@@ -265,9 +290,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(benin)
 
@@ -286,9 +312,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(ethiopia)
 
@@ -307,9 +334,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(ghana)
 
@@ -328,9 +356,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(guinea)
 
@@ -349,32 +378,34 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(india)
 
-*splitvallabels waves2, length(6)  
-*catplot decoupling waves2 if country==400, ///
-*percent(waves2) ///
-*var1opts(label(labsize(small))) ///
-*var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
-*ytitle("Level of support", size(small)) ///
-*title("Jordan" ///
-*, span size(medium)) ///
-*intensity(25) ///
-*asyvars stack ///
-*bar(1, color(maroon) fintensity(inten80)) ///
-*bar(2, color(maroon) fintensity(inten60)) ///
-*bar(3, color(gray) fintensity(inten40)) ///
-*bar(4, color(navy) fintensity(inten60)) ///
-*legend(rows(2) stack size(v.small) ///
-*order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-*3 "Reject IPV/ Unempowered" ///
-*4 "Accept IPV/ Unempowered") ///
-*symplacement(center) ///
-*title(Discordance , size(small))) name(jordan)
+/*splitvallabels waves2, length(6)  
+catplot decoupling waves2 if country==400, ///
+percent(waves2) ///
+var1opts(label(labsize(small))) ///
+var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
+ytitle("Level of support", size(small)) ///
+title("Jordan" ///
+, span size(medium)) ///
+intensity(25) ///
+asyvars stack ///
+bar(1, color(maroon) fintensity(inten80)) ///
+bar(2, color(maroon) fintensity(inten60)) ///
+bar(3, color(gray) fintensity(inten40)) ///
+bar(4, color(navy) fintensity(inten60)) ///
+legend(rows(2) stack size(v.small) ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
+symplacement(center) ///
+title(Discordance , size(small))) name(jordan) */
 
 splitvallabels waves2, length(6)  
 catplot decoupling waves2 [iweight=popwt] if country==404 & model_sample==1, ///
@@ -391,9 +422,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(kenya)
 
@@ -412,9 +444,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(lesotho)
 
@@ -433,9 +466,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(madagascar)
 
@@ -454,9 +488,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(malawi)
 
@@ -475,9 +510,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(mali)
 
@@ -496,9 +532,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(mozambique)
 
@@ -517,9 +554,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(namibia)
 
@@ -538,9 +576,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(nepal)
 
@@ -560,9 +599,9 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" 2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(niger)
 */
@@ -582,32 +621,34 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(nigeria)
 
-*splitvallabels waves2, length(6)  
-*catplot decoupling waves2 if country==586, ///
-*percent(waves2) ///
-*var1opts(label(labsize(small))) ///
-*var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
-*ytitle("Level of support", size(small)) ///
-*title("Pakistan" ///
-*, span size(medium)) ///
-*intensity(25) ///
-*asyvars stack ///
-*bar(1, color(maroon) fintensity(inten80)) ///
-*bar(2, color(maroon) fintensity(inten60)) ///
-*bar(3, color(gray) fintensity(inten40)) ///
-*bar(4, color(navy) fintensity(inten60)) ///
-*legend(rows(2) stack size(v.small) ///
-*order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-*3 "Reject IPV/ Unempowered" ///
-*4 "Accept IPV/ Unempowered") ///
-*symplacement(center) ///
-*title(Discordance , size(small))) name(pakistan)
+/*splitvallabels waves2, length(6)  
+catplot decoupling waves2 if country==586, ///
+percent(waves2) ///
+var1opts(label(labsize(small))) ///
+var2opts(label(labsize(small)) relabel(`r(relabel)')) ///
+ytitle("Level of support", size(small)) ///
+title("Pakistan" ///
+, span size(medium)) ///
+intensity(25) ///
+asyvars stack ///
+bar(1, color(maroon) fintensity(inten80)) ///
+bar(2, color(maroon) fintensity(inten60)) ///
+bar(3, color(gray) fintensity(inten40)) ///
+bar(4, color(navy) fintensity(inten60)) ///
+legend(rows(2) stack size(v.small) ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
+symplacement(center) ///
+title(Discordance , size(small))) name(pakistan) */
 
 splitvallabels waves2, length(6)  
 catplot decoupling waves2 [iweight=popwt] if country==646 & model_sample==1, ///
@@ -624,9 +665,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(rwanda)
 
@@ -645,9 +687,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(senegal)
 
@@ -666,9 +709,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(zimbabwe)
 
@@ -687,9 +731,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(uganda)
 
@@ -708,9 +753,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(egypt)
 
@@ -730,9 +776,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///symplacement(center) ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///symplacement(center) ///
 title(Discordance , size(small))) name(tanzania)
 */
 
@@ -751,9 +798,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(burkina)
 
@@ -773,9 +821,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center) ///
 title(Discordance , size(small))) name(zambia)
 
@@ -794,9 +843,10 @@ bar(2, color(maroon) fintensity(inten60)) ///
 bar(3, color(gray) fintensity(inten40)) ///
 bar(4, color(navy) fintensity(inten60)) ///
 legend(rows(2) stack size(v.small) ///
-order(1 "Reject IPV/ Empowered" 2 "Accept IPV/ Empowered" ///
-3 "Reject IPV/ Unempowered" ///
-4 "Accept IPV/ Unempowered") ///
+order(1 "Cell 1: Support physical integrity/" "Decision maker" ///
+2 "Cell 2: Accept IPV/" "Decision maker" ///
+3 "Cell 3: Support physical integrity/" "Not dec. maker" ///
+4 "Cell 4: Accept IPV//" "Not dec. maker") ///
 symplacement(center)) ///
 name(total, replace) ///
 fxsize(100) fysize(20)
@@ -812,7 +862,7 @@ grc1leg total firstset, cols(1) ysize(50) xsize(40)
 
 
 *** For attitudes / experience of IPV
-quietly mlogit ipv_exp i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap i.country [pw=dvweight], base(0)
+quietly mlogit ipv_exp i.educlvl i.radio c.age ib3.religion_cf i.currwork_d i.urban ib3.wealthq ib1.edugap c.mar18pc ib0.mus_maj ib0.hin_maj i.country [pw=dvweight], base(0)
 generate model_sample1=e(sample)
 estimates store mo2
 
@@ -822,15 +872,15 @@ tab ipv_exp [iweight=dvweight] if model_sample1==1
 putdocx begin
 baselinetable educlvl(cat countformat(%15.0gc)) ///
 radio(cat value(1) novaluelabel countformat(%15.0gc)) ///
-urban(cat value(1) novaluelabel countformat(%15.0gc)) ///
 age(cts novarlabel afterheading("Age, mean (sd)")) ///
 religion_cf(cat countformat(%15.0gc)) ///
-wealthq(cat countformat(%15.0gc)) ///
 currwork_d(cat value(1) novaluelabel countformat(%15.0gc)) ///
+urban(cat value(1) novaluelabel countformat(%15.0gc)) ///
+wealthq(cat countformat(%15.0gc)) ///
 edugap(cat countformat(%15.0gc)) ///
-de2pc(cts novarlabel afterheading("% Accept IPV/ Empowered, mean (sd)")) ///
 mar18pc(cts novarlabel afterheading("% Under age 18 when married, mean (sd)")) ///
-muslimmaj(cat countformat(%15.0gc)) ///
+mus_maj(cat value(1) countformat(%15.0gc)) ///
+hin_maj(cat value(1) countformat(%15.0gc)) ///
 if model_sample1==1 [aw=dvweight], ///
 by(ipv_exp, total) putdocxtab(summery_table)
 putdocx save summery_table1, replace
@@ -841,15 +891,18 @@ putdocx save summery_table1, replace
 putdocx begin
 baselinetable educlvl(cat tab("%\%")) ///
 radio(cat value(1) novaluelabel tab("%\%")) ///
-urban(cat value(1) novaluelabel tab("%\%")) ///
 age(cts novarlabel afterheading("Age, mean (sd)")) ///
 religion_cf(cat tab("%\%")) ///
-wealthq(cat tab("%\%")) ///
 currwork_d(cat value(1) novaluelabel tab("%\%")) ///
+urban(cat value(1) novaluelabel tab("%\%")) ///
+wealthq(cat tab("%\%")) ///
 edugap(cat tab("%\%")) ///
-de2pc(cts novarlabel afterheading("% Accept IPV/ Empowered, mean (sd)")) ///
 mar18pc(cts novarlabel afterheading("% Under age 18 when married, mean (sd)")) ///
-muslimmaj(cat tab("%\%")) ///
+mus_maj(cat value(1) tab("%\%")) ///
+hin_maj(cat value(1) tab("%\%")) ///
 if model_sample1==1 [aw=dvweight], ///
 by(ipv_exp, total) putdocxtab(summery_table)
 putdocx save summery_table1, replace
+
+tab ipv_exp [iweight=dvweight]
+
