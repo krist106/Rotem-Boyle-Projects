@@ -59,7 +59,7 @@ estimates store mo2
 *quietly mlogit decoupling i.educlvl i.radio i.urban c.age ib2.religion_cf ib3.wealthq i.currwork_d ib1.edugap c.mar18pc ib3.religion_maj i.waves2 i.country [pw=popwt], base(0)
 *estimates store mo3
 
-esttab mo2 using model031722.rtf, ///
+esttab mo2 using model040522.rtf, ///
 noomitted nobaselevels eform label replace one b(a2) se(2) compress unstack  ///
 constant obslast scalars("chi2 Wald chi-squared") ///
 mtitles("Local institutions") 
